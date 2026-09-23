@@ -1,0 +1,22 @@
+### Structured analysis of one submission. Phase 1 seeds these from
+### assets/demo/analyses.json (promptVersion "golden").
+class: SubmissionAnalysis
+table: submission_analysis
+fields:
+  submissionId: int, relation(parent=submission)
+  promptVersion: String
+  summary: String
+  technical: AreaAssessment
+  demonstration: AreaAssessment
+  idea: AreaAssessment
+  gemmaUsage: AreaAssessment
+  worthCloserReview: bool
+  whyWorthAttention: String
+  ### Short reason shown under "also analyzed" when not surfaced.
+  whyNotSurfaced: String?
+  evidence: List<EvidenceItem>
+  highlights: List<Highlight>
+indexes:
+  submission_analysis_version_idx:
+    fields: submissionId, promptVersion
+    unique: true

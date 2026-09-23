@@ -1,0 +1,137 @@
+[
+  {
+    "slug": "crowdwork-copilot",
+    "summary": "Text-based audience simulator: three personas react to a stand-up bit so a comedian can revise it. Runs as a Gradio notebook on Kaggle.",
+    "technical": {"score": 3, "note": "Gradio notebook with few-shot prompting on an instruction-tuned Gemma 2B; no packaged app. The GitHub README is title-only, so the notebook is the only artifact to read."},
+    "demonstration": {"score": 2, "note": "No demo video. The Kaggle notebook is runnable, but there is nothing to watch; a judge has to execute it."},
+    "idea": {"score": 4, "note": "A clear, useful loop for comedians: write a bit, get persona-specific reactions, revise."},
+    "gemmaUsage": {"score": 3, "note": "Gemma 2B with few-shot persona prompts. Real, but a thin integration."},
+    "worthCloserReview": false,
+    "whyWorthAttention": "A practical comedian tool with a clear loop, but everything a judge can verify lives inside one notebook.",
+    "whyNotSurfaced": "No demo video and a title-only README; the notebook is the only evidence and has to be run.",
+    "evidence": [
+      {"source": "description", "detail": "Writeup: three audience personas return structured reactions and feedback to a stand-up bit.", "ref": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784121414897"},
+      {"source": "repo", "detail": "README.md contains only the project title; no setup, architecture or model notes.", "ref": "https://github.com/alphago-master/Crowdwork-Copilot"},
+      {"source": "description", "detail": "The demo is a Kaggle notebook (Gradio), not a video.", "ref": "https://kaggle.com/code/srchancary/crowdwork-copilot"}
+    ],
+    "highlights": []
+  },
+  {
+    "slug": "humor-genome-studio",
+    "summary": "Browser-only workbench with six humor tools (Joke Copilot, Explanation Engine, Cultural Translator, Improv Partner, Tight 5 Generator, Genome Lab) sharing one Gemma pipeline.",
+    "technical": {"score": 5, "note": "React 18 + TypeScript + Vite app with no backend. A shared six-stage pipeline (Assemble → Generate → Validate → Auto-Repair → Critic Pass → Render) with JSON-schema validation, retry with backoff and fallback model chains, documented in DOCS/ and implemented under app/src/."},
+    "demonstration": {"score": 5, "note": "The demo video walks through the tool grid, Joke Copilot with Studio Controls open, Cultural Translator output and the Genome Lab radar. The product is visibly working end to end."},
+    "idea": {"score": 4, "note": "Treats humor as a set of instruments in one lab. Broad, but coherent."},
+    "gemmaUsage": {"score": 4, "note": "Gemma (e.g. gemma-4-31b-it) is selectable in Studio Controls and every module routes through the same structured-prompt pipeline. The README also lists Gemini models, so Gemma is central but not exclusive."},
+    "worthCloserReview": true,
+    "whyWorthAttention": "Six working tools on one documented Gemma pipeline, with the validate / repair / critic stages visible in both the repo and the demo.",
+    "whyNotSurfaced": null,
+    "evidence": [
+      {"source": "video", "detail": "Tool grid, then Joke Copilot with Studio Controls showing the selected Gemma model and generation settings.", "ref": "t=36"},
+      {"source": "video", "detail": "Cultural Translator returns a localized joke.", "ref": "t=60"},
+      {"source": "video", "detail": "Pipeline stages Assemble / Validate / Auto-repair / Critic pass shown on screen.", "ref": "t=100"},
+      {"source": "repo", "detail": "README: six-stage pipeline with schema validation, backoff retries and a fallback model chain; code under app/src/.", "ref": "https://github.com/yadav-aryan18/humor-genome-nyc-kaggle"},
+      {"source": "repo", "detail": "README: model selection includes gemma-4-31b-it via the Google AI Studio REST API.", "ref": "https://github.com/yadav-aryan18/humor-genome-nyc-kaggle"}
+    ],
+    "highlights": [
+      {"startSec": 36, "endSec": 54, "whatIsShown": "Tool grid, then Joke Copilot generating with Studio Controls open.", "whyItMatters": "Shows the modular workbench and the Gemma model settings in use."},
+      {"startSec": 60, "endSec": 72, "whatIsShown": "Cultural Translator output.", "whyItMatters": "A second tool producing structured results."},
+      {"startSec": 84, "endSec": 96, "whatIsShown": "Genome Lab radar.", "whyItMatters": "Analysis, not just generation."},
+      {"startSec": 100, "endSec": 108, "whatIsShown": "Pipeline stage list.", "whyItMatters": "Matches the README's validate / repair / critic claims."}
+    ]
+  },
+  {
+    "slug": "killjoy",
+    "summary": "Paste a meme link, upload a screenshot or pick a sample; one multimodal Gemma call returns the mechanism, a playful explanation, the cultural reference, the likely audience and a 'funniness lost in translation' score.",
+    "technical": {"score": 4, "note": "Small, clean FastAPI backend with the prompt and JSON schema in backend/humor_engine.py and backend/schemas.py; static frontend; a smoke-test script for the Gemma API; mock fallback so the demo never crashes."},
+    "demonstration": {"score": 5, "note": "The demo video shows the real flow: pick a sample, Gemma thinks, the five-field explanation renders with the 20% funniness-lost bar."},
+    "idea": {"score": 4, "note": "Narrow and sharp: explain why it's funny without killing it. The self-aware score is a nice touch."},
+    "gemmaUsage": {"score": 5, "note": "Gemma does the whole job in one multimodal call (image in, five structured fields out). Model IDs are explicit in the README."},
+    "worthCloserReview": true,
+    "whyWorthAttention": "A focused, fully working humor-understanding tool where Gemma's multimodal call is the product, shown end to end on video.",
+    "whyNotSurfaced": null,
+    "evidence": [
+      {"source": "video", "detail": "Sample meme selected, Gemma 'thinking' state, then the structured result.", "ref": "t=66"},
+      {"source": "video", "detail": "Result card: mechanism, cultural reference (Distracted Boyfriend), likely audience, funniness lost 20%.", "ref": "t=74"},
+      {"source": "repo", "detail": "backend/humor_engine.py builds the single multimodal call to gemma-4-31b-it; backend/schemas.py defines the five output fields.", "ref": "https://github.com/Mussliadii/Killjoy"},
+      {"source": "repo", "detail": "scripts/smoke_test_gemma.py validates API access; data/samples/ ships four demo images.", "ref": "https://github.com/Mussliadii/Killjoy"},
+      {"source": "description", "detail": "Writeup: explains mechanism, cultural reference, audience and the cost of explaining.", "ref": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/killjoy-the-ai-that-explains-why-its-funny"}
+    ],
+    "highlights": [
+      {"startSec": 42, "endSec": 54, "whatIsShown": "Image link / upload / sample input UI.", "whyItMatters": "The three input paths the README documents."},
+      {"startSec": 66, "endSec": 84, "whatIsShown": "Gemma thinking, then the explanation result.", "whyItMatters": "The core loop working on a real meme."}
+    ]
+  },
+  {
+    "slug": "laughlens-platform",
+    "summary": "A humor-intelligence platform concept: generate jokes, evaluate humor quality, examine setup / surprise / timing / audience patterns.",
+    "technical": {"score": 1, "note": "No repository or code linked; nothing to inspect beyond the writeup."},
+    "demonstration": {"score": 1, "note": "No demo video, notebook or live site."},
+    "idea": {"score": 3, "note": "Broad research framing of humor intelligence; overlaps with several other entries."},
+    "gemmaUsage": {"score": 1, "note": "The writeup says Gemma powers the platform but does not document how."},
+    "worthCloserReview": false,
+    "whyWorthAttention": "A concept without verifiable artifacts.",
+    "whyNotSurfaced": "No repo, no demo, and the Gemma integration is asserted but not documented.",
+    "evidence": [
+      {"source": "description", "detail": "The writeup presents the platform and its evaluation dimensions without linking code or a demo.", "ref": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784731757734"}
+    ],
+    "highlights": []
+  },
+  {
+    "slug": "laughlensai",
+    "summary": "Text-joke analysis that visualizes nine structural dimensions as a 'humor genome' radar and compares Gemma's reading with anonymous human ratings.",
+    "technical": {"score": 4, "note": "Next.js App Router + TypeScript; Zod-validated model output behind one analyzeHumor() boundary; Recharts radar; Vitest. Ratings live in a file-backed JSON store (MVP)."},
+    "demonstration": {"score": 3, "note": "Live site and repo, but no demo video. The README warns that demo mode (no key) uses labeled heuristics rather than Gemma."},
+    "idea": {"score": 4, "note": "Treats the model's reading as a hypothesis to test against humans. An unusual, honest framing."},
+    "gemmaUsage": {"score": 4, "note": "gemma-4-26b-a4b-it via Google's API with schema-validated JSON across nine dimensions."},
+    "worthCloserReview": false,
+    "whyWorthAttention": "Thoughtful hypothesis-vs-human framing with a real Gemma integration, but nothing recorded to watch.",
+    "whyNotSurfaced": "No demo video; verifying the live site needs a Gemma key, otherwise it runs in heuristic demo mode.",
+    "evidence": [
+      {"source": "repo", "detail": "README: gemma-4-26b-a4b-it via analyzeHumor() with schema-validated output across nine humor dimensions.", "ref": "https://github.com/sairam782/laughlens"},
+      {"source": "repo", "detail": "Human ratings stored in data/laughlens-store.json; agreement = 100 − |delta|.", "ref": "https://github.com/sairam782/laughlens"},
+      {"source": "description", "detail": "Live site linked from the writeup.", "ref": "https://abhigaduputi.vercel.app/"}
+    ],
+    "highlights": []
+  },
+  {
+    "slug": "room-sense-text",
+    "summary": "A clonable Kaggle notebook: one joke, four simulated audiences, an explanation of structure and risks, and a rewrite for the coldest room.",
+    "technical": {"score": 3, "note": "Runs Gemma 4 locally through llama.cpp inside a notebook; no app or repo beyond the notebook."},
+    "demonstration": {"score": 2, "note": "No video; the notebook has to be run to see output."},
+    "idea": {"score": 4, "note": "Makes audience context, and disagreement about the same joke, visible in a compact experiment."},
+    "gemmaUsage": {"score": 4, "note": "Gemma 4 via llama.cpp does all three tasks: reactions, explanation, rewrite."},
+    "worthCloserReview": false,
+    "whyWorthAttention": "A tight experiment with real local Gemma inference, limited to a notebook.",
+    "whyNotSurfaced": "Notebook-only: no video or app to watch; a judge has to execute it.",
+    "evidence": [
+      {"source": "description", "detail": "Writeup: four personas react, then a rewrite for a selected colder audience.", "ref": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784903515323"},
+      {"source": "description", "detail": "The demo is the Kaggle notebook room-sense-text-gemma4.", "ref": "https://www.kaggle.com/code/simingtan/room-sense-text-gemma4"}
+    ],
+    "highlights": []
+  },
+  {
+    "slug": "why-they-laugh",
+    "summary": "Upload a stand-up clip or paste a bit: measured audience laughter is compared with Gemma's predicted beats, producing timestamped notes, a humor-genome radar and audience-fit verdicts.",
+    "technical": {"score": 5, "note": "Streamlit app with a real signal-processing component: humor_genome/laughter.py detects laugh bursts from extracted audio and video.py samples frames via ffmpeg, feeding Gemma's structured decomposition in engine.py."},
+    "demonstration": {"score": 5, "note": "The video shows a real clip analyzed: laugh timeline with detected regions, 'predicted vs. actual' beats, what worked / what fell flat, then the radar and audience fit."},
+    "idea": {"score": 5, "note": "Grounds the model's theory of a joke in measured laughter. The only entry that tests Gemma against an actual audience."},
+    "gemmaUsage": {"score": 4, "note": "gemma3 (4B–27B) does decomposition, audience simulation and rewriting; gemma3n is optional for audio/video. Measured laughter is classical signal processing, not the model."},
+    "worthCloserReview": true,
+    "whyWorthAttention": "Combines measured audience laughter with Gemma's beat predictions and shows the comparison working on a real clip.",
+    "whyNotSurfaced": null,
+    "evidence": [
+      {"source": "video", "detail": "Clip stats (28 s, 3 laughs), then the laugh timeline with detected regions.", "ref": "t=44"},
+      {"source": "video", "detail": "'Predicted vs. actual — the AI's theory, tested against reality' with what worked / what fell flat.", "ref": "t=62"},
+      {"source": "video", "detail": "Humor genome radar and audience-fit bars.", "ref": "t=96"},
+      {"source": "repo", "detail": "humor_genome/laughter.py: laugh-burst detection from audio; humor_genome/video.py: ffmpeg frame and audio extraction.", "ref": "https://github.com/venvennnn/humor_genome_kaggle"},
+      {"source": "repo", "detail": "README: gemma3 4B / 12B / 27B for decomposition, audience simulation and rewriting; gemma3n optional.", "ref": "https://github.com/venvennnn/humor_genome_kaggle"}
+    ],
+    "highlights": [
+      {"startSec": 18, "endSec": 30, "whatIsShown": "Uploaded stand-up clip playing with captions.", "whyItMatters": "Real input, not a toy."},
+      {"startSec": 44, "endSec": 62, "whatIsShown": "Stats, laugh timeline, predicted vs. actual.", "whyItMatters": "The core comparison working."},
+      {"startSec": 66, "endSec": 78, "whatIsShown": "What worked / fell flat, beat-by-beat improvements.", "whyItMatters": "Actionable output for performers."},
+      {"startSec": 96, "endSec": 108, "whatIsShown": "Humor genome radar and audience fit.", "whyItMatters": "Structured decomposition."}
+    ]
+  }
+]

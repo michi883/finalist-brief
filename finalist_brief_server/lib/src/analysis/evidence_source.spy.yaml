@@ -1,0 +1,6 @@
+### Where a piece of evidence was found.
+enum: EvidenceSource
+values:
+  - description
+  - repo
+  - video

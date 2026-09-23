@@ -1,0 +1,9 @@
+enum: BriefStatus
+values:
+  - queued
+  - analyzing
+  - selecting
+  - scripting
+  - rendering
+  - complete
+  - failed

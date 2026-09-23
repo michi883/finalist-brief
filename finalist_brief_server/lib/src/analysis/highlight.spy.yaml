@@ -1,0 +1,7 @@
+### A window in the demo video worth watching.
+class: Highlight
+fields:
+  startSec: int
+  endSec: int
+  whatIsShown: String
+  whyItMatters: String

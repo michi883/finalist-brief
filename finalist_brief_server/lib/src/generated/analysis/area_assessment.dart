@@ -1,0 +1,93 @@
+/* AUTOMATICALLY GENERATED CODE DO NOT MODIFY */
+/*   To generate run: "serverpod generate"    */
+
+// ignore_for_file: implementation_imports
+// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: public_member_api_docs
+// ignore_for_file: type_literal_in_constant_pattern
+// ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
+
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:serverpod/serverpod.dart' as _is;
+
+/// Assessment of one fixed evaluation area.
+abstract class AreaAssessment
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  AreaAssessment._({
+    required this.score,
+    required this.note,
+  });
+
+  factory AreaAssessment({
+    required int score,
+    required String note,
+  }) = _AreaAssessmentImpl;
+
+  factory AreaAssessment.fromJson(Map<String, dynamic> jsonSerialization) {
+    return AreaAssessment(
+      score: jsonSerialization['score'] as int,
+      note: jsonSerialization['note'] as String,
+    );
+  }
+
+  /// 1-5, used only for server-side selection; never shown as a number.
+  int score;
+
+  String note;
+
+  /// Returns a shallow copy of this [AreaAssessment]
+  /// with some or all fields replaced by the given arguments.
+  @_is.useResult
+  AreaAssessment copyWith({
+    int? score,
+    String? note,
+  });
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      '__className__': 'AreaAssessment',
+      'score': score,
+      'note': note,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'AreaAssessment',
+      'score': score,
+      'note': note,
+    };
+  }
+
+  @override
+  String toString() {
+    return _is.SerializationManager.encode(this);
+  }
+}
+
+class _AreaAssessmentImpl extends AreaAssessment {
+  _AreaAssessmentImpl({
+    required int score,
+    required String note,
+  }) : super._(
+         score: score,
+         note: note,
+       );
+
+  /// Returns a shallow copy of this [AreaAssessment]
+  /// with some or all fields replaced by the given arguments.
+  @_is.useResult
+  @override
+  AreaAssessment copyWith({
+    int? score,
+    String? note,
+  }) {
+    return AreaAssessment(
+      score: score ?? this.score,
+      note: note ?? this.note,
+    );
+  }
+}

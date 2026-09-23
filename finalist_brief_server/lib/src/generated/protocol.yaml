@@ -1,0 +1,9 @@
+analysis:
+  - list:
+  - forSubmission:
+brief:
+  - generate:
+  - get:
+  - latestComplete:
+submission:
+  - list:

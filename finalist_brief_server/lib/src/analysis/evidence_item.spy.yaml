@@ -1,0 +1,7 @@
+### A concrete, checkable piece of evidence behind an assessment.
+class: EvidenceItem
+fields:
+  source: EvidenceSource
+  detail: String
+  ### A URL, a repo path, or "t=<seconds>" for a video timestamp.
+  ref: String?

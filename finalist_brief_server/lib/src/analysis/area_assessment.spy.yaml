@@ -1,0 +1,6 @@
+### Assessment of one fixed evaluation area.
+class: AreaAssessment
+fields:
+  ### 1-5, used only for server-side selection; never shown as a number.
+  score: int
+  note: String

@@ -1,0 +1,16 @@
+### A finalist briefing run and its result.
+class: Brief
+table: brief
+fields:
+  status: BriefStatus
+  mode: BriefMode
+  progressPercent: int
+  progressMessage: String
+  stageLog: List<String>
+  submissionCount: int
+  ### Exactly three when complete.
+  segments: List<BriefSegment>?
+  videoUrl: String?
+  videoDurationSec: int?
+  createdAt: DateTime
+  completedAt: DateTime?

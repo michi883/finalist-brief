@@ -1,0 +1,404 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "createTable",
+      "createTable": {
+        "__className__": "serverpod.TableDefinition",
+        "name": "brief",
+        "dartName": "Brief",
+        "module": "finalist_brief",
+        "schema": "public",
+        "columns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "id",
+            "fieldName": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "serial",
+            "dartType": "int?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "status",
+            "fieldName": "status",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:BriefStatus"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "mode",
+            "fieldName": "mode",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:BriefMode"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "progressPercent",
+            "fieldName": "progressPercent",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "progressMessage",
+            "fieldName": "progressMessage",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "stageLog",
+            "fieldName": "stageLog",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "List<String>"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "submissionCount",
+            "fieldName": "submissionCount",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "segments",
+            "fieldName": "segments",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:BriefSegment>?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "videoUrl",
+            "fieldName": "videoUrl",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "videoDurationSec",
+            "fieldName": "videoDurationSec",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "createdAt",
+            "fieldName": "createdAt",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "completedAt",
+            "fieldName": "completedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [],
+        "managed": true
+      }
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "createTable",
+      "createTable": {
+        "__className__": "serverpod.TableDefinition",
+        "name": "submission",
+        "dartName": "Submission",
+        "module": "finalist_brief",
+        "schema": "public",
+        "columns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "id",
+            "fieldName": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "serial",
+            "dartType": "int?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "slug",
+            "fieldName": "slug",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "title",
+            "fieldName": "title",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "creator",
+            "fieldName": "creator",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "summary",
+            "fieldName": "summary",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "gemmaUse",
+            "fieldName": "gemmaUse",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "kaggleUrl",
+            "fieldName": "kaggleUrl",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "repoUrl",
+            "fieldName": "repoUrl",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "demoUrl",
+            "fieldName": "demoUrl",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "hasDemoVideo",
+            "fieldName": "hasDemoVideo",
+            "columnType": 1,
+            "isNullable": false,
+            "dartType": "bool"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "coverAsset",
+            "fieldName": "coverAsset",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "sortOrder",
+            "fieldName": "sortOrder",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "submission__slug__unique_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "slug"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "createTable",
+      "createTable": {
+        "__className__": "serverpod.TableDefinition",
+        "name": "submission_analysis",
+        "dartName": "SubmissionAnalysis",
+        "module": "finalist_brief",
+        "schema": "public",
+        "columns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "id",
+            "fieldName": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "serial",
+            "dartType": "int?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "submissionId",
+            "fieldName": "submissionId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "promptVersion",
+            "fieldName": "promptVersion",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "summary",
+            "fieldName": "summary",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "technical",
+            "fieldName": "technical",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "protocol:AreaAssessment"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "demonstration",
+            "fieldName": "demonstration",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "protocol:AreaAssessment"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "idea",
+            "fieldName": "idea",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "protocol:AreaAssessment"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "gemmaUsage",
+            "fieldName": "gemmaUsage",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "protocol:AreaAssessment"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "worthCloserReview",
+            "fieldName": "worthCloserReview",
+            "columnType": 1,
+            "isNullable": false,
+            "dartType": "bool"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "whyWorthAttention",
+            "fieldName": "whyWorthAttention",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "whyNotSurfaced",
+            "fieldName": "whyNotSurfaced",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "evidence",
+            "fieldName": "evidence",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "List<protocol:EvidenceItem>"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "highlights",
+            "fieldName": "highlights",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "List<protocol:Highlight>"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "__className__": "serverpod.ForeignKeyDefinition",
+            "constraintName": "submission_analysis_fk_0",
+            "columns": [
+              "submissionId"
+            ],
+            "referenceTable": "submission",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "submission_analysis_version_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "submissionId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "promptVersion"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

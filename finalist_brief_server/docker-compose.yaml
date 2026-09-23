@@ -1,0 +1,30 @@
+services:
+  # Development services
+  postgres:
+    image: ghcr.io/serverpod/postgres:16
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: finalist_brief
+      POSTGRES_PASSWORD: "LfsEkbDrajcols84XszltwqaMHGElu_q"
+    volumes:
+      - finalist_brief_data:/var/lib/postgresql/data
+
+
+  # Test services
+  postgres_test:
+    image: ghcr.io/serverpod/postgres:16
+    ports:
+      - "9090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: finalist_brief_test
+      POSTGRES_PASSWORD: "nXa79ulDtfxXLZkxHBuuDT09G7u93YPi"
+    volumes:
+      - finalist_brief_test_data:/var/lib/postgresql/data
+
+
+volumes:
+  finalist_brief_data:
+  finalist_brief_test_data:

@@ -1,0 +1,83 @@
+{
+  "videoFile": "humor-genome-golden.mp4",
+  "videoDurationSec": 89,
+  "intro": "Finalist Brief: Humor Genome, Build with Gemma. Seven submissions, analyzed on implementation, demonstration, idea, and Gemma usage. Three are worth your closer review. Here's why, with evidence from their own demos.",
+  "outro": "The evidence behind each pick is one tap away in the app, along with the four other submissions that were analyzed.",
+  "segments": [
+    {
+      "position": 1,
+      "slug": "why-they-laugh",
+      "whySurfaced": "Measures real audience laughter and tests it against Gemma's predicted beats, on video, with the signal-processing code in the repo.",
+      "clipStartSec": 44,
+      "clipEndSec": 62,
+      "narration": "Why'd They Laugh? measures real audience laughter from a stand-up clip and lines it up against Gemma's predicted beats. On screen: the laugh timeline, then predicted versus actual. The repo's laughter detector is real signal processing, not the model.",
+      "evidence": [
+        {
+          "source": "video",
+          "detail": "Clip stats (28 s, 3 laughs), then the laugh timeline with detected regions.",
+          "ref": "t=44"
+        },
+        {
+          "source": "video",
+          "detail": "'Predicted vs. actual — the AI's theory, tested against reality' with what worked / what fell flat.",
+          "ref": "t=62"
+        },
+        {
+          "source": "repo",
+          "detail": "humor_genome/laughter.py: laugh-burst detection from audio; video.py: ffmpeg frame and audio extraction.",
+          "ref": "https://github.com/venvennnn/humor_genome_kaggle"
+        }
+      ]
+    },
+    {
+      "position": 2,
+      "slug": "humor-genome-studio",
+      "whySurfaced": "Six working tools on one documented Gemma pipeline; the validate / repair / critic stages appear in both the README and the demo.",
+      "clipStartSec": 36,
+      "clipEndSec": 54,
+      "narration": "Humor Genome Studio puts six humor tools on one Gemma pipeline. Here, the Joke Copilot runs with the Gemma model selected in Studio Controls. The repo documents validate, auto-repair, and critic stages, and the demo shows them working.",
+      "evidence": [
+        {
+          "source": "video",
+          "detail": "Tool grid, then Joke Copilot with Studio Controls showing the selected Gemma model.",
+          "ref": "t=36"
+        },
+        {
+          "source": "video",
+          "detail": "Pipeline stages Assemble / Validate / Auto-repair / Critic pass shown on screen.",
+          "ref": "t=100"
+        },
+        {
+          "source": "repo",
+          "detail": "README: six-stage pipeline with schema validation, backoff retries and a fallback model chain; gemma-4-31b-it selectable.",
+          "ref": "https://github.com/yadav-aryan18/humor-genome-nyc-kaggle"
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "slug": "killjoy",
+      "whySurfaced": "A single multimodal Gemma call is the whole product, and the demo shows it working end to end on a real meme.",
+      "clipStartSec": 66,
+      "clipEndSec": 84,
+      "narration": "Killjoy explains why a meme is funny in a single multimodal Gemma call. Watch a sample meme go in and five structured fields come out: mechanism, cultural reference, audience, and a self-aware funniness-lost score. The model IDs are explicit in the repo.",
+      "evidence": [
+        {
+          "source": "video",
+          "detail": "Sample meme selected, Gemma 'thinking' state, then the structured result.",
+          "ref": "t=66"
+        },
+        {
+          "source": "video",
+          "detail": "Result card: mechanism, cultural reference (Distracted Boyfriend), likely audience, funniness lost 20%.",
+          "ref": "t=74"
+        },
+        {
+          "source": "repo",
+          "detail": "backend/humor_engine.py builds the single multimodal call to gemma-4-31b-it; schemas.py defines the five fields.",
+          "ref": "https://github.com/Mussliadii/Killjoy"
+        }
+      ]
+    }
+  ]
+}

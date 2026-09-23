@@ -1,0 +1,12 @@
+### One surfaced project inside a briefing, in playback order.
+class: BriefSegment
+fields:
+  position: int
+  submissionId: int
+  slug: String
+  title: String
+  whySurfaced: String
+  evidence: List<EvidenceItem>
+  clipStartSec: int
+  clipEndSec: int
+  narration: String

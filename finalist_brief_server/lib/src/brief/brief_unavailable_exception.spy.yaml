@@ -1,0 +1,4 @@
+### Thrown when a requested brief mode cannot run (e.g. live mode in Phase 1).
+exception: BriefUnavailableException
+fields:
+  message: String

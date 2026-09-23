@@ -1,0 +1,5 @@
+### replay walks cached data; live is reserved for the Phase 2 pipeline.
+enum: BriefMode
+values:
+  - replay
+  - live

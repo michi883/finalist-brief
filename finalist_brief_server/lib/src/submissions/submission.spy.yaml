@@ -1,0 +1,21 @@
+### One hackathon submission from the fixed Humor Genome dataset.
+class: Submission
+table: submission
+fields:
+  ### Stable key used for cache files, cover assets and fixture lookups.
+  slug: String, unique
+  title: String
+  creator: String
+  ### One-line description from the writeup.
+  summary: String
+  ### How the writeup says Gemma is used.
+  gemmaUse: String
+  kaggleUrl: String
+  repoUrl: String?
+  ### YouTube video, Kaggle notebook or live site, whichever the writeup links.
+  demoUrl: String?
+  ### True when demoUrl is an actual video the briefing can cut from.
+  hasDemoVideo: bool
+  ### File name of the cover image bundled with the Flutter app.
+  coverAsset: String
+  sortOrder: int
