@@ -349,10 +349,15 @@ void main() {
     expect(competition.projects.map((p) => p.id).toSet(), {
       'a3-artificial-assistant-for-anything',
       'astrea',
+      'azad-the-community-driven-riding-assistant-for-bikers',
+      'blood-health-tracker',
+      'bookbutler',
       'btlr-2xcw9f',
       'butler-xlrjsp',
       'butlrapp',
+      'codi-mobile-butler-for-building-apps-automating-the-web',
       'contextual-lifeflow-butler',
+      'cuecard',
       'daypilot-qv2drx',
       'doby-rna2yf',
       'elderly-j462fy',
@@ -364,11 +369,13 @@ void main() {
       'lume-zero',
       'mamacare-ufjnk7',
       'merlin-0lhx6z',
+      'naggy',
       'recodiary',
       'road-trip-butler',
       'root-radar',
       'scriptly-jpmr47',
       'social-fabric',
+      'symptomscribe',
       'the-bolt-chef',
       'vigil-the-high-stakes-compliance-butler',
     });
@@ -384,11 +391,15 @@ void main() {
     for (final p in competition.projects) {
       expect(triage.byId(p.id), isNotNull);
       expect(p.questions, isNotEmpty, reason: p.id);
-      expect(
-        p.sources['repo']!.revision,
-        triage.byId(p.id)!.repo!.snapshotSha,
-        reason: 'Repository links pin the deadline snapshot',
-      );
+      // Repositories that were private, missing or unlinked leave no source.
+      final repo = p.sources['repo'];
+      if (repo != null) {
+        expect(
+          repo.revision,
+          triage.byId(p.id)!.repo!.snapshotSha,
+          reason: 'Repository links pin the deadline snapshot',
+        );
+      }
       for (final lens in SubmissionLens.values) {
         for (final n in p.graph(lens).nodes) {
           final evidence = n.evidence!;
@@ -469,6 +480,13 @@ void main() {
         'butlrapp',
         'the-bolt-chef',
         'mamacare-ufjnk7',
+        'naggy',
+        'blood-health-tracker',
+        'codi-mobile-butler-for-building-apps-automating-the-web',
+        'cuecard',
+        'symptomscribe',
+        'bookbutler',
+        'azad-the-community-driven-riding-assistant-for-bikers',
       ],
     );
   });

@@ -24,7 +24,7 @@ import json
 import sys
 
 from common import (
-    ASSET, ClaudeSession, SessionDiverged, ask, load_stage, read_json, route,
+    ASSET, TRIAGE_ASSET, ClaudeSession, SessionDiverged, ask, load_stage, read_json, route,
     stage_path, write_json,
 )
 import ground
@@ -149,7 +149,9 @@ must be a node) and citations.
 7. dimensions: descriptive placement in the Competition View, each a value \
 from 0 to 1 with a one-line note stating the fact behind it. Place this \
 submission relative to the other reviewed submissions given below; these \
-are positions, not merit. ideaDistinctiveness: how unusual the concept's \
+are positions, not merit. The reviewed submissions are only part of the \
+field, so never call this submission the only one of its kind: compare \
+with them in words like "among reviewed entries". ideaDistinctiveness: how unusual the concept's \
 structure is within this field. integrationDepth: how much working \
 implementation stands behind the idea. sponsorCentrality: how much of the \
 core function depends on the sponsor technology (Serverpod). \
@@ -300,6 +302,11 @@ def field_context(sid):
             *([f'  Question: {q["question"]}', f'  Basis: {q["basis"]}'] if q else []),
         ]))
     return '\n'.join(placements), '\n'.join(phrases)
+
+
+def field_size():
+    """How many submissions the field has, from the triage asset."""
+    return read_json(TRIAGE_ASSET)['hackathon']['fieldSize']
 
 
 def link_facts(sources):
@@ -503,8 +510,25 @@ def facts_text(sources, facts, extract):
                                    if facts['notShown'] else '')
                      + outlines_text(facts))
     else:
-        parts.append(f'# Repository\nNot available: {facts.get("status")}')
+        parts.append('# Repository\n' + repo_unavailable_text(sources['repo']))
     return '\n\n'.join(parts)
+
+
+def repo_unavailable_text(repo):
+    """Why no code is available, in words a review can repeat. The code was
+    not seen, which says nothing about what it contains."""
+    status = repo.get('status')
+    reason = {
+        'notLinked': 'No repository is linked on the submission page.',
+        'notFound': (f'The linked repository ({repo.get("url")}) returned HTTP 404 to an '
+                     f'anonymous check{" on " + repo["checked"] if repo.get("checked") else ""}. '
+                     'It may be private (for example shared only with the organisers) or '
+                     'deleted; it cannot be told which.'),
+        'noCommitBeforeDeadline': 'The linked repository has no commit before the deadline.',
+    }.get(status, f'Not available ({status}).')
+    return (reason + ' No code was seen. Do not cite code, do not use the status '
+            'foundInCode, and do not say that any code, feature or file is absent: '
+            'say it could not be checked.')
 
 
 def main(sid):
@@ -515,7 +539,9 @@ def main(sid):
     print(f'· generating {sid}')
     context = '\n\n'.join([
         facts_text(sources, facts, extract),
-        '# Other reviewed submissions in this field (for placement only)\n' + placements,
+        f'# Other reviewed submissions ({placements.count(chr(10)) + 1} of the {field_size()} in '
+        'this field; the rest were not reviewed, so these are not the whole field. '
+        'For placement only)\n' + placements,
         '# Tone and length examples\nPhrases from reviews of OTHER submissions, '
         'with different structures. Match their plainness and length; do not '
         'reuse their shapes or wording.\n' + phrases,

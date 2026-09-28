@@ -14697,6 +14697,4139 @@
      ]
     }
    ]
+  },
+  {
+   "id": "naggy",
+   "title": "Naggy",
+   "creator": "Connie Li",
+   "summary": "You add a task by form or chat, the server phones you at the set time, and a separate voice session keeps you company and notes side tasks.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 1
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/naggy"
+    },
+    "repo": {
+     "kind": "repo",
+     "label": "GitHub repository",
+     "url": "https://github.com/lishiyo/naggy-demo",
+     "rev": "a3538def5c05"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=ceZED9ji6tI"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.62,
+     "note": "Phone nag calls plus a voice body double for ADHD. Among reviewed entries, Phone AI also places calls, and productivity is common."
+    },
+    "integrationDepth": {
+     "value": 0.82,
+     "note": "81 endpoint methods, 19 migrations and 1,866 test cases. The body-double session works in the demo; the call-placing code is not in the excerpts."
+    },
+    "sponsorCentrality": {
+     "value": 0.84,
+     "note": "Tasks, future-call scheduling, the Retell webhook, LiveKit sessions, agent endpoints and phone auth all run on Serverpod."
+    },
+    "sponsorEvidence": {
+     "value": 0.72,
+     "note": "All app calls trace to endpoints and the future calls are registered. The demo's call path cannot be traced to frames."
+    }
+   },
+   "idea": {
+    "topology": "flow",
+    "description": "Tasks become scheduled nag calls; a voice body double helps with harder tasks.",
+    "nodes": [
+     {
+      "id": "you",
+      "label": "You",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "The writeup says the user adds tasks by chatting with Naggy.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“You add tasks by chatting naturally with Naggy”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "chat",
+      "label": "Chat with Naggy",
+      "kind": "surface",
+      "evidence": {
+       "status": "described",
+       "note": "The team says OpenAI turns chat messages into task proposals.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“parsing chat messages into task proposals”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "call",
+      "label": "Nag phone call",
+      "kind": "external",
+      "evidence": {
+       "status": "described",
+       "note": "The team says Naggy calls your phone at the task time.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“When the time comes, Naggy actually calls your phone.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "reply",
+      "label": "Voice snooze or done",
+      "kind": "signal",
+      "evidence": {
+       "status": "described",
+       "note": "The team says you snooze, reschedule or finish a task by talking.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“You can snooze, reschedule, or mark it done, all through natural conversation.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "bodydouble",
+      "label": "Body double call",
+      "kind": "model",
+      "detail": "Custom personality",
+      "evidence": {
+       "status": "described",
+       "note": "The team says Naggy joins a voice call while you work, with a personality you choose.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Tap the \"Body Double\" button and Naggy joins you on a voice call”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“from gentle encourager to drill sergeant”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "scratchpad",
+      "label": "Scratchpad",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "The team says stray thoughts said during a session go to a scratchpad.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“adds them to a scratchpad so nothing slips away”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "you",
+      "to": "chat",
+      "label": "adds task"
+     },
+     {
+      "from": "chat",
+      "to": "call",
+      "label": "schedules"
+     },
+     {
+      "from": "call",
+      "to": "reply"
+     },
+     {
+      "from": "reply",
+      "to": "call",
+      "kind": "feedback",
+      "label": "call back later"
+     },
+     {
+      "from": "you",
+      "to": "bodydouble",
+      "label": "taps button"
+     },
+     {
+      "from": "bodydouble",
+      "to": "scratchpad",
+      "label": "stray thoughts"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "flow",
+    "description": "Serverpod endpoints schedule calls, process Retell webhooks and run LiveKit sessions.",
+    "nodes": [
+     {
+      "id": "app",
+      "label": "Flutter app",
+      "kind": "surface",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The session screen shows a timer, a scratchpad tab and a transcript of the spoken exchange.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 66
+        },
+        {
+         "source": "video",
+         "t": 76
+        },
+        {
+         "source": "video",
+         "t": 81
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/naggy-66.jpg",
+        "source": "video",
+        "t": 66
+       }
+      }
+     },
+     {
+      "id": "taskep",
+      "label": "Task endpoint",
+      "kind": "transformation",
+      "detail": "Schedules a call",
+      "evidence": {
+       "status": "foundInCode",
+       "note": "createTask inserts the task on the server and schedules a call through CallOrchestrator.",
+       "refs": [
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/task_endpoint.dart#L26-L77",
+         "detail": "final futureCallId = await CallOrchestrator.scheduleCall("
+        }
+       ]
+      }
+     },
+     {
+      "id": "retell",
+      "label": "Retell phone call",
+      "kind": "external",
+      "detail": "Not in excerpts",
+      "evidence": {
+       "status": "described",
+       "note": "The narration says Retell places the call. The call-placing code (call_orchestrator.dart) is not in the excerpts.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 131,
+         "detail": "narration: “retell place the call listens to the web”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Retell AI places the actual phone calls and handles voice interaction.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "webhook",
+      "label": "Retell webhook",
+      "kind": "transformation",
+      "detail": "After hangup",
+      "evidence": {
+       "status": "foundInCode",
+       "note": "The app never calls it; it serves Retell. call_ended parses the transcript and runs the intent; snooze defaults to 15 min.",
+       "refs": [
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L286-L297",
+         "detail": "return await _handleCallEnded(session, task, payload);"
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L575",
+         "detail": "final intent = await IntentParser.parseTranscript("
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L590",
+         "detail": "return await _executeIntent("
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L600-L617",
+         "detail": "intent.durationMinutes ?? 15,"
+        }
+       ]
+      }
+     },
+     {
+      "id": "bdep",
+      "label": "Body double endpoints",
+      "kind": "transformation",
+      "evidence": {
+       "status": "foundInCode",
+       "note": "startSession creates a LiveKit room with the session metadata and returns a user token.",
+       "refs": [
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/body_doubling_endpoint.dart#L50",
+         "detail": "await LiveKitRoomService.createRoom("
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/body_doubling_endpoint.dart#L59",
+         "detail": "token = LiveKitTokenService.generateUserToken("
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/body_doubling_endpoint.dart#L103",
+         "detail": "livekitToken: token,"
+        }
+       ]
+      }
+     },
+     {
+      "id": "agent",
+      "label": "Python voice agent",
+      "kind": "model",
+      "detail": "Not in excerpts",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "At 81 s the transcript shows Naggy replying to the spoken request. The agent's Python source is not in the excerpts.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 81
+        },
+        {
+         "source": "video",
+         "t": 91
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/naggy-81.jpg",
+        "source": "video",
+        "t": 81
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "app",
+      "to": "taskep",
+      "label": "createTask"
+     },
+     {
+      "from": "taskep",
+      "to": "retell",
+      "label": "future call",
+      "evidence": {
+       "status": "described",
+       "note": "The narration says a future call has Retell place the call. The call-placing code is not in the excerpts.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 131,
+         "detail": "narration: “that that schedules a future call has”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "retell",
+      "to": "webhook",
+      "label": "after hangup",
+      "evidence": {
+       "status": "foundInCode",
+       "note": "The app never calls this; it serves Retell. The call_ended path runs the intent, and a snooze saves the task's new time.",
+       "refs": [
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L286-L297",
+         "detail": "return await _handleCallEnded(session, task, payload);"
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L590",
+         "detail": "return await _executeIntent("
+        },
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L837-L896",
+         "detail": "await Task.db.updateRow(session, updatedTask);"
+        }
+       ]
+      }
+     },
+     {
+      "from": "webhook",
+      "to": "app",
+      "kind": "feedback",
+      "label": "polled status",
+      "evidence": {
+       "status": "described",
+       "note": "The narration says the app polls to see the task's new state. The server has no stream methods.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 137,
+         "detail": "narration: “pulling to make sure it sees that state”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "app",
+      "to": "bdep",
+      "label": "startSession"
+     },
+     {
+      "from": "bdep",
+      "to": "agent",
+      "label": "room + token",
+      "evidence": {
+       "status": "foundInCode",
+       "note": "The room metadata carries sessionId, conversationId and taskId for the agent.",
+       "refs": [
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/body_doubling_endpoint.dart#L48-L64",
+         "detail": "// Create room with metadata so agent can access session context."
+        }
+       ]
+      }
+     },
+     {
+      "from": "agent",
+      "to": "bdep",
+      "kind": "feedback",
+      "label": "scratchpad items",
+      "evidence": {
+       "status": "inferred",
+       "note": "The app never calls agentAddParkingLotItem. It is meant for the Python agent, whose code is not in the excerpts, so this link is inferred.",
+       "refs": [
+        {
+         "source": "repo",
+         "at": "naggy_ai_server/lib/src/endpoints/body_doubling_agent_endpoint.dart#L20-L24",
+         "detail": "/// These endpoints are called by the Python voice agent during active sessions"
+        },
+        {
+         "source": "video",
+         "t": 76
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "Snooze by voice → parsed after hangup",
+     "idea": [
+      "reply"
+     ],
+     "integration": [
+      "webhook"
+     ],
+     "evidence": {
+      "status": "foundInCode",
+      "note": "The app never calls this; it serves Retell webhooks. The transcript is parsed in the call_ended handler.",
+      "refs": [
+       {
+        "source": "repo",
+        "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L286-L297",
+        "detail": "case 'call_ended':"
+       },
+       {
+        "source": "repo",
+        "at": "naggy_ai_server/lib/src/endpoints/webhook_endpoint.dart#L575",
+        "detail": "final intent = await IntentParser.parseTranscript("
+       }
+      ]
+     }
+    },
+    {
+     "label": "Drill sergeant → warm/direct/encouraging",
+     "idea": [
+      "bodydouble"
+     ],
+     "integration": [
+      "agent"
+     ],
+     "evidence": {
+      "status": "foundInCode",
+      "note": "Body doubling tone accepts only warm, direct or encouraging; any other value throws an error.",
+      "refs": [
+       {
+        "source": "repo",
+        "at": "naggy_ai_server/lib/src/endpoints/user_endpoint.dart#L398-L426",
+        "detail": "/// - [tone]: warm, direct, encouraging"
+       }
+      ]
+     }
+    },
+    {
+     "label": "Stray thoughts → scratchpad note",
+     "idea": [
+      "scratchpad"
+     ],
+     "integration": [
+      "agent",
+      "bdep"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The Scratchpad tab shows a lawn-mowing note after the user mentions it by voice.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 76
+       },
+       {
+        "source": "video",
+        "t": 81
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/naggy-76.jpg",
+       "source": "video",
+       "t": 76
+      }
+     }
+    },
+    {
+     "label": "Chat creates task → proposal card",
+     "idea": [
+      "chat"
+     ],
+     "integration": [
+      "app"
+     ],
+     "evidence": {
+      "status": "foundInCode",
+      "note": "sendMessage returns the reply with any proposals. The timeline records whether a proposal was applied, edited or discarded.",
+      "refs": [
+       {
+        "source": "repo",
+        "at": "naggy_ai_server/lib/src/endpoints/assistant_endpoint.dart#L24-L73",
+        "detail": "/// Returns an [AssistantResponse] with the assistant's reply and any proposals."
+       },
+       {
+        "source": "repo",
+        "at": "naggy_ai_server/lib/src/endpoints/timeline_endpoint.dart#L49-L90",
+        "detail": "/// Records the outcome of a proposal action (applied/edited/discarded)."
+       }
+      ]
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q2",
+     "kind": "mismatch",
+     "question": "The writeup offers personalities from gentle encourager to drill sergeant, but the server accepts only warm, direct or encouraging. Where is the drill-sergeant style set?",
+     "basis": "L023 describes the range. updateBodyDoublingPreferences checks tone against validTones, and its doc comment lists warm, direct and encouraging. The Python prompts file is not in the excerpts.",
+     "anchors": [
+      {
+       "lens": "idea",
+       "node": "bodydouble"
+      },
+      {
+       "lens": "integration",
+       "node": "agent"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“from gentle encourager to drill sergeant”"
+      },
+      {
+       "source": "repo",
+       "at": "naggy_ai_server/lib/src/endpoints/user_endpoint.dart#L398-L426",
+       "detail": "/// - [tone]: warm, direct, encouraging"
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "unverified",
+     "question": "The demo phone call at 31–36 s shows a man speaking to a phone. Was that call placed by the scheduled future call, and did the task change to snoozed afterwards?",
+     "basis": "The call screen is not readable in the sampled frames, and no task list is seen after the call. The code that places the Retell call (call_orchestrator.dart, scheduled_nag_call.dart) is not in the excerpts.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "retell"
+      }
+     ],
+     "refs": [
+      {
+       "source": "video",
+       "t": 31
+      },
+      {
+       "source": "video",
+       "t": 25,
+       "detail": "narration: “schedule an actual phone call to uh bug”"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "blood-health-tracker",
+   "title": "Blood Health Tracker",
+   "creator": "Abishek Muthian",
+   "summary": "You upload blood test reports and enter your conditions and medications; the app lists parameters with range flags and gives a Gemini analysis.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 0
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/blood-health-tracker"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=XITt0L_9Crk"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.46,
+     "note": "A personal blood-test tracker with medication correlation; among reviewed entries, several are health apps."
+    },
+    "integrationDepth": {
+     "value": 0.55,
+     "note": "The demo shows extraction, range flags, trends, analysis and a PDF on a deployed URL; no code was available."
+    },
+    "sponsorCentrality": {
+     "value": 0.74,
+     "note": "The writeup puts auth, storage, async AI jobs and web hosting in Serverpod, Relic and Serverpod Cloud."
+    },
+    "sponsorEvidence": {
+     "value": 0.34,
+     "note": "Only the serverpod.space URL in the demo supports it. There is no repository, and that link returned 404 when checked."
+    }
+   },
+   "idea": {
+    "topology": "flow",
+    "description": "A patient's reports and health profile feed an AI correlation that yields questions for doctors.",
+    "nodes": [
+     {
+      "id": "patient",
+      "label": "Patient",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "The author has a rare bone disease and takes frequent blood tests.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“I live with a rare disease which makes my bones very brittle.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "reports",
+      "label": "Blood test reports",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "PDF or image reports are uploaded for AI extraction, or parameters are entered by hand.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Upload PDF/image reports for AI extraction or manually enter parameters”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "profile",
+      "label": "Health profile",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "Ailments, medications and personal data such as height, weight, DOB and gender.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Manage ailments, medications, and personal health information (height, weight, DOB, gender)”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "trends",
+      "label": "Trends over time",
+      "kind": "signal",
+      "evidence": {
+       "status": "described",
+       "note": "Parameters are compared across reports and marked as improving or worsening.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Compare parameters across reports over time with trend detection (improving/worsening)”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "correlation",
+      "label": "AI correlation",
+      "kind": "model",
+      "evidence": {
+       "status": "described",
+       "note": "Gemini 2.5 Flash-Lite with Search grounding correlates abnormal values with health data and medications.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Uses Gemini 2.5 Flash-Lite with Google Search grounding to correlate abnormal parameters with user health data, medications, and historical trends”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "questions",
+      "label": "Questions for doctor",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "AI-generated questions to ask a doctor, based on the analysis.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“AI-generated relevant questions to ask your doctor based on analysis results”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "patient",
+      "to": "reports",
+      "label": "uploads"
+     },
+     {
+      "from": "patient",
+      "to": "profile",
+      "label": "enters"
+     },
+     {
+      "from": "reports",
+      "to": "trends"
+     },
+     {
+      "from": "reports",
+      "to": "correlation"
+     },
+     {
+      "from": "profile",
+      "to": "correlation"
+     },
+     {
+      "from": "correlation",
+      "to": "questions"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "hub",
+    "description": "A Flutter web app on serverpod.space; the server behind it is described, and its code could not be checked.",
+    "focus": "server",
+    "nodes": [
+     {
+      "id": "webapp",
+      "label": "Flutter web app",
+      "kind": "surface",
+      "detail": "On serverpod.space",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The app runs at blood-health-tracker.serverpod.space/app/ in the demo. The Try-it-out link returned 404 when checked.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 41
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/blood-health-tracker-41.jpg",
+        "source": "video",
+        "t": 41
+       }
+      }
+     },
+     {
+      "id": "server",
+      "label": "Serverpod server",
+      "kind": "transformation",
+      "detail": "Code not checked",
+      "evidence": {
+       "status": "described",
+       "note": "Serverpod 3.2.3 backend with auth and ORM that also serves the web build through Relic. No repository is linked.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Serverpod 3.2.3 - Dart backend framework with ORM, authentication, and code generation”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Relic serves the entire Flutter web application directly from the Serverpod server.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "jobs",
+      "label": "Async AI jobs",
+      "kind": "transformation",
+      "detail": "Polled by app",
+      "evidence": {
+       "status": "described",
+       "note": "AI calls run as async jobs that the client polls, added to avoid Serverpod Cloud timeouts.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Fixed the issue by implementing Async Jobs to poll the Serverpod Cloud for results instead of waiting for the response.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "gemini",
+      "label": "Gemini + Search",
+      "kind": "model",
+      "evidence": {
+       "status": "described",
+       "note": "Named as Gemini 2.5 Flash-Lite with Google Search grounding. Source links appear in the demo analysis at 156 s.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Uses Gemini 2.5 Flash-Lite with Google Search grounding”"
+        },
+        {
+         "source": "video",
+         "t": 156
+        }
+       ]
+      }
+     },
+     {
+      "id": "db",
+      "label": "PostgreSQL tables",
+      "kind": "artifact",
+      "detail": "14 models claimed",
+      "evidence": {
+       "status": "described",
+       "note": "The writeup describes 14 data models with 6 migrations, stored in managed PostgreSQL.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“The 14 data models powering this app”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“The migration system tracked 6 incremental schema changes across development”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "analysis",
+      "label": "Analysis & PDF",
+      "kind": "artifact",
+      "detail": "Shown in demo",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The demo shows risk, correlations, medication effects, doctor questions, sources and a downloaded PDF.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 146
+        },
+        {
+         "source": "video",
+         "t": 156
+        },
+        {
+         "source": "video",
+         "t": 166
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/blood-health-tracker-146.jpg",
+        "source": "video",
+        "t": 146
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "webapp",
+      "to": "server",
+      "label": "RPC calls"
+     },
+     {
+      "from": "server",
+      "to": "jobs",
+      "label": "starts"
+     },
+     {
+      "from": "jobs",
+      "to": "gemini",
+      "label": "report, profile"
+     },
+     {
+      "from": "server",
+      "to": "db",
+      "label": "ORM"
+     },
+     {
+      "from": "server",
+      "to": "analysis",
+      "label": "returns"
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "Report upload → 102 params extracted",
+     "idea": [
+      "reports"
+     ],
+     "integration": [
+      "webapp",
+      "gemini"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The dialog shows '102 parameters extracted'. The saved report lists 77 blood, 24 urine and 1 other parameter.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 81
+       },
+       {
+        "source": "video",
+        "t": 96
+       },
+       {
+        "source": "video",
+        "t": 111
+       },
+       {
+        "source": "video",
+        "t": 116
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/blood-health-tracker-81.jpg",
+       "source": "video",
+       "t": 81
+      }
+     }
+    },
+    {
+     "label": "Trends → change vs previous report",
+     "idea": [
+      "trends"
+     ],
+     "integration": [
+      "webapp"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The Jan 6, 2026 report shows change values and a 'Worsened from previous report' tooltip.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 126
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/blood-health-tracker-126.jpg",
+       "source": "video",
+       "t": 126
+      }
+     }
+    },
+    {
+     "label": "Doctor questions → list + sources",
+     "idea": [
+      "questions",
+      "correlation"
+     ],
+     "integration": [
+      "analysis",
+      "gemini"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "A numbered question list and source links (mayoclinic.org, ncbi.nlm.nih.gov and others) are on screen.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 156
+       },
+       {
+        "source": "video",
+        "t": 161
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/blood-health-tracker-156.jpg",
+       "source": "video",
+       "t": 156
+      }
+     }
+    },
+    {
+     "label": "Stored reports → code not checked",
+     "idea": [
+      "reports",
+      "profile"
+     ],
+     "integration": [
+      "server",
+      "db"
+     ],
+     "evidence": {
+      "status": "described",
+      "note": "The endpoints and models that store reports and profiles are described only. No repository is linked.",
+      "refs": [
+       {
+        "source": "writeup",
+        "detail": "“10 type-safe API endpoints with auto-generated client code and zero manual serialization”"
+       }
+      ]
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q1",
+     "kind": "unverified",
+     "question": "No repository is linked, and the Try-it-out link returned 404. Can you share the code for the 10 endpoints, 14 models and the async job system?",
+     "basis": "L095–L099 describe the Serverpod endpoints, models and async jobs, but no code was available to check. The deployed URL seen at 41 s returned HTTP 404 when checked.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "server"
+      },
+      {
+       "lens": "integration",
+       "node": "jobs"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“10 type-safe API endpoints with auto-generated client code and zero manual serialization”"
+      },
+      {
+       "source": "video",
+       "t": 41
+      }
+     ]
+    },
+    {
+     "id": "q2",
+     "kind": "implementation",
+     "question": "Albumin/Globulin Ratio shows UNKNOWN in the Jan 2025 report but HIGH in the Jan 2026 report. Where does the reference range come from when a report has none?",
+     "basis": "L010 says parameters outside reference ranges are flagged automatically. The frame at 101 s shows A/G ratio 1.8 UNKNOWN; at 126 s A/G ratio 2.0 is HIGH.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "webapp"
+      },
+      {
+       "lens": "idea",
+       "node": "reports"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Automatically identifies parameters outside reference ranges with visual indicators”"
+      },
+      {
+       "source": "video",
+       "t": 101
+      },
+      {
+       "source": "video",
+       "t": 126
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "unclear",
+     "question": "How does the app decide whether a change counts as improving or worsening for each parameter, for example 25 Hydroxyvitamin D at 66.1 ng/ml?",
+     "basis": "L012 describes improving/worsening detection. At 126 s, 25 Hydroxyvitamin D 66.1 ng/ml is marked 'Worsened from previous report'. The previous (Jul 2025) value is not visible in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "idea",
+       "node": "trends"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“trend detection (improving/worsening)”"
+      },
+      {
+       "source": "video",
+       "t": 126
+      }
+     ]
+    },
+    {
+     "id": "q4",
+     "kind": "unclear",
+     "question": "The Gemini key field is empty at 61 s. Did the extraction at 81 s use your own key or the server's secret key?",
+     "basis": "L015 says users can provide their own key; L086 says the Gemini key is kept as a Serverpod Cloud secret. The key may have been entered between sampled frames.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "gemini"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Users can provide their own Gemini API key via settings”"
+      },
+      {
+       "source": "writeup",
+       "detail": "“kept API keys (like the Gemini AI key) out of source control”"
+      },
+      {
+       "source": "video",
+       "t": 61
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "codi-mobile-butler-for-building-apps-automating-the-web",
+   "title": "Codi: Mobile AI Dev Butler Powered by Flutter & Serverpod",
+   "creator": "Samuel Philip",
+   "summary": "You describe a website in a new project, and an agent generates a Next.js site shown in an in-app preview and at a local URL.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 0
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/codi-mobile-butler-for-building-apps-automating-the-web"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=_4Eq2JzUNhg"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.62,
+     "note": "A phone-based app builder plus browser agent; developer tools are rare among reviewed entries (GitRadar is another)."
+    },
+    "integrationDepth": {
+     "value": 0.45,
+     "note": "The demo shows sign-in, project setup, a generated site and its files. No code could be checked, and browser automation is not observed."
+    },
+    "sponsorCentrality": {
+     "value": 0.6,
+     "note": "The writeup makes Serverpod the orchestration backbone, while generation runs in Python workers; this is described only."
+    },
+    "sponsorEvidence": {
+     "value": 0.08,
+     "note": "The repository returned 404, and Serverpod is not observed in the sampled frames; only a Dart editor file is visible."
+    }
+   },
+   "idea": {
+    "topology": "flow",
+    "description": "A phone user chats with Codi; Serverpod sends the task to Python workers that build apps or browse.",
+    "nodes": [
+     {
+      "id": "user",
+      "label": "Phone-only user",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "The team targets people who reach the internet only through a phone.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“If you have a smartphone, you should be able to build software.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "chat",
+      "label": "Chat commander",
+      "kind": "surface",
+      "evidence": {
+       "status": "described",
+       "note": "The user describes an outcome in chat, and Codi decides whether to write code, deploy or browse.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“The interface is completely conversation-driven.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Codi figures out whether it needs to write code, deploy a database, or browse the web”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "serverpod",
+      "label": "Serverpod backbone",
+      "kind": "transformation",
+      "evidence": {
+       "status": "described",
+       "note": "The writeup says Serverpod handles auth, real-time streaming, the database and orchestration.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“The backbone of our system is Serverpod.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Authentication, real-time streaming, and database management are all managed here.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "workers",
+      "label": "Python AI workers",
+      "kind": "transformation",
+      "evidence": {
+       "status": "described",
+       "note": "The writeup says code generation and Playwright browser automation run in isolated Python environments.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“the heavy lifting of code generation and browser automation (via Playwright) happens in isolated Python environments”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "appbuilder",
+      "label": "Deployed app",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "Codi is said to generate the frontend and database schema, then deploy a working app that can be shared.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“deploy a working app that they can share instantly”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "browser",
+      "label": "Browser agent tasks",
+      "kind": "external",
+      "evidence": {
+       "status": "described",
+       "note": "Codi is said to log in to portals, fill in forms and scrape data, streaming the session to the phone.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Second, Codi acts as an AI Browser Automation Agent.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“You can ask it to logs in to portals, fill out forms, or scrape complex data.”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "user",
+      "to": "chat",
+      "label": "describes"
+     },
+     {
+      "from": "chat",
+      "to": "serverpod"
+     },
+     {
+      "from": "serverpod",
+      "to": "workers",
+      "label": "message queue",
+      "evidence": {
+       "status": "described",
+       "note": "The writeup says Serverpod dispatches tasks to Python workers through a message queue.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Serverpod communicates with these Python workers to dispatch tasks.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“We used a message queue architecture”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "workers",
+      "to": "appbuilder",
+      "label": "generates"
+     },
+     {
+      "from": "workers",
+      "to": "browser",
+      "label": "automates"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "flow",
+    "description": "The demo shows the app creating a project, an agent building a Next.js site, and the site opening.",
+    "nodes": [
+     {
+      "id": "app",
+      "label": "Codi phone app",
+      "kind": "surface",
+      "detail": "GitHub sign-in",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "An iPhone simulator runs Codi with GitHub and Google sign-in, then an empty My Projects screen.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 9
+        },
+        {
+         "source": "video",
+         "t": 29
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-9.jpg",
+        "source": "video",
+        "t": 9
+       }
+      }
+     },
+     {
+      "id": "setup",
+      "label": "Project setup",
+      "kind": "surface",
+      "detail": "Next.js + GH Pages",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The user picks GitHub Pages deployment and creates 'crunch-fitness' as a Next.js project with a description.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 41
+        },
+        {
+         "source": "video",
+         "t": 45
+        },
+        {
+         "source": "video",
+         "t": 57
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-41.jpg",
+        "source": "video",
+        "t": 41
+       }
+      }
+     },
+     {
+      "id": "agent",
+      "label": "AI Agent panel",
+      "kind": "surface",
+      "detail": "Steps unreadable",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The panel shows 'Generating' and a growing operations list whose entries cannot be read, then a summary message.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 65
+        },
+        {
+         "source": "video",
+         "t": 101
+        },
+        {
+         "source": "video",
+         "t": 121
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-65.jpg",
+        "source": "video",
+        "t": 65
+       }
+      }
+     },
+     {
+      "id": "backend",
+      "label": "Server & AI workers",
+      "kind": "transformation",
+      "detail": "Repo not checkable",
+      "evidence": {
+       "status": "inferred",
+       "note": "Something must run the agent. The repository returned 404, so Serverpod, Python workers and the model could not be checked.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“happens in isolated Python environments”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "site",
+      "label": "Generated Next.js site",
+      "kind": "artifact",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The preview goes from a Next.js starter page to a styled Crunch Hoboken site; its files open in the Code tab.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 81
+        },
+        {
+         "source": "video",
+         "t": 109
+        },
+        {
+         "source": "video",
+         "t": 153
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-81.jpg",
+        "source": "video",
+        "t": 81
+       }
+      }
+     },
+     {
+      "id": "localurl",
+      "label": "Site at local URL",
+      "kind": "surface",
+      "detail": "Local domain",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Desktop Chrome opens crunch-fitness.codi.local, marked 'Not Secure', and shows the class schedule.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 133
+        },
+        {
+         "source": "video",
+         "t": 137
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-133.jpg",
+        "source": "video",
+        "t": 133
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "app",
+      "to": "setup",
+      "label": "Create Project"
+     },
+     {
+      "from": "setup",
+      "to": "agent",
+      "label": "description"
+     },
+     {
+      "from": "agent",
+      "to": "backend",
+      "label": "not traced",
+      "evidence": {
+       "status": "inferred",
+       "note": "How the panel reaches a server is not observed in the sampled frames; the repository returned 404, so code could not be checked.",
+       "refs": []
+      }
+     },
+     {
+      "from": "backend",
+      "to": "site",
+      "label": "builds"
+     },
+     {
+      "from": "site",
+      "to": "localurl",
+      "label": "copied URL",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "'Copied to Clipboard' appears at 125 s, and the URL is typed into Chrome at 133 s.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 125
+        },
+        {
+         "source": "video",
+         "t": 133
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-125.jpg",
+        "source": "video",
+        "t": 125
+       }
+      }
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "App builder → Next.js site in demo",
+     "idea": [
+      "appbuilder",
+      "workers"
+     ],
+     "integration": [
+      "agent",
+      "site"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "A description is typed at 53 s, and a styled Crunch Hoboken site appears in the preview at 109 s.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 53
+       },
+       {
+        "source": "video",
+        "t": 109
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-53.jpg",
+       "source": "video",
+       "t": 53
+      }
+     }
+    },
+    {
+     "label": "Share instantly → .codi.local URL",
+     "idea": [
+      "appbuilder"
+     ],
+     "integration": [
+      "localurl"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "GitHub Pages was picked at 41 s, but the site opens at crunch-fitness.codi.local, marked 'Not Secure'.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 41
+       },
+       {
+        "source": "video",
+        "t": 137
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-41.jpg",
+       "source": "video",
+       "t": 41
+      }
+     }
+    },
+    {
+     "label": "Browser agent → tab only, use unseen",
+     "idea": [
+      "browser"
+     ],
+     "integration": [],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "A Browser tab is visible at 61 s; its use is not observed in the sampled frames.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 61
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/codi-mobile-butler-for-building-apps-automating-the-web-61.jpg",
+       "source": "video",
+       "t": 61
+      }
+     }
+    },
+    {
+     "label": "Serverpod backbone → not checkable",
+     "idea": [
+      "serverpod"
+     ],
+     "integration": [
+      "backend"
+     ],
+     "evidence": {
+      "status": "inferred",
+      "note": "The repository returned 404, and Serverpod is not observed in the sampled frames; a Dart editor_screen.dart file is visible.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 1
+       },
+       {
+        "source": "writeup",
+        "detail": "“The backbone of our system is Serverpod.”"
+       }
+      ]
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q1",
+     "kind": "mismatch",
+     "question": "GitHub Pages was selected, but the site opened at crunch-fitness.codi.local. Was it deployed anywhere that another device could reach?",
+     "basis": "L014 promises a deployed app that can be shared instantly. The frames show GitHub Pages chosen at 41 s and a 'Not Secure' .codi.local address at 137 s.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "localurl"
+      },
+      {
+       "lens": "idea",
+       "node": "appbuilder"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“deploy a working app that they can share instantly”"
+      },
+      {
+       "source": "video",
+       "t": 41
+      },
+      {
+       "source": "video",
+       "t": 137
+      }
+     ]
+    },
+    {
+     "id": "q2",
+     "kind": "unverified",
+     "question": "The repository returned 404 when we checked. Which Serverpod endpoints and streams does the agent panel use, and can judges see the code?",
+     "basis": "L025–L032 put Serverpod at the centre, handling auth, streaming and worker dispatch. No code could be checked, and a Serverpod server is not observed in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "backend"
+      },
+      {
+       "lens": "idea",
+       "node": "serverpod"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Authentication, real-time streaming, and database management are all managed here.”"
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "unverified",
+     "question": "Can you show a run of the browser automation agent, such as logging in to a portal or filling out a form?",
+     "basis": "L016–L019 describe a Playwright agent whose session is streamed to the phone. A Browser tab is visible at 61 s; an automation run is not observed in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "idea",
+       "node": "browser"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“streams the interactive session to your phone”"
+      },
+      {
+       "source": "video",
+       "t": 61
+      }
+     ]
+    },
+    {
+     "id": "q4",
+     "kind": "unclear",
+     "question": "L046 describes generated Flutter code hot-reloaded to the device, but the demo builds a Next.js site. Which kinds of project can Codi generate?",
+     "basis": "The accomplishment in L046 names Flutter code. The demo's project is Next.js 15 with Tailwind (45 s, 121 s).",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "site"
+      },
+      {
+       "lens": "idea",
+       "node": "appbuilder"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“generated valid Flutter code, and hot-reloaded it back to the user's device”"
+      },
+      {
+       "source": "video",
+       "t": 121
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cuecard",
+   "title": "Snipper",
+   "creator": "Michi Yamamoto",
+   "summary": "You upload a standup video, and the app cuts it into titled, captioned vertical clips that you can export or schedule for an in-app post reminder.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 0
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/cuecard"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=QUFZJDFlQgc"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.64,
+     "note": "Among reviewed entries it is the only one that edits comedy video into social clips; most are productivity assistants."
+    },
+    "integrationDepth": {
+     "value": 0.48,
+     "note": "The demo shows a real upload becoming 4 captioned clips and a reminder; no code was available to check."
+    },
+    "sponsorCentrality": {
+     "value": 0.6,
+     "note": "The writeup says Serverpod handles all RPCs, background jobs and sessions; this is described only."
+    },
+    "sponsorEvidence": {
+     "value": 0.12,
+     "note": "No repository is linked, and no Serverpod element was observed in the sampled demo frames."
+    }
+   },
+   "idea": {
+    "topology": "flow",
+    "description": "Raw standup footage goes through Gemini, which picks and scores bits, and comes out as clips with reminders.",
+    "nodes": [
+     {
+      "id": "comedian",
+      "label": "Comedian",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "The user is a comedian who uploads raw standup footage.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“You upload raw standup footage, and Snipper:”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "gemini",
+      "label": "Gemini bit finder",
+      "kind": "model",
+      "evidence": {
+       "status": "described",
+       "note": "Gemini 3.0 Flash Preview finds bits from setup/punchline structure and audience reactions.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“It finds the distinct bits by picking up on setup/punchline structure and audience reactions.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "score",
+      "label": "Viral Potential score",
+      "kind": "signal",
+      "evidence": {
+       "status": "described",
+       "note": "Each moment gets a Viral Potential rating plus an explanation.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“You get a \"Viral Potential\" rating plus an explanation of why it works.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "clips",
+      "label": "Vertical clip",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "Horizontal footage is reframed to vertical and given karaoke-style captions.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Transforms your horizontal stage footage into vertical clips.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Generates karaoke-style captions that pop on the punchlines.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "reminder",
+      "label": "Posting reminder",
+      "kind": "transformation",
+      "evidence": {
+       "status": "described",
+       "note": "The app reminds the user when to post.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“It even reminds you when to post so you stay consistent.”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "comedian",
+      "to": "gemini",
+      "label": "uploads set"
+     },
+     {
+      "from": "gemini",
+      "to": "score",
+      "label": "scores bits"
+     },
+     {
+      "from": "score",
+      "to": "clips"
+     },
+     {
+      "from": "clips",
+      "to": "reminder",
+      "label": "scheduled"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "flow",
+    "description": "Seen only in the demo: web upload, background jobs, clip editor, reminder banner and admin view. No code.",
+    "nodes": [
+     {
+      "id": "webapp",
+      "label": "Snipper web app",
+      "kind": "surface",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The home page with a drag-and-drop area; broadway_salsa.mp4 is dropped and uploads.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 13
+        },
+        {
+         "source": "video",
+         "t": 16
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-13.jpg",
+        "source": "video",
+        "t": 13
+       }
+      }
+     },
+     {
+      "id": "jobs",
+      "label": "Background processing",
+      "kind": "transformation",
+      "detail": "Code not checked",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Status screens read 'Generating insights' and 'Processing clip 2 of 4'. No repository, so the model and backend cannot be checked.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 19
+        },
+        {
+         "source": "video",
+         "t": 22
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-19.jpg",
+        "source": "video",
+        "t": 19
+       }
+      }
+     },
+     {
+      "id": "editor",
+      "label": "Clip editor",
+      "kind": "surface",
+      "detail": "Title + duration",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Lists 4 titled clips with durations; Clips 1 and 3 are seen playing as vertical video with captions.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 25
+        },
+        {
+         "source": "video",
+         "t": 28
+        },
+        {
+         "source": "video",
+         "t": 37
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-25.jpg",
+        "source": "video",
+        "t": 25
+       }
+      }
+     },
+     {
+      "id": "reminder",
+      "label": "Post reminder",
+      "kind": "transformation",
+      "detail": "In-app banner",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Clip 1 scheduled for 2026-01-26 14:49; a 'Ready for Posting!' banner appears, then status reads SUCCESS.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 58
+        },
+        {
+         "source": "video",
+         "t": 64
+        },
+        {
+         "source": "video",
+         "t": 70
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-58.jpg",
+        "source": "video",
+        "t": 58
+       }
+      }
+     },
+     {
+      "id": "storage",
+      "label": "Stored clips",
+      "kind": "artifact",
+      "detail": "4 GCS clips",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Admin counters show 4 GCS clips and 0 local clips, with time ranges such as 8.0s - 42.0s.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 73
+        },
+        {
+         "source": "video",
+         "t": 79
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-73.jpg",
+        "source": "video",
+        "t": 73
+       }
+      }
+     },
+     {
+      "id": "admin",
+      "label": "Admin dashboard",
+      "kind": "surface",
+      "detail": "Task shows 25%",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Lists videos, clips, scheduled posts and tasks; 'Generating Clips 25%' is shown although 4 clips are listed.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 79
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-79.jpg",
+        "source": "video",
+        "t": 79
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "webapp",
+      "to": "jobs",
+      "label": "uploads video"
+     },
+     {
+      "from": "jobs",
+      "to": "editor",
+      "label": "4 clips",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Processing reaches clip 2 of 4, and the editor then lists 4 clips.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 22
+        },
+        {
+         "source": "video",
+         "t": 25
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/cuecard-22.jpg",
+        "source": "video",
+        "t": 22
+       }
+      }
+     },
+     {
+      "from": "editor",
+      "to": "reminder",
+      "label": "date + time"
+     },
+     {
+      "from": "jobs",
+      "to": "storage",
+      "label": "saves"
+     },
+     {
+      "from": "storage",
+      "to": "admin",
+      "label": "shown in"
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "Viral score → number, no explanation",
+     "idea": [
+      "score"
+     ],
+     "integration": [
+      "editor"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The 25 s clip list shows a number with a trend arrow beside each duration; no written explanation is visible in that frame.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 25
+       },
+       {
+        "source": "writeup",
+        "detail": "“You get a \"Viral Potential\" rating plus an explanation of why it works.”"
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/cuecard-25.jpg",
+       "source": "video",
+       "t": 25
+      }
+     }
+    },
+    {
+     "label": "Gemini bit finder → could not be checked",
+     "idea": [
+      "gemini"
+     ],
+     "integration": [
+      "jobs"
+     ],
+     "evidence": {
+      "status": "described",
+      "note": "The demo shows 'Generating insights' and 4 titled bits; there is no repository to confirm which model produces them.",
+      "refs": [
+       {
+        "source": "writeup",
+        "detail": "“AI: Google Gemini 3.0 Flash Preview.”"
+       },
+       {
+        "source": "video",
+        "t": 19
+       }
+      ]
+     }
+    },
+    {
+     "label": "Vertical clips → shown with captions",
+     "idea": [
+      "clips"
+     ],
+     "integration": [
+      "editor",
+      "storage"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "Clip 1 plays as vertical video with captions, and the admin view counts 4 GCS clips.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 28
+       },
+       {
+        "source": "video",
+        "t": 73
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/cuecard-28.jpg",
+       "source": "video",
+       "t": 28
+      }
+     }
+    },
+    {
+     "label": "Reminder → in-app banner",
+     "idea": [
+      "reminder"
+     ],
+     "integration": [
+      "reminder"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "At the scheduled time a green in-app 'Ready for Posting!' banner appears on the home page.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 64
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/cuecard-64.jpg",
+       "source": "video",
+       "t": 64
+      }
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q1",
+     "kind": "unverified",
+     "question": "No repository is linked, and Serverpod was not observed in the sampled demo frames. Which parts of upload, analysis and scheduling run on Serverpod?",
+     "basis": "L021 says Serverpod 3 handles all RPCs, background jobs and sessions. With no repository linked, none of this could be checked, and the Try it out link was unreachable when checked.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "jobs"
+      },
+      {
+       "lens": "idea",
+       "node": "gemini"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Backend: Serverpod 3 handling all the RPCs, background jobs, and sessions.”"
+      }
+     ]
+    },
+    {
+     "id": "q2",
+     "kind": "mismatch",
+     "question": "Each clip shows a number with a trend arrow. Is that the Viral Potential rating, and where does the app show the explanation of why the clip works?",
+     "basis": "L014 promises a rating plus an explanation. The 25 s clip list shows a number (8 or 9) with a trend arrow beside each duration; no written explanation was observed in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "idea",
+       "node": "score"
+      },
+      {
+       "lens": "integration",
+       "node": "editor"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“You get a \"Viral Potential\" rating plus an explanation of why it works.”"
+      },
+      {
+       "source": "video",
+       "t": 30,
+       "detail": "narration: “score based on how strong the moment is.”"
+      },
+      {
+       "source": "video",
+       "t": 25
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "unclear",
+     "question": "The admin dashboard shows 'Generating Clips 25%' after all 4 clips exist. How does the job status get updated when a job finishes?",
+     "basis": "L031 claims clear job status tracking. At 79 s the Generating Clips task reads 25% while 4 GCS clips are listed.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "admin"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“clear job status tracking”"
+      },
+      {
+       "source": "video",
+       "t": 79
+      }
+     ]
+    },
+    {
+     "id": "q4",
+     "kind": "unclear",
+     "question": "After the reminder banner, the scheduled post turns to SUCCESS. Does SUCCESS mean the reminder was shown, and does it reach the user when the app is closed?",
+     "basis": "At 64 s the reminder is an in-app banner on the open home page; at 70 s the status reads SUCCESS. Delivery outside the open page was not observed in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "reminder"
+      }
+     ],
+     "refs": [
+      {
+       "source": "video",
+       "t": 64
+      },
+      {
+       "source": "video",
+       "t": 70
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "symptomscribe",
+   "title": "SymptomScribe",
+   "creator": "Karol Sotomski",
+   "summary": "You describe a symptom in a chat; an agent proposes a tracking template you can edit and save, then fills in an observation form for you to log.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 0
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/symptomscribe"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=JEziYq2l5mE"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.6,
+     "note": "Health trackers recur among reviewed entries, but generating trackers from plain speech with medical codes is unusual."
+    },
+    "integrationDepth": {
+     "value": 0.45,
+     "note": "The demo shows a multi-step agent flow from proposal to saved log; no code could be checked."
+    },
+    "sponsorCentrality": {
+     "value": 0.5,
+     "note": "The writeup puts the backend and storage on Serverpod; how much runs there cannot be confirmed."
+    },
+    "sponsorEvidence": {
+     "value": 0.1,
+     "note": "No repository, the Cloud link returns 404, and the demo shows a localhost web UI."
+    }
+   },
+   "idea": {
+    "topology": "flow",
+    "description": "Plain words become a confirmed template, then structured FHIR observations.",
+    "nodes": [
+     {
+      "id": "you",
+      "label": "You",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "Parents describe symptoms in their own words instead of setting up trackers.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“lets you describe health symptoms naturally—the way you'd tell a friend”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "agent",
+      "label": "Medical agent",
+      "kind": "model",
+      "detail": "Hidden codes",
+      "evidence": {
+       "status": "described",
+       "note": "Mistral-based agent with tools for searching templates, proposing schemas and reading qualifiers, guided by LOINC and SNOMED.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“the \"medical agent\" (tools for searching templates, proposing schemas, interpreting qualifiers)”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“LOINC and SNOMED medical standards provide context for the AI without ever being exposed to users.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "library",
+      "label": "Template library",
+      "kind": "artifact",
+      "detail": "Semantic match",
+      "evidence": {
+       "status": "described",
+       "note": "pgvector matches new descriptions to templates created before, even when phrased differently.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“PostgreSQL with pgvector handles semantic search—matching what you say now to templates you've created before”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "approve",
+      "label": "You approve",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "The AI proposes a template and the user has the final say on what gets created.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“the AI proposes, but users always have the final say on what gets created”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "fhir",
+      "label": "FHIR observations",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "Observations are stored as FHIR resources ready to share with healthcare providers.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“All observations are stored as FHIR-compliant resources, ready to share with healthcare providers when needed.”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "you",
+      "to": "agent",
+      "label": "describes in words"
+     },
+     {
+      "from": "agent",
+      "to": "library",
+      "label": "searches"
+     },
+     {
+      "from": "library",
+      "to": "approve",
+      "label": "match or new"
+     },
+     {
+      "from": "approve",
+      "to": "fhir",
+      "label": "logs"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "flow",
+    "description": "A web chat whose agent proposes, revises and saves a template, then fills an observation.",
+    "nodes": [
+     {
+      "id": "chatapp",
+      "label": "Chat web app",
+      "kind": "surface",
+      "detail": "Runs on localhost",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "SymptomScribe (Demo) at localhost with Chat, Templates Library and Observation Log panels and a database reset countdown.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 1
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-1.jpg",
+        "source": "video",
+        "t": 1
+       }
+      }
+     },
+     {
+      "id": "agent",
+      "label": "Agent tool steps",
+      "kind": "transformation",
+      "detail": "Model not visible",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Status lines show tools moderation, parseInput, processSymptom, classifyFeedback and modifyProposal running; the model is not shown.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 46
+        },
+        {
+         "source": "video",
+         "t": 121
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-46.jpg",
+        "source": "video",
+        "t": 46
+       }
+      }
+     },
+     {
+      "id": "card",
+      "label": "Template proposal",
+      "kind": "surface",
+      "detail": "SNOMED code shown",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "A 'New Template' Migraine card lists fields and 'SNOMED: 37796009', with Skip and Create buttons.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 66
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-66.jpg",
+        "source": "video",
+        "t": 66
+       }
+      }
+     },
+     {
+      "id": "library",
+      "label": "Templates library",
+      "kind": "artifact",
+      "detail": "Used 0 times",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "After Create, Migraine (ID 28, 8 fields) appears in the library; it still reads 'Used 0 times' after an observation is saved.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 136
+        },
+        {
+         "source": "video",
+         "t": 171
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-136.jpg",
+        "source": "video",
+        "t": 136
+       }
+      }
+     },
+     {
+      "id": "form",
+      "label": "Prefilled form",
+      "kind": "surface",
+      "detail": "Adds unsaid values",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Form prefilled with severity 7, Bilateral, duration 37 h and photophobia, which the note says was added though not mentioned.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 151
+        },
+        {
+         "source": "video",
+         "t": 161
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-151.jpg",
+        "source": "video",
+        "t": 151
+       }
+      }
+     },
+     {
+      "id": "log",
+      "label": "Observation log",
+      "kind": "artifact",
+      "detail": "Format not visible",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "One Migraine entry appears in the Observation Log after Save; its storage format is not visible on screen.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 171
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-171.jpg",
+        "source": "video",
+        "t": 171
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "chatapp",
+      "to": "agent",
+      "label": "message"
+     },
+     {
+      "from": "agent",
+      "to": "card",
+      "label": "proposes"
+     },
+     {
+      "from": "card",
+      "to": "agent",
+      "kind": "feedback",
+      "label": "edit request",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The user asks for a 1–10 severity and no onset time; a revised card without Onset time and with integer Severity follows.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 116
+        },
+        {
+         "source": "video",
+         "t": 131
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/symptomscribe-116.jpg",
+        "source": "video",
+        "t": 116
+       }
+      }
+     },
+     {
+      "from": "card",
+      "to": "library",
+      "label": "Create"
+     },
+     {
+      "from": "library",
+      "to": "form",
+      "label": "Yes, log now"
+     },
+     {
+      "from": "form",
+      "to": "log",
+      "label": "Save"
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "Hidden standards → SNOMED code on card",
+     "idea": [
+      "agent"
+     ],
+     "integration": [
+      "card",
+      "library"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The writeup says standards are never exposed, but the card and library entry show 'SNOMED: 37796009'.",
+      "refs": [
+       {
+        "source": "writeup",
+        "detail": "“without ever being exposed to users”"
+       },
+       {
+        "source": "video",
+        "t": 66
+       },
+       {
+        "source": "video",
+        "t": 141
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/symptomscribe-66.jpg",
+       "source": "video",
+       "t": 66
+      }
+     }
+    },
+    {
+     "label": "You approve → edit, then Create",
+     "idea": [
+      "approve"
+     ],
+     "integration": [
+      "card",
+      "library"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The proposal is revised on request and saved only after Create; the log step is asked as a question.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 131
+       },
+       {
+        "source": "video",
+        "t": 136
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/symptomscribe-131.jpg",
+       "source": "video",
+       "t": 131
+      }
+     }
+    },
+    {
+     "label": "Uses your words → adds photophobia",
+     "idea": [
+      "you"
+     ],
+     "integration": [
+      "form"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The extraction note says photophobia was added though not mentioned; 'behind my eyes' was mapped to bilateral.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 161
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/symptomscribe-161.jpg",
+       "source": "video",
+       "t": 161
+      }
+     }
+    },
+    {
+     "label": "FHIR, Serverpod → not checkable",
+     "idea": [
+      "fhir",
+      "library"
+     ],
+     "integration": [
+      "log"
+     ],
+     "evidence": {
+      "status": "described",
+      "note": "FHIR storage, Serverpod and pgvector are stated in the writeup; no code was available, and they were not observed in the sampled frames.",
+      "refs": [
+       {
+        "source": "writeup",
+        "detail": "“Flutter Web for the frontend, Serverpod for the backend.”"
+       },
+       {
+        "source": "writeup",
+        "detail": "“Everything is modeled as FHIR resources under the hood”"
+       }
+      ]
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q1",
+     "kind": "unverified",
+     "question": "No repository is linked and the Try-it-out link returns 404. Can you show the Serverpod endpoints and tables that run the agent and store templates?",
+     "basis": "L015 names Serverpod and pgvector as the backend. The demo runs on localhost and the sampled frames show the web UI; no code was available to check what runs on the server.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "agent"
+      },
+      {
+       "lens": "idea",
+       "node": "library"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Serverpod for the backend. PostgreSQL with pgvector handles semantic search”"
+      },
+      {
+       "source": "video",
+       "t": 1
+      }
+     ]
+    },
+    {
+     "id": "q2",
+     "kind": "mismatch",
+     "question": "The writeup says medical codes are never exposed to users, yet the template card shows 'SNOMED: 37796009'. Is showing the code intended?",
+     "basis": "L017 and L030 say the standards stay hidden. The proposal card at 66 s and the library entry at 141 s both display a SNOMED code.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "card"
+      },
+      {
+       "lens": "idea",
+       "node": "agent"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“inform the AI without ever being exposed to users”"
+      },
+      {
+       "source": "video",
+       "t": 66
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "unclear",
+     "question": "The form was prefilled with photophobia and a 37-hour duration that the message did not mention. How are guessed values marked for the user before saving?",
+     "basis": "The only message gave location and severity 7. At 151 s the form shows Duration 37 and photophobia checked; the 161 s note says photophobia was added though not mentioned.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "form"
+      }
+     ],
+     "refs": [
+      {
+       "source": "video",
+       "t": 151
+      },
+      {
+       "source": "video",
+       "t": 161
+      }
+     ]
+    },
+    {
+     "id": "q4",
+     "kind": "implementation",
+     "question": "After saving an observation the template still reads 'Used 0 times'. Is the usage count updated, and where can the saved FHIR resource be seen?",
+     "basis": "At 171 s the Observation Log has a Migraine entry while the library shows 'Used 0 times'. L013 says observations are FHIR resources; FHIR output was not observed in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "library"
+      },
+      {
+       "lens": "integration",
+       "node": "log"
+      }
+     ],
+     "refs": [
+      {
+       "source": "video",
+       "t": 171
+      },
+      {
+       "source": "writeup",
+       "detail": "“All observations are stored as FHIR-compliant resources”"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bookbutler",
+   "title": "BookButler",
+   "creator": "Emmanuel Onyeji",
+   "summary": "You add a PDF from your phone and read it, getting leaderboard points per page, reader alerts and Ask AI replies.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 0
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/bookbutler"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=KCEvbYFLBd8"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.5,
+     "note": "Among reviewed entries, this is the only gamified reading tracker; AI document chat appears in several others."
+    },
+    "integrationDepth": {
+     "value": 0.5,
+     "note": "The demo shows the reader, AI reply, leaderboard, alerts, heatmap and widget working. No code was available to check."
+    },
+    "sponsorCentrality": {
+     "value": 0.6,
+     "note": "The writeup routes auth, AI, the leaderboard and push through Serverpod; the reader and widget run on the phone."
+    },
+    "sponsorEvidence": {
+     "value": 0.2,
+     "note": "No repo was linked, and no Serverpod-specific screen or log appears in the sampled frames; its use is only described."
+    }
+   },
+   "idea": {
+    "topology": "hub",
+    "description": "A reading app whose AI, notifications and leaderboard all run through a Serverpod backend.",
+    "focus": "backend",
+    "nodes": [
+     {
+      "id": "reader",
+      "label": "PDF reader",
+      "kind": "surface",
+      "evidence": {
+       "status": "described",
+       "note": "The team describes a reader where you summarize chapters, save snippets and ask questions about the text.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“the reader empowers users to summarize lengthy chapters, save snippets for future reference, and ask specific questions directly to the text”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "backend",
+      "label": "Serverpod backend",
+      "kind": "transformation",
+      "evidence": {
+       "status": "described",
+       "note": "Serverpod is named for push, auth, PostgreSQL, the AI assistant and the real-time leaderboard.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“I utilized Serverpod for push notifications (FCM), authentication, a PostgreSQL database, Serverside AI book assistant, Leaderboard Realtime Data Display and notification.”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "gemini",
+      "label": "Gemini explainer",
+      "kind": "model",
+      "evidence": {
+       "status": "described",
+       "note": "The team says Gemini explains concepts on the server, not on the device.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“explain complex concepts in real-time using Gemini-powered AI, ensuring the heavy lifting is handled by the server rather than the device”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "leaderboard",
+      "label": "Live leaderboard",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "Points are round(P/5 × 2) for P pages read, and a Serverpod stream updates the leaderboard.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“$$Points = \\text{round} \\left( \\frac{P}{5} \\times 2 \\right)$$”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“integrating a real-time leaderboard via Serverpod streams”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "alerts",
+      "label": "Friend alerts",
+      "kind": "signal",
+      "evidence": {
+       "status": "described",
+       "note": "The team says you get notifications when friends start new books.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“receive notifications when friends start new books”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "streaks",
+      "label": "Streaks & widget",
+      "kind": "surface",
+      "evidence": {
+       "status": "described",
+       "note": "Reading streaks, home screen widgets and activity heatmaps are presented as the accountability features.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Maintain reading streaks and view progress through home screen widgets.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Visualize reading habits through dynamic activity heatmaps.”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "reader",
+      "to": "backend",
+      "label": "questions, pages"
+     },
+     {
+      "from": "backend",
+      "to": "gemini",
+      "label": "server-side"
+     },
+     {
+      "from": "backend",
+      "to": "leaderboard",
+      "label": "streams points"
+     },
+     {
+      "from": "backend",
+      "to": "alerts",
+      "label": "push via FCM"
+     },
+     {
+      "from": "reader",
+      "to": "streaks"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "hub",
+    "description": "Demo-only view: app screens work on camera, but no repository was linked to check the server.",
+    "focus": "server",
+    "nodes": [
+     {
+      "id": "app",
+      "label": "Flutter reader app",
+      "kind": "surface",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The app scans the device, finds 260 files and opens a PDF at page 1 of 280.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 46
+        },
+        {
+         "source": "video",
+         "t": 51
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/bookbutler-46.jpg",
+        "source": "video",
+        "t": 46
+       }
+      }
+     },
+     {
+      "id": "server",
+      "label": "Serverpod backend",
+      "kind": "transformation",
+      "detail": "No code seen",
+      "evidence": {
+       "status": "described",
+       "note": "Serverpod is named by the team; no repository was linked, so its endpoints and streams could not be checked.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“I utilized Serverpod for push notifications (FCM), authentication, a PostgreSQL database”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "ai",
+      "label": "Ask AI replies",
+      "kind": "model",
+      "detail": "Model not traced",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "'Summarize this' returns a text summary at 86 s. Which model produced it, and where it ran, is not visible.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 76
+        },
+        {
+         "source": "video",
+         "t": 86
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/bookbutler-76.jpg",
+        "source": "video",
+        "t": 76
+       }
+      }
+     },
+     {
+      "id": "points",
+      "label": "Leaderboard points",
+      "kind": "artifact",
+      "detail": "152 pages = 61 pts",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "james shows 152 pages and 61 pts, ranked 7th on both phones; round(152/5×2) = 61.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 101
+        },
+        {
+         "source": "video",
+         "t": 106
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/bookbutler-101.jpg",
+        "source": "video",
+        "t": 101
+       }
+      }
+     },
+     {
+      "id": "push",
+      "label": "Phone notifications",
+      "kind": "external",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "The second phone's shade shows 'New Reader Alert! james just started reading' and leaderboard updates.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 56
+        },
+        {
+         "source": "video",
+         "t": 61
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/bookbutler-56.jpg",
+        "source": "video",
+        "t": 56
+       }
+      }
+     },
+     {
+      "id": "widget",
+      "label": "Widget & reminder",
+      "kind": "surface",
+      "detail": "Set in app",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "A 'Time to Read!' notification appears at 161 s, and a home widget shows page 152/280 and '1 day streak' at 176 s.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 161
+        },
+        {
+         "source": "video",
+         "t": 176
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/bookbutler-161.jpg",
+        "source": "video",
+        "t": 161
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "app",
+      "to": "server",
+      "label": "not traced",
+      "evidence": {
+       "status": "inferred",
+       "note": "Inferred from the writeup: the app presumably syncs pages to the server, but no code was available to confirm this.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Points are synchronized to the server”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "server",
+      "to": "ai",
+      "label": "Gemini, claimed",
+      "evidence": {
+       "status": "described",
+       "note": "The writeup says Gemini runs on the server; where the call is made is not observed in the sampled frames.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Server-Side AI Intelligence”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "server",
+      "to": "points"
+     },
+     {
+      "from": "server",
+      "to": "push",
+      "label": "reader alerts",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "An alert about james reaches the other phone at 56 s. Whether FCM or a stream delivered it is not visible.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 56
+        },
+        {
+         "source": "video",
+         "t": 54,
+         "detail": "narration: “the serverboard back end triggers a”"
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/bookbutler-56.jpg",
+        "source": "video",
+        "t": 56
+       }
+      }
+     },
+     {
+      "from": "app",
+      "to": "widget"
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "Points formula → 152 pages = 61 pts",
+     "idea": [
+      "leaderboard"
+     ],
+     "integration": [
+      "points"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The leaderboard values match round(P/5×2): 152 pages → 61 pts, and joan's 3362 pages → 1345 pts.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 1
+       },
+       {
+        "source": "video",
+        "t": 106
+       },
+       {
+        "source": "writeup",
+        "detail": "“$$Points = \\text{round} \\left( \\frac{P}{5} \\times 2 \\right)$$”"
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/bookbutler-1.jpg",
+       "source": "video",
+       "t": 1
+      }
+     }
+    },
+    {
+     "label": "Friend alerts → shown on 2nd phone",
+     "idea": [
+      "alerts"
+     ],
+     "integration": [
+      "push"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The second phone receives 'New Reader Alert!' when james opens a book.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 56
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/bookbutler-56.jpg",
+       "source": "video",
+       "t": 56
+      }
+     }
+    },
+    {
+     "label": "Server-side Gemini → not checkable",
+     "idea": [
+      "gemini",
+      "backend"
+     ],
+     "integration": [
+      "ai",
+      "server"
+     ],
+     "evidence": {
+      "status": "described",
+      "note": "An AI reply is seen, but with no repo linked the Gemini call and its server location cannot be verified.",
+      "refs": [
+       {
+        "source": "writeup",
+        "detail": "“using Gemini-powered AI”"
+       },
+       {
+        "source": "video",
+        "t": 86
+       }
+      ]
+     }
+    },
+    {
+     "label": "Reminders → set in app, time differs",
+     "idea": [
+      "streaks"
+     ],
+     "integration": [
+      "widget"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The picker is set to 1:05 PM at 141 s, but the setting reads 'Remind me daily at 1:05 AM' at 146 s.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 141
+       },
+       {
+        "source": "video",
+        "t": 146
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/bookbutler-141.jpg",
+       "source": "video",
+       "t": 141
+      }
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q1",
+     "kind": "unverified",
+     "question": "No repository is linked on the submission. Where can the Serverpod server and Flutter code be reviewed?",
+     "basis": "L015 says Serverpod runs auth, push, the database, the AI assistant and the leaderboard stream. The two Drive links are of unknown type, and no code was available to check.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "server"
+      },
+      {
+       "lens": "idea",
+       "node": "backend"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“I utilized Serverpod for push notifications (FCM), authentication, a PostgreSQL database”"
+      }
+     ]
+    },
+    {
+     "id": "q2",
+     "kind": "unclear",
+     "question": "Are the 'Leaderboard Update' alerts sent as FCM pushes from the server, or triggered by a Serverpod stream on each phone?",
+     "basis": "L025 credits Serverpod streams and L015 names FCM. At 56–61 s both phones show alerts, but the frames cannot show which path delivered them.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "push"
+      },
+      {
+       "lens": "idea",
+       "node": "alerts"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“integrating a real-time leaderboard via Serverpod streams”"
+      },
+      {
+       "source": "video",
+       "t": 61
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "implementation",
+     "question": "The time picker was set to 1:05 PM, but the setting then read 1:05 AM. Is the reminder scheduled on the device, and why did the period change?",
+     "basis": "The frame at 141 s shows 1:05 PM selected, and the one at 146 s shows 'Remind me daily at 1:05 AM'. L033 lists server-side scheduled reminders as future work.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "widget"
+      }
+     ],
+     "refs": [
+      {
+       "source": "video",
+       "t": 141
+      },
+      {
+       "source": "video",
+       "t": 146
+      },
+      {
+       "source": "writeup",
+       "detail": "“Advanced Reminders: Include server-side scheduled email and push reminders.”"
+      }
+     ]
+    },
+    {
+     "id": "q4",
+     "kind": "unverified",
+     "question": "Which model produced the 'Summarize this' reply, and does the request go through the Serverpod server or straight from the app?",
+     "basis": "L009 claims Gemini runs on the server. The Ask AI screen at 86 s shows a reply, but nothing in the frames identifies the model or where it was called from.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "ai"
+      },
+      {
+       "lens": "idea",
+       "node": "gemini"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“ensuring the heavy lifting is handled by the server rather than the device”"
+      },
+      {
+       "source": "video",
+       "t": 86
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azad-the-community-driven-riding-assistant-for-bikers",
+   "title": "Azad : The community driven riding assistant for bikers",
+   "creator": "Anunay Kumar",
+   "summary": "You record motorcycle rides and post them to a feed; in group rides a captain invites crew, who get stop and SOS alerts on a map.",
+   "origin": {
+    "method": "generated",
+    "pipeline": "tool/deep_review",
+    "model": "claude-opus-5-5",
+    "models": {
+     "observe": "claude-cli:claude-opus-5-5",
+     "generate": "claude-cli:claude-opus-5-5",
+     "verify": "claude-cli:claude-opus-5-5"
+    },
+    "handEdited": false,
+    "verifierLowered": 0,
+    "citationsDropped": 0
+   },
+   "sources": {
+    "writeup": {
+     "kind": "writeup",
+     "label": "Devpost writeup",
+     "url": "https://devpost.com/software/azad-the-community-driven-riding-assistant-for-bikers"
+    },
+    "video": {
+     "kind": "video",
+     "label": "Demo video",
+     "url": "https://www.youtube.com/watch?v=Yv60YggWV8s"
+    }
+   },
+   "competitionDimensions": {
+    "ideaDistinctiveness": {
+     "value": 0.62,
+     "note": "Among reviewed entries, it is the only motorcycling or group-ride app; Road Trip Butler is the nearest, as travel planning."
+    },
+    "integrationDepth": {
+     "value": 0.5,
+     "note": "The demo shows a tracked ride, feed, and a two-device group ride with stop and SOS alerts; no code could be checked."
+    },
+    "sponsorCentrality": {
+     "value": 0.72,
+     "note": "Described: group-ride sync, rides, feed, auth and storage all run on Serverpod endpoints and channels."
+    },
+    "sponsorEvidence": {
+     "value": 0.22,
+     "note": "Repo returned 404; Serverpod appears only in the writeup, narration and an in-app Tech Stack screen."
+    }
+   },
+   "idea": {
+    "topology": "flow",
+    "description": "A rider's trips are logged automatically and shared, and groups ride together over a live channel.",
+    "nodes": [
+     {
+      "id": "rider",
+      "label": "Biker",
+      "kind": "human",
+      "evidence": {
+       "status": "described",
+       "note": "The app is aimed at solo riders, group rides and a rider community.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“For Solo Riders”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“For Group Rides”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "autodetect",
+      "label": "Automatic ride logging",
+      "kind": "transformation",
+      "evidence": {
+       "status": "described",
+       "note": "Activity recognition plus GPS speed is said to start and stop ride logging with no buttons.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Intelligent motion detection logs your rides automatically. No buttons, no hassle.”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“GPS Speed > 20 km/h”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "ridelog",
+      "label": "Ride log & stats",
+      "kind": "artifact",
+      "evidence": {
+       "status": "described",
+       "note": "Route, distance, duration, speed, photos and marked places are recorded per ride.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Every road, every place, automatically recorded with GPS precision”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Add photos, notes, and mark special locations”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "feed",
+      "label": "Community feed",
+      "kind": "surface",
+      "evidence": {
+       "status": "described",
+       "note": "Riders post rides, discover others' routes and hidden places, and connect as a pack.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Post rides with photos, routes, and stories”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Put underrated places on the map”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "groupchannel",
+      "label": "Group ride channel",
+      "kind": "transformation",
+      "detail": "Serverpod streams",
+      "evidence": {
+       "status": "described",
+       "note": "Each group ride has its own Serverpod message channel that broadcasts every member's location.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“See your entire crew on the map, updated every second via Serverpod's WebSockets”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“Each group ride has its own channel (e.g., \"group_ride_{rideId}\")”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "alerts",
+      "label": "Stop & SOS alerts",
+      "kind": "signal",
+      "evidence": {
+       "status": "described",
+       "note": "The captain marks stops and any rider can send SOS; everyone is notified with the location.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Captain marks a stop? Everyone knows immediately”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“One-tap SOS button alerts the entire pack with your location”"
+        }
+       ]
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "rider",
+      "to": "autodetect",
+      "label": "just rides"
+     },
+     {
+      "from": "autodetect",
+      "to": "ridelog",
+      "label": "saves"
+     },
+     {
+      "from": "ridelog",
+      "to": "feed",
+      "label": "posts"
+     },
+     {
+      "from": "rider",
+      "to": "groupchannel",
+      "label": "joins"
+     },
+     {
+      "from": "groupchannel",
+      "to": "alerts",
+      "label": "broadcasts"
+     }
+    ]
+   },
+   "integration": {
+    "topology": "flow",
+    "description": "Android app screens seen in the demo; the Serverpod server side could not be checked (repo 404).",
+    "nodes": [
+     {
+      "id": "riders",
+      "label": "Captain and crew",
+      "kind": "human",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Two emulators with signed-in users 'Anu' and 'Ajit' are shown side by side.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 86
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-86.jpg",
+        "source": "video",
+        "t": 86
+       }
+      }
+     },
+     {
+      "id": "autosave",
+      "label": "Auto-save setting",
+      "kind": "surface",
+      "detail": "Toggle only seen",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Settings shows 'Auto-Save Rides' switched on; an automatically detected ride is not observed in the sampled frames.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 66
+        },
+        {
+         "source": "video",
+         "t": 71
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-66.jpg",
+        "source": "video",
+        "t": 66
+       }
+      }
+     },
+     {
+      "id": "ridescreens",
+      "label": "Ride & feed screens",
+      "kind": "surface",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "A live ride goes from 1.7 km, 0 pit stops to 3.7 km, 2 pit stops; a Share Ride form and feed posts follow.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 51
+        },
+        {
+         "source": "video",
+         "t": 56
+        },
+        {
+         "source": "video",
+         "t": 61
+        },
+        {
+         "source": "video",
+         "t": 76
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-51.jpg",
+        "source": "video",
+        "t": 51
+       }
+      }
+     },
+     {
+      "id": "groupscreens",
+      "label": "Group ride screens",
+      "kind": "surface",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Invite, crew list, 'STOP MARKED' and 'HELP REQUESTED' banners appear on both emulators.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 101
+        },
+        {
+         "source": "video",
+         "t": 111
+        },
+        {
+         "source": "video",
+         "t": 116
+        },
+        {
+         "source": "video",
+         "t": 121
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-101.jpg",
+        "source": "video",
+        "t": 101
+       }
+      }
+     },
+     {
+      "id": "serverpod",
+      "label": "Serverpod backend",
+      "kind": "transformation",
+      "detail": "Repo not checkable",
+      "evidence": {
+       "status": "described",
+       "note": "The team describes RPC endpoints, streaming channels and PostgreSQL; the repository returned 404, so no code was seen.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“Serverpod's streaming endpoints handled real-time location updates out of the box”"
+        },
+        {
+         "source": "writeup",
+         "detail": "“PostgreSQL - Relational database”"
+        }
+       ]
+      }
+     },
+     {
+      "id": "gmaps",
+      "label": "Google Maps",
+      "kind": "external",
+      "evidence": {
+       "status": "demonstrated",
+       "note": "Tapping Navigate opens Google Maps with a pin at the help location and driving directions.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 126
+        },
+        {
+         "source": "video",
+         "t": 131
+        }
+       ],
+       "frame": {
+        "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-126.jpg",
+        "source": "video",
+        "t": 126
+       }
+      }
+     }
+    ],
+    "edges": [
+     {
+      "from": "riders",
+      "to": "autosave",
+      "label": "turns on"
+     },
+     {
+      "from": "autosave",
+      "to": "ridescreens",
+      "label": "not observed",
+      "evidence": {
+       "status": "inferred",
+       "note": "Link between the toggle and an auto-started ride is only claimed; no auto-detected ride is observed in the sampled frames.",
+       "refs": [
+        {
+         "source": "video",
+         "t": 61,
+         "detail": "narration: “turn on the auto ride detection”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "riders",
+      "to": "groupscreens",
+      "label": "captain invites"
+     },
+     {
+      "from": "ridescreens",
+      "to": "serverpod",
+      "label": "saves ride"
+     },
+     {
+      "from": "groupscreens",
+      "to": "serverpod",
+      "label": "channel (claimed)",
+      "evidence": {
+       "status": "described",
+       "note": "Banners appear on both devices; that they travel via a Serverpod channel is stated, not checkable in code.",
+       "refs": [
+        {
+         "source": "writeup",
+         "detail": "“One rider sends location → Message channel receives it”"
+        },
+        {
+         "source": "video",
+         "t": 135,
+         "detail": "narration: “web socket”"
+        }
+       ]
+      }
+     },
+     {
+      "from": "groupscreens",
+      "to": "gmaps",
+      "label": "Navigate"
+     }
+    ]
+   },
+   "mapping": [
+    {
+     "label": "Auto ride logging → toggle seen only",
+     "idea": [
+      "autodetect"
+     ],
+     "integration": [
+      "autosave"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "The Auto-Save Rides switch is turned on; a ride started by motion detection is not observed in the sampled frames.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 71
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-71.jpg",
+       "source": "video",
+       "t": 71
+      }
+     }
+    },
+    {
+     "label": "Stop & SOS alerts → banners on 2 devices",
+     "idea": [
+      "alerts",
+      "groupchannel"
+     ],
+     "integration": [
+      "groupscreens"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "'STOP MARKED' at 116 s and 'HELP REQUESTED' at 121 s appear on both emulators.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 116
+       },
+       {
+        "source": "video",
+        "t": 121
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-116.jpg",
+       "source": "video",
+       "t": 116
+      }
+     }
+    },
+    {
+     "label": "Serverpod channels → code not checkable",
+     "idea": [
+      "groupchannel"
+     ],
+     "integration": [
+      "serverpod"
+     ],
+     "evidence": {
+      "status": "described",
+      "note": "Per-ride channels are described in the writeup; the linked repository returned 404.",
+      "refs": [
+       {
+        "source": "writeup",
+        "detail": "“Message channels allow pub/sub pattern for group communication”"
+       }
+      ]
+     }
+    },
+    {
+     "label": "Hidden gems → feed posts, navigate",
+     "idea": [
+      "feed"
+     ],
+     "integration": [
+      "ridescreens",
+      "gmaps"
+     ],
+     "evidence": {
+      "status": "demonstrated",
+      "note": "Feed posts and a Ride Details page with pit-stop timeline are shown; Google Maps handoff is seen from the group ride.",
+      "refs": [
+       {
+        "source": "video",
+        "t": 76
+       },
+       {
+        "source": "video",
+        "t": 81
+       },
+       {
+        "source": "video",
+        "t": 131
+       }
+      ],
+      "frame": {
+       "image": "assets/evidence/serverpod/azad-the-community-driven-riding-assistant-for-bikers-76.jpg",
+       "source": "video",
+       "t": 76
+      }
+     }
+    }
+   ],
+   "questions": [
+    {
+     "id": "q1",
+     "kind": "unverified",
+     "question": "The linked repository returned 404. Can you share the server code for the group ride channel and the ride endpoints?",
+     "basis": "The writeup describes per-ride Serverpod message channels and RPC endpoints, but no code could be checked, so the Serverpod role rests on the writeup and a Tech Stack screen.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "serverpod"
+      },
+      {
+       "lens": "idea",
+       "node": "groupchannel"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Each group ride has its own channel (e.g., \"group_ride_{rideId}\")”"
+      },
+      {
+       "source": "video",
+       "t": 151
+      }
+     ]
+    },
+    {
+     "id": "q2",
+     "kind": "unverified",
+     "question": "The demo shows the Auto-Save Rides switch turned on. Was a ride ever started and saved by motion detection alone?",
+     "basis": "Automatic detection is the headline solo feature (activity recognition plus speed > 20 km/h for 2 minutes). The sampled frames show the toggle at 71 s and a manually tracked ride with End Ride and Mark Stop buttons.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "autosave"
+      },
+      {
+       "lens": "idea",
+       "node": "autodetect"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Duration > 2 minutes”"
+      },
+      {
+       "source": "video",
+       "t": 71
+      },
+      {
+       "source": "video",
+       "t": 51
+      }
+     ]
+    },
+    {
+     "id": "q3",
+     "kind": "unclear",
+     "question": "The writeup says crew locations update every second, but also every 3–5 seconds, or 10 on straight roads. Which interval does the app use?",
+     "basis": "L028 says 'updated every second'; L244 and L486 give 3–5 seconds and L487 gives 10 seconds. The update interval is not observed in the sampled frames.",
+     "anchors": [
+      {
+       "lens": "idea",
+       "node": "groupchannel"
+      },
+      {
+       "lens": "integration",
+       "node": "groupscreens"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“updated every second via Serverpod's WebSockets”"
+      },
+      {
+       "source": "writeup",
+       "detail": "“Active ride: Update every 3-5 seconds”"
+      }
+     ]
+    },
+    {
+     "id": "q4",
+     "kind": "unverified",
+     "question": "Is the backend in the demo running on Serverpod Cloud, and do feed images go to Serverpod Cloud Storage?",
+     "basis": "L116–L117 claim scloud hosting and Cloud Storage for images. No server URL, deployment or upload is visible in the sampled frames, and the code could not be checked.",
+     "anchors": [
+      {
+       "lens": "integration",
+       "node": "serverpod"
+      }
+     ],
+     "refs": [
+      {
+       "source": "writeup",
+       "detail": "“Deployed on Serverpod Cloud (scloud) for production hosting”"
+      },
+      {
+       "source": "writeup",
+       "detail": "“Serverpod Cloud Storage for uploaded images and media files”"
+      }
+     ]
+    }
+   ]
   }
  ]
 }

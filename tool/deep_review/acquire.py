@@ -70,6 +70,18 @@ def repository(sid, url):
     }
 
 
+def repo_source(sid, url):
+    """The repository at the deadline, or why it cannot be read. A link the
+    pilot found returning 404 is not cloned (git would fail); its status and
+    check date are carried over so the review can say so plainly."""
+    if not url:
+        return {'status': 'notLinked'}
+    status, checked = pilot_repo_check(sid)
+    if status == 'notFound':
+        return {'url': url, 'status': 'notFound', 'checked': checked}
+    return repository(sid, url)
+
+
 def watch_url(embed):
     if 'youtube' in embed:
         return 'https://www.youtube.com/watch?v=' + embed.rsplit('/', 1)[1]
@@ -190,6 +202,12 @@ def pilot_live_checks(sid):
     return signals['submissions'].get(sid, {}).get('live', [])
 
 
+def pilot_repo_check(sid):
+    """The pilot's check of the repository link: status and the day it ran."""
+    entry = read_json(os.path.join(PILOT, 'data', 'deterministic.json'))['submissions'].get(sid, {})
+    return entry.get('repo', {}).get('status'), entry.get('checked')
+
+
 def pilot_demo_status(sid):
     """The demo status the pilot's link check recorded (e.g. 'available')."""
     signals = read_json(os.path.join(PILOT, 'data', 'deterministic.json'))
@@ -212,8 +230,7 @@ def main(sid):
         # Whether each link answered when the pilot checked it, so a review
         # never calls a dead link a live deployment.
         'liveChecks': pilot_live_checks(sid),
-        'repo': repository(sid, links['repo']) if links.get('repo')
-        else {'status': 'notLinked'},
+        'repo': repo_source(sid, links.get('repo')),
         'demo': demo(sid, links.get('video')),
     }
     d = sources['demo']

@@ -286,6 +286,25 @@ def check(draft, sources, facts, extract):
             problems.append(f'{where}: frame t={frame} is not an observed frame')
     problems += absence_problems(draft, ctx)
     problems += attribution_problems(draft, ctx, facts)
+    problems += uniqueness_problems(draft)
+    return problems
+
+
+UNIQUE = re.compile(r'\b(the only|only one|sole|unique among)\b|\bonly\s+(?:\w+[- ]){0,3}?'
+                    r'(entry|entries|submission|project|one)\b', re.I)
+
+
+def uniqueness_problems(draft):
+    """The generator sees only the reviewed submissions, not the whole field,
+    so "the only X entry" is unsupported unless scoped to reviewed entries."""
+    problems = []
+    for key, d in draft.get('dimensions', {}).items():
+        for sentence in re.split(r'(?<=[.;?!])\s+', d.get('note', '')):
+            if UNIQUE.search(sentence) and 'reviewed' not in sentence.lower():
+                problems.append(
+                    f'dimension {key}: claims uniqueness in the field (“{sentence.strip()[:90]}”), '
+                    'but only the reviewed submissions were compared. Say "among reviewed '
+                    'entries", or drop the comparison.')
     return problems
 
 
@@ -295,7 +314,7 @@ ABSENCE = re.compile(
     r"demonstrated|observed|captured|included)\b|\b(starts|begins|opens|jumps)\s+"
     r"(at|on|with|straight)\b|\bskip\w*\b|\bwithout showing\b", re.I)
 UNUSED_WORD = re.compile(
-    r'\b(unused|dead code|unreachable|never (imported|used|called|runs?|reached)|'
+    r'\b(unused|dead code|unreachable|never (imported|used|called|calls?|runs?|reached)|'
     r'not (imported|used|called|reached|wired)|nothing (imports|calls)|no callers?)\b', re.I)
 
 

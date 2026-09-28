@@ -387,7 +387,7 @@ void main() {
     tester,
   ) async {
     await mount(tester, initial: 'serverpod');
-    expect(find.text('Competition · 24'), findsOneWidget);
+    expect(find.text('Competition · 31'), findsOneWidget);
     // The hand-off appears only once something is selected.
     expect(key('view-in-competition'), findsNothing);
     expect(find.textContaining('Compare'), findsNothing);

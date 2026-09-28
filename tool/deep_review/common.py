@@ -53,6 +53,7 @@ write_json = _common.write_json
 CACHE = os.path.join(ROOT, '.cache')
 FLUTTER = os.path.join(REPO_ROOT, 'finalist_brief_flutter')
 ASSET = os.path.join(FLUTTER, 'assets', 'representations', 'serverpod.json')
+TRIAGE_ASSET = os.path.join(FLUTTER, 'assets', 'triage', 'serverpod.json')
 EVIDENCE_DIR = os.path.join(FLUTTER, 'assets', 'evidence', 'serverpod')
 
 ROUTING = read_json(os.path.join(ROOT, 'routing.json'))
