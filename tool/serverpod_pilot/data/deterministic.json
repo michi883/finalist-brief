@@ -1,0 +1,6881 @@
+{
+ "deadline": "2026-01-30T16:00:00Z",
+ "submissionsOpen": "2025-12-09T16:15:00Z",
+ "submissions": {
+  "pulse-the-autonomous-corporate-memory-knowledge-graph": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Tz2EHYR_IjM",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/SamiraSamrose/pulse",
+    "status": "public",
+    "commits": {
+     "total": 5,
+     "beforeOpen": 0,
+     "inWindow": 5,
+     "afterDeadline": 0,
+     "first": "2026-01-30T06:48:21Z",
+     "last": "2026-01-30T06:51:20Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 3
+    },
+    "snapshot": {
+     "sha": "6e03350860e6",
+     "date": "2026-01-29T22:51:20-08:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "^1.2.0",
+     "major": 1,
+     "server": "pulse_server",
+     "client": [],
+     "flutter": [
+      "pulse_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_cli",
+      "serverpod_flutter",
+      "serverpod_postgres",
+      "serverpod_serialization"
+     ],
+     "unresolvedDeps": [
+      "serverpod_postgres"
+     ]
+    },
+    "scaffold": {
+     "templateVersion": "1.2.7",
+     "authoredLines": 5233,
+     "editedTemplateLines": 50,
+     "delta": 5283,
+     "byArea": {
+      "other": 285,
+      "flutter": 2829,
+      "server": 2169
+     },
+     "byLanguage": {
+      "Dart": 5159,
+      "SQL": 124
+     },
+     "untouchedTemplateFiles": []
+    },
+    "footprint": {
+     "models": 0,
+     "tables": 0,
+     "enums": 0,
+     "endpoints": [
+      "AnalyticsEndpoint",
+      "DataSourceEndpoint",
+      "GitHubEndpoint",
+      "KnowledgeEndpoint",
+      "NotificationEndpoint",
+      "SearchEndpoint"
+     ],
+     "endpointMethods": 26,
+     "streamMethods": 1,
+     "dbCallSites": 51,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 0,
+     "generatedProtocol": false,
+     "appCalls": [
+      "analytics.getArchitecturalDebtReport",
+      "analytics.getTeamCollaboration",
+      "gitHub.getHotspots",
+      "gitHub.getProjectPulse",
+      "knowledge.getEvolutionTimeline",
+      "knowledge.getNodeGraph",
+      "knowledge.queryKnowledge",
+      "knowledge.searchNodes",
+      "notification.checkForConflicts",
+      "notification.getActiveNotifications",
+      "notification.markAsRead",
+      "notification.watchNotifications",
+      "search.searchAsYouType"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Other hosted AI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "butler-xlrjsp": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=C-2uUALy5tU",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Wes1324/bitcoin_butler",
+    "status": "public",
+    "commits": {
+     "total": 38,
+     "beforeOpen": 0,
+     "inWindow": 38,
+     "afterDeadline": 0,
+     "first": "2026-01-16T23:19:25Z",
+     "last": "2026-01-30T01:23:23Z",
+     "activeDays": 10,
+     "windowSpanMinutes": 18844
+    },
+    "snapshot": {
+     "sha": "a5e6756328f9",
+     "date": "2026-01-30T01:23:23+00:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "bitcoin_butler_server",
+     "client": [
+      "bitcoin_butler_client"
+     ],
+     "flutter": [
+      "bitcoin_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 3189,
+     "editedTemplateLines": 57,
+     "delta": 3246,
+     "byArea": {
+      "client": 2,
+      "flutter": 1773,
+      "server": 1471
+     },
+     "byLanguage": {
+      "Dart": 3246
+     },
+     "untouchedTemplateFiles": [
+      "bitcoin_butler_flutter/test/widget_test.dart",
+      "bitcoin_butler_server/bin/main.dart",
+      "bitcoin_butler_server/lib/src/auth/email_idp_endpoint.dart",
+      "bitcoin_butler_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "bitcoin_butler_server/lib/src/greetings/greeting_endpoint.dart",
+      "bitcoin_butler_server/lib/src/web/routes/app_config_route.dart",
+      "bitcoin_butler_server/lib/src/web/routes/root.dart",
+      "bitcoin_butler_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "bitcoin_butler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 9,
+     "tables": 6,
+     "enums": 0,
+     "endpoints": [
+      "OpportunityEndpoint",
+      "RecipeEndpoint",
+      "UserEndpoint"
+     ],
+     "endpointMethods": 11,
+     "streamMethods": 0,
+     "dbCallSites": 31,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 5,
+     "generatedProtocol": true,
+     "appCalls": [
+      "opportunity.createDemoAndNotify",
+      "opportunity.executeTrade",
+      "opportunity.getById",
+      "opportunity.listRecent",
+      "opportunity.testTrade",
+      "user.bootstrap",
+      "user.registerDeviceToken",
+      "user.saveOnboarding",
+      "user.sendTestPush"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": [
+     "Firebase"
+    ]
+   }
+  },
+  "course-craft-ai": {
+   "demo": {
+    "status": "unavailable",
+    "url": "https://www.youtube.com/watch?v=4vjijBeKtIc",
+    "http": 404
+   },
+   "live": [
+    {
+     "url": "https://course-ai.serverpod.space/app",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "group-chat-butler": {
+   "demo": {
+    "status": "unavailable",
+    "url": "https://www.youtube.com/watch?v=GIocV2VhmHU",
+    "http": 404
+   },
+   "live": [
+    {
+     "url": "https://chat-butler.serverpod.space/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "contextual-lifeflow-butler": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=zP43kBtILWI",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/HarishKumar-005/Contextual-LifeFlow-Butler",
+    "status": "public",
+    "commits": {
+     "total": 2,
+     "beforeOpen": 0,
+     "inWindow": 2,
+     "afterDeadline": 0,
+     "first": "2026-01-17T16:48:23Z",
+     "last": "2026-01-17T17:22:01Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 34
+    },
+    "snapshot": {
+     "sha": "36b30da20b7d",
+     "date": "2026-01-17T22:52:01+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "contextual_life_flow_butler_server",
+     "client": [
+      "contextual_life_flow_butler_client"
+     ],
+     "flutter": [
+      "contextual_life_flow_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_email_flutter",
+      "serverpod_auth_server",
+      "serverpod_auth_shared_flutter",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 2674,
+     "editedTemplateLines": 165,
+     "delta": 2839,
+     "byArea": {
+      "client": 3,
+      "flutter": 2649,
+      "server": 187
+     },
+     "byLanguage": {
+      "Dart": 2839
+     },
+     "untouchedTemplateFiles": []
+    },
+    "footprint": {
+     "models": 4,
+     "tables": 3,
+     "enums": 1,
+     "endpoints": [
+      "ExecutionEndpoint",
+      "WorkflowEndpoint"
+     ],
+     "endpointMethods": 8,
+     "streamMethods": 1,
+     "dbCallSites": 12,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": true,
+     "appCalls": [
+      "execution.getRecentLogs",
+      "execution.runManualTrigger",
+      "workflow.createWorkflow",
+      "workflow.getWorkflows"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "skinaware": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=GojNjdPfIa4",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://www.upload-apk.com/SsY3YqwiIntLQxD",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/Klassic-Mak/epidexa",
+    "status": "public",
+    "commits": {
+     "total": 76,
+     "beforeOpen": 0,
+     "inWindow": 75,
+     "afterDeadline": 1,
+     "first": "2026-01-07T07:58:02Z",
+     "last": "2026-06-30T04:54:20Z",
+     "activeDays": 12,
+     "windowSpanMinutes": 33176
+    },
+    "snapshot": {
+     "sha": "990e103f8bc2",
+     "date": "2026-01-30T00:54:05-08:00",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "^3.2.3",
+     "major": 3,
+     "server": "epidexa_server",
+     "client": [
+      "epidexa_client"
+     ],
+     "flutter": [
+      "epidexa_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 20222,
+     "editedTemplateLines": 76,
+     "delta": 20298,
+     "byArea": {
+      "client": 2,
+      "flutter": 17640,
+      "other": 1697,
+      "server": 959
+     },
+     "byLanguage": {
+      "Dart": 19358,
+      "Python": 940
+     },
+     "untouchedTemplateFiles": [
+      "epidexa_flutter/test/widget_test.dart",
+      "epidexa_server/bin/main.dart",
+      "epidexa_server/lib/src/web/routes/app_config_route.dart",
+      "epidexa_server/lib/src/web/routes/root.dart",
+      "epidexa_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 13,
+     "tables": 11,
+     "enums": 9,
+     "endpoints": [
+      "GeminiEndpoint",
+      "ProfileEndpoint",
+      "UserEndpoint"
+     ],
+     "endpointMethods": 15,
+     "streamMethods": 1,
+     "dbCallSites": 15,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": true,
+     "appCalls": [
+      "gemini.analyzeImageBase64",
+      "gemini.performFullAnalysisBase64",
+      "gemini.ping",
+      "gemini.sendMessage",
+      "gemini.sendMessageWithImageBase64",
+      "gemini.streamMessage",
+      "gemini.validateImageBase64",
+      "profile.saveProfile",
+      "user.login",
+      "user.register",
+      "user.updateProfile"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini",
+     "On-device model",
+     "OpenAI",
+     "Other hosted AI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "vaultnbinder": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=2AknSm46mHE",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Whyme-Labs/vaultnbinder",
+    "status": "public",
+    "commits": {
+     "total": 5,
+     "beforeOpen": 0,
+     "inWindow": 5,
+     "afterDeadline": 0,
+     "first": "2025-12-29T13:43:47Z",
+     "last": "2026-01-16T10:40:33Z",
+     "activeDays": 4,
+     "windowSpanMinutes": 25737
+    },
+    "snapshot": {
+     "sha": "f9c7a0221d96",
+     "date": "2026-01-16T18:40:33+08:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "vaultnbinder_server",
+     "client": [
+      "vaultnbinder_client"
+     ],
+     "flutter": [
+      "."
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 33364,
+     "editedTemplateLines": 48,
+     "delta": 33412,
+     "byArea": {
+      "flutter": 31957,
+      "client": 2,
+      "server": 1453
+     },
+     "byLanguage": {
+      "Dart": 33412
+     },
+     "untouchedTemplateFiles": [
+      "vaultnbinder_server/bin/main.dart",
+      "vaultnbinder_server/lib/server.dart",
+      "vaultnbinder_server/lib/src/auth/email_idp_endpoint.dart",
+      "vaultnbinder_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "vaultnbinder_server/lib/src/greetings/greeting_endpoint.dart",
+      "vaultnbinder_server/lib/src/web/routes/app_config_route.dart",
+      "vaultnbinder_server/lib/src/web/routes/root.dart",
+      "vaultnbinder_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "vaultnbinder_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 17,
+     "tables": 8,
+     "enums": 2,
+     "endpoints": [
+      "AuthEndpoint",
+      "BackupEndpoint",
+      "DeviceEndpoint",
+      "ModelEndpoint",
+      "SyncEndpoint",
+      "VaultEndpoint"
+     ],
+     "endpointMethods": 32,
+     "streamMethods": 0,
+     "dbCallSites": 81,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": [
+      "auth.requestChallenge",
+      "auth.revokeAllTokens",
+      "auth.revokeToken",
+      "auth.validateToken",
+      "auth.verifyChallenge",
+      "backup.createBackup",
+      "backup.deleteBackup",
+      "backup.downloadBackup",
+      "backup.listBackups",
+      "device.getDevices",
+      "device.isDeviceAuthorized",
+      "device.registerDevice",
+      "model.getModelDownloadInfo",
+      "sync.deleteBlobs",
+      "sync.getBlobs",
+      "sync.getChanges",
+      "sync.pushChanges",
+      "vault.createVault",
+      "vault.getVault",
+      "vault.vaultExists"
+     ]
+    },
+    "tests": {
+     "files": 1,
+     "cases": 10,
+     "paths": [
+      "test/golden/screenshot_test.dart"
+     ]
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "social-fabric": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=QN_bp6dzJy8",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Mohit808/social_serverpod",
+    "status": "public",
+    "commits": {
+     "total": 23,
+     "beforeOpen": 0,
+     "inWindow": 11,
+     "afterDeadline": 12,
+     "first": "2026-01-27T19:48:44Z",
+     "last": "2026-02-03T08:18:04Z",
+     "activeDays": 4,
+     "windowSpanMinutes": 3950
+    },
+    "snapshot": {
+     "sha": "c620db699d80",
+     "date": "2026-01-30T19:08:23+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "social_serverpod_server",
+     "client": [
+      "social_serverpod_client"
+     ],
+     "flutter": [
+      "social_serverpod_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 2620,
+     "editedTemplateLines": 38,
+     "delta": 2658,
+     "byArea": {
+      "client": 2,
+      "flutter": 0,
+      "server": 2656
+     },
+     "byLanguage": {
+      "Dart": 2658
+     },
+     "untouchedTemplateFiles": [
+      "social_serverpod_flutter/lib/main.dart",
+      "social_serverpod_flutter/test/widget_test.dart",
+      "social_serverpod_server/bin/main.dart"
+     ]
+    },
+    "footprint": {
+     "models": 24,
+     "tables": 24,
+     "enums": 0,
+     "endpoints": [
+      "AnalysisEndpoint",
+      "AuthEndpoint",
+      "CityEndpoint",
+      "LikeEndpoint",
+      "MapEndpoint",
+      "PollEndpoint",
+      "PostEndpoint",
+      "SavedPostEndpoint",
+      "StoryEndpoint",
+      "TagEndpoint",
+      "UserEndpoint",
+      "UserProfileEndpoint",
+      "VoteEndpoint"
+     ],
+     "endpointMethods": 39,
+     "streamMethods": 0,
+     "dbCallSites": 128,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": []
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "prism-the-career-architect": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=DQRQTD8zPQo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "glowcare": {
+   "demo": {
+    "status": "available",
+    "url": "https://vimeo.com/1163953482",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/rishika97/Glowcare",
+    "status": "public",
+    "commits": {
+     "total": 7,
+     "beforeOpen": 0,
+     "inWindow": 7,
+     "afterDeadline": 0,
+     "first": "2026-01-24T22:25:51Z",
+     "last": "2026-01-25T00:53:24Z",
+     "activeDays": 2,
+     "windowSpanMinutes": 148
+    },
+    "snapshot": {
+     "sha": "ae85bf4142a9",
+     "date": "2026-01-25T06:23:24+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "^3.0.0",
+     "major": 3,
+     "server": "server",
+     "client": [
+      "client",
+      "glowcare_client"
+     ],
+     "flutter": [
+      "flutter_app"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_cli",
+      "serverpod_client",
+      "serverpod_flutter"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.0.0",
+     "authoredLines": 14263,
+     "editedTemplateLines": 41,
+     "delta": 14304,
+     "byArea": {
+      "flutter": 11256,
+      "client": 18,
+      "server": 3030
+     },
+     "byLanguage": {
+      "Dart": 14245,
+      "Python": 59
+     },
+     "untouchedTemplateFiles": [
+      "server/bin/main.dart"
+     ]
+    },
+    "footprint": {
+     "models": 13,
+     "tables": 11,
+     "enums": 0,
+     "endpoints": [
+      "AddressEndpoint",
+      "AppointmentEndpoint",
+      "AuthEndpoint",
+      "DoctorEndpoint",
+      "OrderEndpoint",
+      "ProductEndpoint",
+      "SkinAnalysisEndpoint",
+      "SubscriptionEndpoint"
+     ],
+     "endpointMethods": 48,
+     "streamMethods": 0,
+     "dbCallSites": 110,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 4,
+     "generatedProtocol": true,
+     "appCalls": [
+      "address.addAddress",
+      "address.deleteAddress",
+      "address.getUserAddresses",
+      "address.setDefaultAddress",
+      "address.updateAddress",
+      "appointment.bookAppointment",
+      "appointment.getAppointmentById",
+      "appointment.getUserAppointments",
+      "appointment.seedInitialAppointments",
+      "appointment.updateAppointmentStatus",
+      "auth.getCurrentUser",
+      "auth.login",
+      "auth.refreshToken",
+      "auth.signUp",
+      "auth.validateToken",
+      "doctor.addDoctor",
+      "doctor.getDoctorById",
+      "doctor.getDoctors",
+      "doctor.getNearbyDoctors",
+      "doctor.seedInitialDoctors",
+      "order.createOrder",
+      "order.getOrderById",
+      "order.getUserOrders",
+      "order.updateOrderStatus",
+      "product.addProduct",
+      "product.checkProductDetailsSuitability",
+      "product.checkProductSuitability",
+      "product.getProductById",
+      "product.getProducts",
+      "product.getProductsByCategory",
+      "product.getRecommendedProducts",
+      "product.seedInitialProducts",
+      "skinAnalysis.getLatestAnalysis",
+      "skinAnalysis.saveSkinAnalysis",
+      "subscription.cancelSubscription",
+      "subscription.getActiveSubscription",
+      "subscription.getSubscriptionHistory",
+      "subscription.subscribe"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini",
+     "On-device model"
+    ],
+    "otherBackends": []
+   }
+  },
+  "flutler": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=DRDCmVJPVGc",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://flutler.com/",
+     "http": 0,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/marcomanzi/flutler",
+    "status": "notFound"
+   }
+  },
+  "lifesync-ai-zm1hp4": {
+   "demo": {
+    "status": "available",
+    "url": "https://vimeo.com/1159662331",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/princegarg001/LifeSync-AI-Butler",
+    "status": "public",
+    "commits": {
+     "total": 8,
+     "beforeOpen": 0,
+     "inWindow": 7,
+     "afterDeadline": 1,
+     "first": "2026-01-29T07:11:09Z",
+     "last": "2026-03-16T09:26:12Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 306
+    },
+    "snapshot": {
+     "sha": "dedde24aad5f",
+     "date": "2026-01-29T17:47:24+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "my_project_server",
+     "client": [
+      "my_project_client"
+     ],
+     "flutter": [
+      "my_project_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_core_server",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 6440,
+     "editedTemplateLines": 284,
+     "delta": 6724,
+     "byArea": {
+      "client": 2,
+      "flutter": 5973,
+      "server": 749
+     },
+     "byLanguage": {
+      "Dart": 6724
+     },
+     "untouchedTemplateFiles": [
+      "my_project_flutter/lib/screens/greetings_screen.dart",
+      "my_project_flutter/lib/screens/sign_in_screen.dart",
+      "my_project_flutter/test/widget_test.dart",
+      "my_project_server/bin/main.dart",
+      "my_project_server/lib/server.dart",
+      "my_project_server/lib/src/auth/email_idp_endpoint.dart",
+      "my_project_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "my_project_server/lib/src/greetings/greeting_endpoint.dart",
+      "my_project_server/lib/src/web/routes/app_config_route.dart",
+      "my_project_server/lib/src/web/routes/root.dart",
+      "my_project_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "my_project_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 6,
+     "tables": 4,
+     "enums": 0,
+     "endpoints": [
+      "ChatEndpoint",
+      "DashboardEndpoint",
+      "InsightEndpoint",
+      "TaskEndpoint",
+      "UserEndpoint"
+     ],
+     "endpointMethods": 27,
+     "streamMethods": 0,
+     "dbCallSites": 41,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 2,
+     "generatedProtocol": true,
+     "appCalls": [
+      "chat.clearChatHistory",
+      "chat.getChatHistory",
+      "chat.getQuickSuggestions",
+      "chat.sendMessage",
+      "dashboard.getDashboardData",
+      "insight.generateInsights",
+      "insight.getInsights",
+      "task.completeTask",
+      "task.createTask",
+      "task.deleteTask",
+      "task.getTasks",
+      "task.getTodaysTasks",
+      "user.createOrUpdateUser",
+      "user.getUserByEmail",
+      "user.getUserById",
+      "user.updatePreferences"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "doby-rna2yf": {
+   "demo": {
+    "status": "private",
+    "url": "https://www.youtube.com/watch?v=1GbgLFbu18E",
+    "http": 403
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/penguinpecker/doby",
+    "status": "public",
+    "commits": {
+     "total": 3,
+     "beforeOpen": 0,
+     "inWindow": 3,
+     "afterDeadline": 0,
+     "first": "2026-01-25T22:14:36Z",
+     "last": "2026-01-25T22:27:36Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 13
+    },
+    "snapshot": {
+     "sha": "55f0d2a3b8c6",
+     "date": "2026-01-26T03:57:36+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.1",
+     "major": 3,
+     "server": "doby_server",
+     "client": [
+      "doby_client"
+     ],
+     "flutter": [
+      "doby_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.1",
+     "authoredLines": 6442,
+     "editedTemplateLines": 15,
+     "delta": 6457,
+     "byArea": {
+      "other": 2842,
+      "client": 2,
+      "flutter": 3108,
+      "server": 505
+     },
+     "byLanguage": {
+      "Dart": 3615,
+      "TypeScript": 2842
+     },
+     "untouchedTemplateFiles": [
+      "doby_flutter/test/widget_test.dart",
+      "doby_server/bin/main.dart",
+      "doby_server/lib/server.dart",
+      "doby_server/lib/src/auth/email_idp_endpoint.dart",
+      "doby_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "doby_server/lib/src/greetings/greeting_endpoint.dart",
+      "doby_server/lib/src/web/routes/app_config_route.dart",
+      "doby_server/lib/src/web/routes/root.dart",
+      "doby_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "doby_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 7,
+     "tables": 6,
+     "enums": 0,
+     "endpoints": [
+      "DobyEndpoint"
+     ],
+     "endpointMethods": 17,
+     "streamMethods": 0,
+     "dbCallSites": 31,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 2,
+     "generatedProtocol": true,
+     "appCalls": [
+      "doby.createAgentFromNaturalLanguage",
+      "doby.deleteAgent",
+      "doby.executeAgent",
+      "doby.getAgent",
+      "doby.getDashboardSummary",
+      "doby.listAgents",
+      "doby.sendChatMessage",
+      "doby.toggleAgent"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "jarvis-c6lwgb": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=012rFmbDRWc",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/nuktan/jaarvis",
+    "status": "notFound"
+   }
+  },
+  "elderly-j462fy": {
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=8qOkKwc0eWg",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Shalini-Mishra/Elderly",
+    "status": "public",
+    "commits": {
+     "total": 30,
+     "beforeOpen": 0,
+     "inWindow": 30,
+     "afterDeadline": 0,
+     "first": "2026-01-22T04:34:16Z",
+     "last": "2026-01-30T12:54:57Z",
+     "activeDays": 8,
+     "windowSpanMinutes": 12021
+    },
+    "snapshot": {
+     "sha": "694f9b933199",
+     "date": "2026-01-30T18:27:34+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.0",
+     "major": 3,
+     "server": "app_elder_new_server",
+     "client": [
+      "app_elder_new_client"
+     ],
+     "flutter": [
+      "app_elder_new_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_cli",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.0",
+     "authoredLines": 5291,
+     "editedTemplateLines": 20,
+     "delta": 5311,
+     "byArea": {
+      "client": 2,
+      "flutter": 4769,
+      "server": 540
+     },
+     "byLanguage": {
+      "Dart": 5311
+     },
+     "untouchedTemplateFiles": [
+      "app_elder_new_flutter/test/widget_test.dart",
+      "app_elder_new_server/lib/src/auth/email_idp_endpoint.dart",
+      "app_elder_new_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "app_elder_new_server/lib/src/web/routes/app_config_route.dart",
+      "app_elder_new_server/lib/src/web/routes/root.dart",
+      "app_elder_new_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "app_elder_new_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 11,
+     "tables": 9,
+     "enums": 0,
+     "endpoints": [
+      "AppointmentEndpoint",
+      "AvailabilityEndpoint",
+      "DoctorEndpoint",
+      "ElderProfileEndpoint",
+      "HealthMetricsEndpoint",
+      "PatientDocumentEndpoint",
+      "PrescribedTestEndpoint",
+      "UserMedicineEndpoint",
+      "WebRtcEndpoint"
+     ],
+     "endpointMethods": 21,
+     "streamMethods": 1,
+     "dbCallSites": 33,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": true,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 10,
+     "generatedProtocol": true,
+     "appCalls": [
+      "appointment.addAppointment",
+      "appointment.getAppointments",
+      "availability.getSlotsByDate",
+      "doctor.getDoctorAvailability",
+      "doctor.getDoctors",
+      "doctor.insertDummyData",
+      "elderProfile.getProfile",
+      "elderProfile.setRole",
+      "healthMetrics.getUserCompliance",
+      "healthMetrics.insertDummyData",
+      "prescribedTest.getPrescribedTestsByUserId",
+      "prescribedTest.insertDummyPrescribedTests",
+      "userMedicine.getMedicinesByUserId",
+      "userMedicine.insertDummyMedicines",
+      "webRtc.resetStream",
+      "webRtc.sendStreamMessage"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "gitradar": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=AaaGYN6JnTw",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://beta-gitradar.vercel.app",
+     "http": 200,
+     "status": "reachable"
+    },
+    {
+     "url": "https://gitradar.api.serverpod.space",
+     "http": 404,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://drive.google.com/drive/folders/1ljVDhIuHb3hB8j9av8Pi4zFbEeeY3yr8?usp=sharing",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/puri-adityakumar/gitradar",
+    "status": "public",
+    "commits": {
+     "total": 21,
+     "beforeOpen": 0,
+     "inWindow": 21,
+     "afterDeadline": 0,
+     "first": "2026-01-20T17:47:03Z",
+     "last": "2026-01-30T15:01:50Z",
+     "activeDays": 5,
+     "windowSpanMinutes": 14235
+    },
+    "snapshot": {
+     "sha": "ec6ccbcaac76",
+     "date": "2026-01-30T20:33:50+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "^3.0.0",
+     "major": 3,
+     "server": "server",
+     "client": [
+      "gitradar_client"
+     ],
+     "flutter": [
+      "app"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.0.0",
+     "authoredLines": 5518,
+     "editedTemplateLines": 102,
+     "delta": 5620,
+     "byArea": {
+      "flutter": 2781,
+      "client": 6,
+      "server": 2833
+     },
+     "byLanguage": {
+      "Dart": 5620
+     },
+     "untouchedTemplateFiles": []
+    },
+    "footprint": {
+     "models": 15,
+     "tables": 6,
+     "enums": 0,
+     "endpoints": [
+      "ActivityEndpoint",
+      "AuthEndpoint",
+      "NotificationEndpoint",
+      "PreferencesEndpoint",
+      "RepositoryEndpoint"
+     ],
+     "endpointMethods": 23,
+     "streamMethods": 0,
+     "dbCallSites": 112,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": true,
+     "appCalls": [
+      "activity.getCounts",
+      "activity.listIssues",
+      "activity.listPullRequests",
+      "activity.markAsRead",
+      "auth.login",
+      "auth.loginAnonymous",
+      "auth.logout",
+      "auth.upgradeWithPat",
+      "auth.validateSession",
+      "notification.getUnreadCount",
+      "notification.listNotifications",
+      "notification.markAllRead",
+      "notification.markRead",
+      "preferences.getPreferences",
+      "preferences.updatePreferences",
+      "repository.addRepository",
+      "repository.listRepositories",
+      "repository.removeRepository",
+      "repository.syncRepositories"
+     ]
+    },
+    "tests": {
+     "files": 5,
+     "cases": 54,
+     "paths": [
+      "server/test/integration/activity_endpoint_test.dart",
+      "server/test/integration/auth_endpoint_test.dart",
+      "server/test/integration/notification_endpoint_test.dart",
+      "server/test/integration/preferences_endpoint_test.dart",
+      "server/test/integration/repository_endpoint_test.dart"
+     ]
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "root-radar": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=wDFX1XHNQdc",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://root-radar-v4.serverpod.space/app/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/tanDivina/root-radar",
+    "status": "public",
+    "commits": {
+     "total": 48,
+     "beforeOpen": 0,
+     "inWindow": 48,
+     "afterDeadline": 0,
+     "first": "2026-01-01T11:26:36Z",
+     "last": "2026-01-30T15:35:25Z",
+     "activeDays": 6,
+     "windowSpanMinutes": 42009
+    },
+    "snapshot": {
+     "sha": "30630738b3e9",
+     "date": "2026-01-30T10:35:25-05:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "root_radar_server",
+     "client": [
+      "root_radar_client"
+     ],
+     "flutter": [
+      "root_radar_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_core_client",
+      "serverpod_auth_email_flutter",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 3322,
+     "editedTemplateLines": 348,
+     "delta": 3670,
+     "byArea": {
+      "client": 2,
+      "flutter": 2203,
+      "server": 1465
+     },
+     "byLanguage": {
+      "Dart": 3252,
+      "JavaScript": 418
+     },
+     "untouchedTemplateFiles": [
+      "root_radar_flutter/test/widget_test.dart",
+      "root_radar_server/bin/main.dart",
+      "root_radar_server/lib/src/auth/email_idp_endpoint.dart",
+      "root_radar_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "root_radar_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "root_radar_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 8,
+     "tables": 7,
+     "enums": 0,
+     "endpoints": [
+      "ButlerEndpoint",
+      "DebugEndpoint",
+      "DemoEndpoint",
+      "GardenEndpoint",
+      "WeatherEndpoint"
+     ],
+     "endpointMethods": 15,
+     "streamMethods": 0,
+     "dbCallSites": 34,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": true,
+     "authInCustomCode": true,
+     "webRoutes": 3,
+     "migrations": 6,
+     "generatedProtocol": true,
+     "appCalls": [
+      "butler.chatWithButler",
+      "butler.getMessages",
+      "butler.triggerBriefing",
+      "demo.seedPlants",
+      "garden.getAllFermentations",
+      "garden.getAllPlants",
+      "garden.getLogsForPlant",
+      "garden.getPhotosForPlant",
+      "garden.getUploadDescription",
+      "garden.savePlant",
+      "garden.savePlantPhoto",
+      "garden.verifyUpload"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "merlin-0lhx6z": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=wMiR0s4dN5M",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/suchithms19/merlin_ai",
+    "status": "public",
+    "commits": {
+     "total": 41,
+     "beforeOpen": 0,
+     "inWindow": 41,
+     "afterDeadline": 0,
+     "first": "2026-01-11T09:33:26Z",
+     "last": "2026-01-30T15:05:17Z",
+     "activeDays": 14,
+     "windowSpanMinutes": 27692
+    },
+    "snapshot": {
+     "sha": "a7682c846783",
+     "date": "2026-01-30T20:35:17+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "merlin_server",
+     "client": [
+      "merlin_client"
+     ],
+     "flutter": [
+      "merlin_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 8851,
+     "editedTemplateLines": 47,
+     "delta": 8898,
+     "byArea": {
+      "client": 2,
+      "flutter": 5286,
+      "server": 3610
+     },
+     "byLanguage": {
+      "Dart": 8898
+     },
+     "untouchedTemplateFiles": [
+      "merlin_flutter/lib/config/app_config.dart",
+      "merlin_flutter/test/widget_test.dart",
+      "merlin_server/bin/main.dart",
+      "merlin_server/lib/src/auth/email_idp_endpoint.dart",
+      "merlin_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "merlin_server/lib/src/greetings/greeting_endpoint.dart",
+      "merlin_server/lib/src/web/routes/app_config_route.dart",
+      "merlin_server/lib/src/web/routes/root.dart",
+      "merlin_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "merlin_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 19,
+     "tables": 8,
+     "enums": 0,
+     "endpoints": [
+      "AiChatEndpoint",
+      "CalendarEndpoint",
+      "EmailEndpoint",
+      "GoogleOAuthEndpoint",
+      "UserContextEndpoint"
+     ],
+     "endpointMethods": 39,
+     "streamMethods": 0,
+     "dbCallSites": 51,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 1,
+     "migrations": 6,
+     "generatedProtocol": true,
+     "appCalls": [
+      "aiChat.chat",
+      "aiChat.clearChatHistory",
+      "aiChat.getChatHistory",
+      "calendar.getCalendarEvents",
+      "calendar.getCalendars",
+      "googleOAuth.disconnectGoogle",
+      "googleOAuth.getGoogleConnectionStatus",
+      "googleOAuth.initiateGoogleOAuth",
+      "userContext.addUserContext",
+      "userContext.deleteUserContext",
+      "userContext.getUserContexts",
+      "userContext.updateUserContext"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "azad-the-community-driven-riding-assistant-for-bikers": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Yv60YggWV8s",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://drive.google.com/drive/folders/1bg8-FO3YaajrFOtH9oKNf4JhLf9beeGr?usp=drive_link",
+     "http": 200,
+     "status": "reachable"
+    },
+    {
+     "url": "https://youtu.be/2zKEI0L18Bg",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/anunay2/azad-app",
+    "status": "notFound"
+   }
+  },
+  "project-helper": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=KpXV9FBi4rA",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://projects-helper-bro.web.app/",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/kanakapalli/project_helper",
+    "status": "notFound"
+   }
+  },
+  "offload-q2v3yc": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=KgTCIwhAtSk",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://offload.serverpod.space",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "hushflow-a0fls4": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=nuiab9vVm9A",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/akirap3/Hushflow",
+    "status": "public",
+    "commits": {
+     "total": 25,
+     "beforeOpen": 0,
+     "inWindow": 25,
+     "afterDeadline": 0,
+     "first": "2025-12-23T00:43:14Z",
+     "last": "2026-01-30T00:13:02Z",
+     "activeDays": 6,
+     "windowSpanMinutes": 54690
+    },
+    "snapshot": {
+     "sha": "f283ca4ee7ce",
+     "date": "2026-01-29T19:13:02-05:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "1.2.6",
+     "major": 1,
+     "server": "hushflow_server",
+     "client": [
+      "hushflow_client"
+     ],
+     "flutter": [
+      "hushflow_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_client",
+      "serverpod_flutter"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "1.2.7",
+     "authoredLines": 5368,
+     "editedTemplateLines": 11,
+     "delta": 5379,
+     "byArea": {
+      "client": 6,
+      "flutter": 2986,
+      "server": 2387
+     },
+     "byLanguage": {
+      "Dart": 5013,
+      "Python": 366
+     },
+     "untouchedTemplateFiles": [
+      "hushflow_flutter/test/widget_test.dart",
+      "hushflow_server/bin/main.dart",
+      "hushflow_server/lib/src/endpoints/example_endpoint.dart",
+      "hushflow_server/lib/src/future_calls/example_future_call.dart",
+      "hushflow_server/lib/src/web/routes/root.dart",
+      "hushflow_server/lib/src/web/widgets/default_page_widget.dart"
+     ]
+    },
+    "footprint": {
+     "models": 15,
+     "tables": 10,
+     "enums": 0,
+     "endpoints": [
+      "AuthEndpoint",
+      "CleanupEndpoint",
+      "EmailEndpoint",
+      "ExampleEndpoint",
+      "MlEndpoint",
+      "OnboardingEndpoint",
+      "SummaryEndpoint",
+      "VoiceEndpoint"
+     ],
+     "endpointMethods": 31,
+     "streamMethods": 0,
+     "dbCallSites": 9,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 2,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": [
+      "ml.analyzeInbox",
+      "onboarding.confirmWhitelist",
+      "onboarding.scanForSubscriptions",
+      "summary.getSummaryDetails",
+      "summary.listSummaries"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "OpenAI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "shared-memory": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "notLinked"
+   },
+   "live": [
+    {
+     "url": "https://shared-memory.vercel.app/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/debaa98/Shared-Memory",
+    "status": "notFound"
+   }
+  },
+  "society-maintenance": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=YF5rpSnZrvo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "my-assistant-aloy6f": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=G0HOfpuP1yg",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "mematask": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://vimeo.com/1158428545",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://drive.google.com/file/d/1Xpr6isBzAjS1YrGfX3doAgJa3cXbzxoI/view?usp=sharing",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "scriptly-jpmr47": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=O2FB7ttHheo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Tasfia-17/scriptly",
+    "status": "public",
+    "commits": {
+     "total": 5,
+     "beforeOpen": 0,
+     "inWindow": 5,
+     "afterDeadline": 0,
+     "first": "2026-01-29T05:54:56Z",
+     "last": "2026-01-29T07:09:21Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 74
+    },
+    "snapshot": {
+     "sha": "9dd73eceaf6f",
+     "date": "2026-01-29T13:09:21+06:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "^2.0.0",
+     "major": 2,
+     "server": "scriptly_server",
+     "client": [],
+     "flutter": [
+      ".",
+      "scriptly_client"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_server",
+      "serverpod_cli",
+      "serverpod_flutter",
+      "serverpod_postgres",
+      "serverpod_redis"
+     ],
+     "unresolvedDeps": [
+      "serverpod_postgres",
+      "serverpod_redis"
+     ]
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 1674,
+     "editedTemplateLines": 49,
+     "delta": 1723,
+     "byArea": {
+      "flutter": 1495,
+      "server": 228
+     },
+     "byLanguage": {
+      "Dart": 1723
+     },
+     "untouchedTemplateFiles": []
+    },
+    "footprint": {
+     "models": 5,
+     "tables": 5,
+     "enums": 0,
+     "endpoints": [
+      "AIEndpoint",
+      "ProjectEndpoint",
+      "SceneEndpoint",
+      "ScriptEndpoint",
+      "UserEndpoint"
+     ],
+     "endpointMethods": 0,
+     "streamMethods": 0,
+     "dbCallSites": 17,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 1,
+     "migrations": 0,
+     "generatedProtocol": false,
+     "appCalls": []
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "OpenAI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "sample-project-d783sg": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=RCWp5YRAB4w",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "dysaid": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=1VDpeNEtye4",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "a3-artificial-assistant-for-anything": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=mraVC2SK5qA",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://drive.google.com/file/d/1IuLlNh3Poz_nuAmB5I0EcVFNyM9imcmb/view?usp=sharing",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/kanakapalli/phone_ai",
+    "status": "public",
+    "commits": {
+     "total": 24,
+     "beforeOpen": 0,
+     "inWindow": 23,
+     "afterDeadline": 1,
+     "first": "2026-01-16T16:26:00Z",
+     "last": "2026-02-01T22:29:47Z",
+     "activeDays": 8,
+     "windowSpanMinutes": 17268
+    },
+    "snapshot": {
+     "sha": "bfa3b5873622",
+     "date": "2026-01-28T21:44:18+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "phone_ai_server",
+     "client": [
+      "phone_ai_client"
+     ],
+     "flutter": [
+      "phone_ai_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 12450,
+     "editedTemplateLines": 960,
+     "delta": 13410,
+     "byArea": {
+      "client": 2,
+      "flutter": 9779,
+      "server": 3629
+     },
+     "byLanguage": {
+      "Dart": 13410
+     },
+     "untouchedTemplateFiles": [
+      "phone_ai_flutter/test/widget_test.dart",
+      "phone_ai_server/bin/main.dart",
+      "phone_ai_server/lib/src/auth/email_idp_endpoint.dart",
+      "phone_ai_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "phone_ai_server/lib/src/greetings/greeting_endpoint.dart",
+      "phone_ai_server/lib/src/web/routes/app_config_route.dart",
+      "phone_ai_server/lib/src/web/routes/root.dart",
+      "phone_ai_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "phone_ai_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 9,
+     "tables": 3,
+     "enums": 1,
+     "endpoints": [
+      "CallAgentEndpoint",
+      "CallEndpoint",
+      "ChatEndpoint",
+      "UserEndpoint"
+     ],
+     "endpointMethods": 17,
+     "streamMethods": 1,
+     "dbCallSites": 45,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 4,
+     "migrations": 6,
+     "generatedProtocol": true,
+     "appCalls": [
+      "call.cancelCall",
+      "call.getCallHistory",
+      "call.getCallStatus",
+      "call.initiateCall",
+      "call.watchCallStatus",
+      "callAgent.createCallAgent",
+      "callAgent.deleteCallAgent",
+      "callAgent.getCallAgents",
+      "callAgent.updateCallAgent",
+      "chat.clearChatHistory",
+      "chat.getChatHistory",
+      "chat.sendMessage"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "flutter-butler-3ye2mp": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "unavailable",
+    "url": "https://www.youtube.com/watch?v=your-video-link-here",
+    "http": 400
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/your-username/flutter-butler",
+    "status": "notFound"
+   }
+  },
+  "alchemist-j1qg0x": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Ji2cq53Ba9E",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/AdamMusa/hackathon_alkimist",
+    "status": "notFound"
+   }
+  },
+  "evida": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=UKsg0R3BNLc",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://evida.koehne.dev/",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "eloquim": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=RX7PoKhdfrA",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://eloquim.serverpod.space/app",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/igbokwenu/eloquim/tree/gemini",
+    "status": "notFound"
+   }
+  },
+  "echo-mirror-butler": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=4THpmRI0p5U",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://testflight.apple.com/join/4XpeCzPu",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "bubbdy-ai-lancher": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=D2n7VqxCPdA",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/kanakapalli/deskbubbytest",
+    "status": "notFound"
+   }
+  },
+  "astrea": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=8BokjJALGUI",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://www.youtube.com/watch?v=8BokjJALGUI",
+     "http": 200,
+     "status": "reachable"
+    },
+    {
+     "url": "https://drive.google.com/drive/folders/1XFyKxF8tOovgVQrY59rQ-hj_vxKi-Czm?usp=sharing",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/CarlosQ96/Astrea",
+    "status": "public",
+    "commits": {
+     "total": 17,
+     "beforeOpen": 0,
+     "inWindow": 16,
+     "afterDeadline": 1,
+     "first": "2026-01-28T22:28:15Z",
+     "last": "2026-02-13T05:33:14Z",
+     "activeDays": 3,
+     "windowSpanMinutes": 2482
+    },
+    "snapshot": {
+     "sha": "dc81342c0375",
+     "date": "2026-01-30T10:50:11-05:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "astrea_server",
+     "client": [
+      "astrea_client"
+     ],
+     "flutter": [
+      "astrea_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_core_server",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 6902,
+     "editedTemplateLines": 220,
+     "delta": 7122,
+     "byArea": {
+      "client": 2,
+      "flutter": 4256,
+      "server": 2864
+     },
+     "byLanguage": {
+      "Dart": 7122
+     },
+     "untouchedTemplateFiles": [
+      "astrea_flutter/test/widget_test.dart",
+      "astrea_server/bin/main.dart",
+      "astrea_server/lib/src/auth/email_idp_endpoint.dart",
+      "astrea_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "astrea_server/lib/src/web/routes/app_config_route.dart",
+      "astrea_server/lib/src/web/routes/root.dart",
+      "astrea_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 5,
+     "tables": 3,
+     "enums": 0,
+     "endpoints": [
+      "ChatEndpoint",
+      "DeviceTokenEndpoint",
+      "ReminderEndpoint",
+      "SyncEndpoint",
+      "UserSettingsEndpoint"
+     ],
+     "endpointMethods": 25,
+     "streamMethods": 1,
+     "dbCallSites": 43,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 4,
+     "generatedProtocol": true,
+     "appCalls": [
+      "chat.send",
+      "deviceToken.register",
+      "deviceToken.unregister",
+      "reminder.complete",
+      "reminder.copyWith",
+      "reminder.delete",
+      "reminder.list",
+      "reminder.snooze",
+      "reminder.update",
+      "sync.subscribeToReminders",
+      "userSettings.get",
+      "userSettings.update"
+     ]
+    },
+    "tests": {
+     "files": 4,
+     "cases": 46,
+     "paths": [
+      "astrea_server/test/integration/chat_endpoint_test.dart",
+      "astrea_server/test/integration/reminder_endpoint_test.dart",
+      "astrea_server/test/integration/sync_endpoint_test.dart",
+      "astrea_server/test/integration/user_settings_endpoint_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "Anthropic",
+     "Gemini"
+    ],
+    "otherBackends": [
+     "Firebase"
+    ]
+   }
+  },
+  "cognitive-load-butler": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=YmjNSZNlYZA",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "proof-butler": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=DvMwkrnLifs",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Kushal2205a/Proof-Butler",
+    "status": "notFound"
+   }
+  },
+  "ai-butler-c6abte": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=PrICNG6lqSM",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://stilvang.serverpod.space/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "quanitya": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=sydZho0sp_k",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://staging.web.quanitya.com",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/qtpi-bonding-org/quanitya",
+    "status": "notFound"
+   }
+  },
+  "voisss-ulynx3": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=PzmeF_M3Kp8",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "blood-health-tracker": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=XITt0L_9Crk",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://blood-health-tracker.serverpod.space/app/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "the-bolt-chef": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=oKItDIQN8gI",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Temiloluwa16/Bolt-Chef-Bulter",
+    "status": "public",
+    "commits": {
+     "total": 7,
+     "beforeOpen": 0,
+     "inWindow": 7,
+     "afterDeadline": 0,
+     "first": "2026-01-26T11:23:36Z",
+     "last": "2026-01-26T11:36:26Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 13
+    },
+    "snapshot": {
+     "sha": "22aee43018df",
+     "date": "2026-01-26T12:36:26+01:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "bolt_chef_server",
+     "client": [
+      "bolt_chef_client"
+     ],
+     "flutter": [
+      "bolt_chef_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_core_client",
+      "serverpod_auth_core_flutter",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 1019,
+     "editedTemplateLines": 27,
+     "delta": 1046,
+     "byArea": {
+      "client": 2,
+      "flutter": 943,
+      "server": 101
+     },
+     "byLanguage": {
+      "Dart": 1046
+     },
+     "untouchedTemplateFiles": [
+      "bolt_chef_flutter/lib/screens/greetings_screen.dart",
+      "bolt_chef_flutter/test/widget_test.dart",
+      "bolt_chef_server/bin/main.dart",
+      "bolt_chef_server/lib/server.dart",
+      "bolt_chef_server/lib/src/auth/email_idp_endpoint.dart",
+      "bolt_chef_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "bolt_chef_server/lib/src/greetings/greeting_endpoint.dart",
+      "bolt_chef_server/lib/src/web/routes/app_config_route.dart",
+      "bolt_chef_server/lib/src/web/routes/root.dart",
+      "bolt_chef_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "bolt_chef_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 2,
+     "tables": 2,
+     "enums": 0,
+     "endpoints": [
+      "AiButlerEndpoint",
+      "NoteEndpoint"
+     ],
+     "endpointMethods": 6,
+     "streamMethods": 0,
+     "dbCallSites": 9,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 4,
+     "generatedProtocol": true,
+     "appCalls": [
+      "aiButler.analyzeNote",
+      "aiButler.getInsightsForNote",
+      "note.createNote",
+      "note.deleteNote",
+      "note.getAllNotes",
+      "note.updateNote"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "road-trip-butler": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=NQd7oBBlhLQ",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/eities/road-trip-butler",
+    "status": "public",
+    "commits": {
+     "total": 25,
+     "beforeOpen": 0,
+     "inWindow": 25,
+     "afterDeadline": 0,
+     "first": "2026-01-09T22:09:25Z",
+     "last": "2026-01-30T06:18:55Z",
+     "activeDays": 11,
+     "windowSpanMinutes": 29290
+    },
+    "snapshot": {
+     "sha": "3be49cc4812e",
+     "date": "2026-01-29T22:18:55-08:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.0",
+     "major": 3,
+     "server": "road_trip_butler_server",
+     "client": [
+      "road_trip_butler_client"
+     ],
+     "flutter": [
+      "road_trip_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.0",
+     "authoredLines": 1596,
+     "editedTemplateLines": 20,
+     "delta": 1616,
+     "byArea": {
+      "client": 2,
+      "flutter": 923,
+      "server": 691
+     },
+     "byLanguage": {
+      "Dart": 1616
+     },
+     "untouchedTemplateFiles": [
+      "road_trip_butler_flutter/test/widget_test.dart",
+      "road_trip_butler_server/bin/main.dart",
+      "road_trip_butler_server/lib/server.dart",
+      "road_trip_butler_server/lib/src/auth/email_idp_endpoint.dart",
+      "road_trip_butler_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "road_trip_butler_server/lib/src/web/routes/app_config_route.dart",
+      "road_trip_butler_server/lib/src/web/routes/root.dart",
+      "road_trip_butler_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 2,
+     "tables": 2,
+     "enums": 2,
+     "endpoints": [
+      "TripEndpoint"
+     ],
+     "endpointMethods": 1,
+     "streamMethods": 0,
+     "dbCallSites": 0,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 7,
+     "generatedProtocol": true,
+     "appCalls": [
+      "trip.createTrip"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "vantage-assistant": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=NptSOvN63JA",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://breakoutpad.dgavriloff.com",
+     "http": 0,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "butler-glue": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=LH2IDbmCUBI",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/alpharithm-dex/butler-glue",
+    "status": "notFound"
+   }
+  },
+  "butlros": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=G7iYWkhondo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "lume-zero": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=kj3EGcioH7Q",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/goldcarib/lume-zero",
+    "status": "public",
+    "commits": {
+     "total": 7,
+     "beforeOpen": 0,
+     "inWindow": 7,
+     "afterDeadline": 0,
+     "first": "2026-01-29T21:40:29Z",
+     "last": "2026-01-30T15:57:16Z",
+     "activeDays": 2,
+     "windowSpanMinutes": 1097
+    },
+    "snapshot": {
+     "sha": "d466c0a73010",
+     "date": "2026-01-30T11:57:16-04:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.1",
+     "major": 3,
+     "server": "lume_server/lume_server_server",
+     "client": [
+      "lume_server/lume_server_client"
+     ],
+     "flutter": [
+      "lume_server/lume_flutter",
+      "lume_server/lume_server_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.1",
+     "authoredLines": 3719,
+     "editedTemplateLines": 68,
+     "delta": 3787,
+     "byArea": {
+      "flutter": 3646,
+      "client": 2,
+      "server": 139
+     },
+     "byLanguage": {
+      "Dart": 3787
+     },
+     "untouchedTemplateFiles": [
+      "lume_server/lume_server_flutter/lib/main.dart",
+      "lume_server/lume_server_flutter/lib/screens/greetings_screen.dart",
+      "lume_server/lume_server_flutter/lib/screens/sign_in_screen.dart",
+      "lume_server/lume_server_flutter/test/widget_test.dart",
+      "lume_server/lume_server_server/bin/main.dart",
+      "lume_server/lume_server_server/lib/server.dart",
+      "lume_server/lume_server_server/lib/src/auth/email_idp_endpoint.dart",
+      "lume_server/lume_server_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "lume_server/lume_server_server/lib/src/greetings/greeting_endpoint.dart",
+      "lume_server/lume_server_server/lib/src/web/routes/app_config_route.dart",
+      "lume_server/lume_server_server/lib/src/web/routes/root.dart",
+      "lume_server/lume_server_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "lume_server/lume_server_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 5,
+     "tables": 2,
+     "enums": 1,
+     "endpoints": [
+      "GroupEndpoint",
+      "PointerStreamEndpoint",
+      "QueueEndpoint"
+     ],
+     "endpointMethods": 9,
+     "streamMethods": 1,
+     "dbCallSites": 7,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 2,
+     "generatedProtocol": true,
+     "appCalls": [
+      "group.getGroup",
+      "pointerStream.broadcast",
+      "pointerStream.subscribe",
+      "queue.getWaitingSessions",
+      "queue.requestSupport",
+      "queue.startAssisting"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "flutter-butler-hackathon": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=JOuDg6JqeD0",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://slozzyondul.github.io/Flutter_Butler_Hackathon/",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "bullion": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=2-9bpbTsTfE",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "daypilot-qv2drx": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=5GWle5R6GI4",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/elmaquinaxd/daypilot",
+    "status": "public",
+    "commits": {
+     "total": 3,
+     "beforeOpen": 0,
+     "inWindow": 3,
+     "afterDeadline": 0,
+     "first": "2026-01-19T22:03:56Z",
+     "last": "2026-01-30T02:33:00Z",
+     "activeDays": 2,
+     "windowSpanMinutes": 14669
+    },
+    "snapshot": {
+     "sha": "ec2098ed428b",
+     "date": "2026-01-30T03:33:00+01:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "daypilot_backend/daypilot_backend_server",
+     "client": [
+      "daypilot_backend/daypilot_backend_client"
+     ],
+     "flutter": [
+      "daypilot_backend/daypilot_backend_flutter",
+      "flutter_app"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 886,
+     "editedTemplateLines": 368,
+     "delta": 1254,
+     "byArea": {
+      "client": 2,
+      "flutter": 833,
+      "server": 419
+     },
+     "byLanguage": {
+      "Dart": 1254
+     },
+     "untouchedTemplateFiles": [
+      "daypilot_backend/daypilot_backend_flutter/lib/main.dart",
+      "daypilot_backend/daypilot_backend_flutter/lib/config/app_config.dart",
+      "daypilot_backend/daypilot_backend_flutter/lib/screens/greetings_screen.dart",
+      "daypilot_backend/daypilot_backend_flutter/lib/screens/sign_in_screen.dart",
+      "daypilot_backend/daypilot_backend_flutter/test/widget_test.dart",
+      "daypilot_backend/daypilot_backend_server/bin/main.dart",
+      "daypilot_backend/daypilot_backend_server/lib/server.dart",
+      "daypilot_backend/daypilot_backend_server/lib/src/auth/email_idp_endpoint.dart",
+      "daypilot_backend/daypilot_backend_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "daypilot_backend/daypilot_backend_server/lib/src/greetings/greeting_endpoint.dart",
+      "daypilot_backend/daypilot_backend_server/lib/src/web/routes/app_config_route.dart",
+      "daypilot_backend/daypilot_backend_server/lib/src/web/routes/root.dart",
+      "daypilot_backend/daypilot_backend_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "daypilot_backend/daypilot_backend_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 4,
+     "tables": 0,
+     "enums": 0,
+     "endpoints": [
+      "MealEndpoint",
+      "PingEndpoint",
+      "PlanEndpoint"
+     ],
+     "endpointMethods": 5,
+     "streamMethods": 0,
+     "dbCallSites": 0,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": true,
+     "appCalls": [
+      "meal.generateMealSuggestions",
+      "plan.generatePlan"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "ai-based-receipt-banking-screenshot-app": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://vimeo.com/1160235689",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "legal-lens-foazyi": {
+   "checked": "2026-09-27",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Wd8ajN8SqCY",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/singhrahul7988/Legal-lens",
+    "status": "public",
+    "commits": {
+     "total": 5,
+     "beforeOpen": 0,
+     "inWindow": 1,
+     "afterDeadline": 4,
+     "first": "2026-01-30T15:46:12Z",
+     "last": "2026-07-20T06:13:41Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 0
+    },
+    "snapshot": {
+     "sha": "8dccd35a2277",
+     "date": "2026-01-30T21:16:12+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "legal_lens/legal_lens_server",
+     "client": [
+      "legal_lens/legal_lens_client"
+     ],
+     "flutter": [
+      "legal_lens/legal_lens_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 6153,
+     "editedTemplateLines": 13,
+     "delta": 6166,
+     "byArea": {
+      "client": 2,
+      "flutter": 5307,
+      "server": 857
+     },
+     "byLanguage": {
+      "Dart": 6166
+     },
+     "untouchedTemplateFiles": [
+      "legal_lens/legal_lens_flutter/test/widget_test.dart",
+      "legal_lens/legal_lens_server/bin/main.dart",
+      "legal_lens/legal_lens_server/lib/src/auth/email_idp_endpoint.dart",
+      "legal_lens/legal_lens_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "legal_lens/legal_lens_server/lib/src/web/routes/app_config_route.dart",
+      "legal_lens/legal_lens_server/lib/src/web/routes/root.dart",
+      "legal_lens/legal_lens_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 8,
+     "tables": 2,
+     "enums": 2,
+     "endpoints": [
+      "AiEndpoint",
+      "DocumentEndpoint",
+      "UserImageEndpoint"
+     ],
+     "endpointMethods": 8,
+     "streamMethods": 0,
+     "dbCallSites": 17,
+     "futureCalls": false,
+     "caching": true,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 1,
+     "migrations": 7,
+     "generatedProtocol": true,
+     "appCalls": [
+      "ai.chat",
+      "ai.generateDraft",
+      "document.analyzeDocument",
+      "document.createDocument",
+      "document.getDocumentsBySession",
+      "document.insert",
+      "document.toPlainText",
+      "userImage.getProfileImageUrl",
+      "userImage.removeUserImage",
+      "userImage.updateUserImage"
+     ]
+    },
+    "tests": {
+     "files": 6,
+     "cases": 21,
+     "paths": [
+      "legal_lens/legal_lens_flutter/test/dashboard_test.dart",
+      "legal_lens/legal_lens_flutter/test/document_repository_test.dart",
+      "legal_lens/legal_lens_flutter/test/core/utils/intent_classifier_test.dart",
+      "legal_lens/legal_lens_server/test/integration/ai_endpoint_test.dart",
+      "legal_lens/legal_lens_server/test/integration/document_endpoint_test.dart",
+      "legal_lens/legal_lens_server/test/integration/user_image_endpoint_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "culture-compass-b0hnda": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "unavailable",
+    "url": "https://www.youtube.com/watch?v=ZfS5kRgWOas",
+    "http": 404
+   },
+   "live": [
+    {
+     "url": "https://culturecompass.serverpod.space/app/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/BhavyaAk25/Culture-Compass-",
+    "status": "notFound"
+   }
+  },
+  "event-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=pHJ4FsjsyPU",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://recipebutler.serverpod.space/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "squiddies": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=p1BHX4LaH3M",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://testflight.apple.com/join/66qZsDNW",
+     "http": 404,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://squiddies.ink",
+     "http": 0,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://play.google.com/store/apps/details?id=com.hugetoothstudios.squiddies",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "dicto": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=UWLeXnsk7W8",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://dicto.co.uk",
+     "http": 0,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "goalvision": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=vaEk8GIHw2U",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/HectorTa1989/GoalVision-Flutter-Serverpod-hackathon",
+    "status": "notFound"
+   }
+  },
+  "recodiary": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=xRCvHMybiNI",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/victorbash400/recodiary",
+    "status": "public",
+    "commits": {
+     "total": 31,
+     "beforeOpen": 0,
+     "inWindow": 31,
+     "afterDeadline": 0,
+     "first": "2026-01-17T09:04:50Z",
+     "last": "2026-01-24T13:38:38Z",
+     "activeDays": 7,
+     "windowSpanMinutes": 10354
+    },
+    "snapshot": {
+     "sha": "f4e20569f919",
+     "date": "2026-01-24T16:38:38+03:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "recodiary_server",
+     "client": [
+      "recodiary_client"
+     ],
+     "flutter": [
+      "recodiary_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_shared_flutter",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 6814,
+     "editedTemplateLines": 69,
+     "delta": 6883,
+     "byArea": {
+      "other": 1512,
+      "client": 2,
+      "flutter": 5068,
+      "server": 301
+     },
+     "byLanguage": {
+      "Dart": 5371,
+      "Python": 1512
+     },
+     "untouchedTemplateFiles": [
+      "recodiary_flutter/test/widget_test.dart",
+      "recodiary_server/bin/main.dart",
+      "recodiary_server/lib/server.dart",
+      "recodiary_server/lib/src/auth/email_idp_endpoint.dart",
+      "recodiary_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "recodiary_server/lib/src/greetings/greeting_endpoint.dart",
+      "recodiary_server/lib/src/web/routes/app_config_route.dart",
+      "recodiary_server/lib/src/web/routes/root.dart",
+      "recodiary_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "recodiary_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 3,
+     "tables": 3,
+     "enums": 2,
+     "endpoints": [
+      "AiEndpoint",
+      "ForYouEndpoint",
+      "TasteEndpoint",
+      "UserEndpoint"
+     ],
+     "endpointMethods": 15,
+     "streamMethods": 2,
+     "dbCallSites": 19,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 5,
+     "generatedProtocol": false,
+     "appCalls": [
+      "ai.extractTaste",
+      "ai.generateRecommendations",
+      "forYou.addBatch",
+      "forYou.dislike",
+      "forYou.like",
+      "forYou.list",
+      "taste.addEntry",
+      "taste.clearLibrary",
+      "taste.deleteEntry",
+      "taste.listEntries",
+      "user.getProfile",
+      "user.updateProfile"
+     ]
+    },
+    "tests": {
+     "files": 3,
+     "cases": 6,
+     "paths": [
+      "recodiary_ai/test_agent.py",
+      "recodiary_ai/tests/test_websocket_flow.py",
+      "recodiary_server/test/integration/taste_endpoint_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "vigil-the-high-stakes-compliance-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=UIEskWNpAxo",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://vigil-compliance-butler.netlify.app",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/MSAbhishek22/vigil-compliance-butler",
+    "status": "public",
+    "commits": {
+     "total": 6,
+     "beforeOpen": 0,
+     "inWindow": 6,
+     "afterDeadline": 0,
+     "first": "2026-01-30T13:15:56Z",
+     "last": "2026-01-30T15:06:42Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 111
+    },
+    "snapshot": {
+     "sha": "d892e8c6a219",
+     "date": "2026-01-30T20:36:42+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "^3.2.0",
+     "major": 3,
+     "server": "vigil_server",
+     "client": [
+      "vigil_client"
+     ],
+     "flutter": [
+      "vigil_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_client",
+      "serverpod_flutter"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.0",
+     "authoredLines": 2977,
+     "editedTemplateLines": 129,
+     "delta": 3106,
+     "byArea": {
+      "client": 158,
+      "flutter": 1847,
+      "server": 1101
+     },
+     "byLanguage": {
+      "Dart": 3071,
+      "SQL": 35
+     },
+     "untouchedTemplateFiles": []
+    },
+    "footprint": {
+     "models": 3,
+     "tables": 3,
+     "enums": 0,
+     "endpoints": [
+      "DocumentEndpoint"
+     ],
+     "endpointMethods": 7,
+     "streamMethods": 0,
+     "dbCallSites": 48,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 0,
+     "generatedProtocol": false,
+     "appCalls": [
+      "document.completeRequirement",
+      "document.getActiveDocuments",
+      "document.getRequirements",
+      "document.getUpcomingDeadlines",
+      "document.getVigilanceScore",
+      "document.processDocument"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "butlrapp": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "private",
+    "url": "https://www.youtube.com/watch?v=u3ktfrQt8uo",
+    "http": 403
+   },
+   "live": [
+    {
+     "url": "https://butlr1.serverpod.space/app/",
+     "http": 404,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://drive.google.com/file/d/1lh1OLxJhNKclsDE_d3iKQy1VddMdpNoN/view?usp=drive_link",
+     "http": 401,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/ZAKira-gpu/butlrapp",
+    "status": "public",
+    "commits": {
+     "total": 6,
+     "beforeOpen": 0,
+     "inWindow": 6,
+     "afterDeadline": 0,
+     "first": "2026-01-29T23:18:44Z",
+     "last": "2026-01-30T10:37:11Z",
+     "activeDays": 2,
+     "windowSpanMinutes": 678
+    },
+    "snapshot": {
+     "sha": "f39141173d61",
+     "date": "2026-01-30T11:37:11+01:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "butlrapp_server",
+     "client": [
+      "butlrapp_client"
+     ],
+     "flutter": [
+      "butlrapp_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 3934,
+     "editedTemplateLines": 64,
+     "delta": 3998,
+     "byArea": {
+      "client": 2,
+      "flutter": 3257,
+      "server": 739
+     },
+     "byLanguage": {
+      "Dart": 3998
+     },
+     "untouchedTemplateFiles": [
+      "butlrapp_flutter/lib/screens/greetings_screen.dart",
+      "butlrapp_flutter/lib/screens/sign_in_screen.dart",
+      "butlrapp_flutter/test/widget_test.dart",
+      "butlrapp_server/bin/main.dart",
+      "butlrapp_server/lib/server.dart",
+      "butlrapp_server/lib/src/auth/email_idp_endpoint.dart",
+      "butlrapp_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "butlrapp_server/lib/src/greetings/greeting_endpoint.dart",
+      "butlrapp_server/lib/src/web/routes/app_config_route.dart",
+      "butlrapp_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "butlrapp_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 4,
+     "tables": 3,
+     "enums": 1,
+     "endpoints": [
+      "ChatEndpoint",
+      "TaskEndpoint"
+     ],
+     "endpointMethods": 13,
+     "streamMethods": 0,
+     "dbCallSites": 24,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": [
+      "chat.deleteSession",
+      "chat.getChatHistory",
+      "chat.getSessions",
+      "chat.processMessage",
+      "task.createTask",
+      "task.deleteTask",
+      "task.getTasks",
+      "task.getTasksByDate",
+      "task.updateTask"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "mamacare-ufjnk7": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://vimeo.com/1152693926",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/its-kios09/mamacare-butler",
+    "status": "public",
+    "commits": {
+     "total": 32,
+     "beforeOpen": 0,
+     "inWindow": 32,
+     "afterDeadline": 0,
+     "first": "2025-12-24T19:43:35Z",
+     "last": "2026-01-09T18:42:25Z",
+     "activeDays": 9,
+     "windowSpanMinutes": 22979
+    },
+    "snapshot": {
+     "sha": "771dd9cface6",
+     "date": "2026-01-09T21:42:25+03:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "mamacare_server",
+     "client": [
+      "mamacare_client"
+     ],
+     "flutter": [
+      "mamacare_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_core_server",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 12995,
+     "editedTemplateLines": 265,
+     "delta": 13260,
+     "byArea": {
+      "client": 2,
+      "flutter": 11989,
+      "server": 1269
+     },
+     "byLanguage": {
+      "Dart": 13260
+     },
+     "untouchedTemplateFiles": [
+      "mamacare_flutter/lib/config/app_config.dart",
+      "mamacare_flutter/test/widget_test.dart",
+      "mamacare_server/bin/main.dart",
+      "mamacare_server/lib/server.dart",
+      "mamacare_server/lib/src/auth/email_idp_endpoint.dart",
+      "mamacare_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "mamacare_server/lib/src/greetings/greeting_endpoint.dart",
+      "mamacare_server/lib/src/web/routes/app_config_route.dart",
+      "mamacare_server/lib/src/web/routes/root.dart",
+      "mamacare_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "mamacare_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 9,
+     "tables": 6,
+     "enums": 0,
+     "endpoints": [
+      "V1AuthEndpoint",
+      "V1HealthCheckinEndpoint",
+      "V1KickCounterEndpoint",
+      "V1MaternalProfileEndpoint",
+      "V1MedicationEndpoint",
+      "V1UltrasoundEndpoint"
+     ],
+     "endpointMethods": 23,
+     "streamMethods": 0,
+     "dbCallSites": 27,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": false,
+     "appCalls": [
+      "v1Auth.getUserByPhone",
+      "v1Auth.registerUser",
+      "v1Auth.userExists",
+      "v1HealthCheckin.getCheckinHistory",
+      "v1HealthCheckin.submitCheckin",
+      "v1KickCounter.getAIInsight",
+      "v1KickCounter.getRecentKicks",
+      "v1KickCounter.getUserSessions",
+      "v1KickCounter.saveKickSession",
+      "v1MaternalProfile.getProfile",
+      "v1MaternalProfile.saveProfile",
+      "v1MaternalProfile.updateProfile",
+      "v1Medication.addMedication",
+      "v1Medication.deleteMedication",
+      "v1Medication.getUserMedications",
+      "v1Medication.toggleMedicationStatus",
+      "v1Ultrasound.analyzeHistory",
+      "v1Ultrasound.analyzeUltrasound",
+      "v1Ultrasound.getUserScans",
+      "v1Ultrasound.saveUltrasoundScan"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "btlr-2xcw9f": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=5whUQ3TLYok",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/AbhinavBangar1/btlr",
+    "status": "public",
+    "commits": {
+     "total": 15,
+     "beforeOpen": 0,
+     "inWindow": 15,
+     "afterDeadline": 0,
+     "first": "2026-01-22T14:26:59Z",
+     "last": "2026-01-30T14:37:54Z",
+     "activeDays": 6,
+     "windowSpanMinutes": 11531
+    },
+    "snapshot": {
+     "sha": "c0a37bc34064",
+     "date": "2026-01-30T20:07:54+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "btlr_server",
+     "client": [
+      "btlr_client"
+     ],
+     "flutter": [
+      "btlr_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_shared_flutter",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 24559,
+     "editedTemplateLines": 69,
+     "delta": 24628,
+     "byArea": {
+      "client": 2,
+      "flutter": 15657,
+      "server": 8969
+     },
+     "byLanguage": {
+      "Dart": 24628
+     },
+     "untouchedTemplateFiles": [
+      "btlr_server/bin/main.dart",
+      "btlr_server/lib/src/auth/email_idp_endpoint.dart",
+      "btlr_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "btlr_server/lib/src/greetings/greeting_endpoint.dart",
+      "btlr_server/lib/src/web/routes/app_config_route.dart",
+      "btlr_server/lib/src/web/routes/root.dart",
+      "btlr_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "btlr_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 11,
+     "tables": 11,
+     "enums": 0,
+     "endpoints": [
+      "AcademicEndpoint",
+      "ActivityEndpoint",
+      "BehaviorEndpoint",
+      "GoalEndpoint",
+      "OpportunityEndpoint",
+      "PlanEndpoint",
+      "ScrapingEndpoint",
+      "StudentEndpoint",
+      "VoiceEndpoint"
+     ],
+     "endpointMethods": 137,
+     "streamMethods": 0,
+     "dbCallSites": 347,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 5,
+     "generatedProtocol": true,
+     "appCalls": [
+      "activity.deleteActivityTracker",
+      "activity.getDashboard",
+      "activity.setupActivityTracker",
+      "activity.syncAllActivities",
+      "activity.syncPlatformActivity",
+      "behavior.getCompletionStats",
+      "behavior.getDailyCompletionRates",
+      "behavior.getEnergyTrends",
+      "behavior.getMissReasonsBreakdown",
+      "behavior.getOptimalBlockLength",
+      "behavior.getStreakInfo",
+      "behavior.getStudentLogs",
+      "behavior.getTimeOfDayPerformance",
+      "behavior.logCompletion",
+      "behavior.logMiss",
+      "behavior.logPostpone",
+      "behavior.logStart",
+      "goal.addHours",
+      "goal.completeGoal",
+      "goal.createGoal",
+      "goal.deleteGoal",
+      "goal.getGoalStats",
+      "goal.getStudentGoals",
+      "goal.updateGoal",
+      "opportunity.calculateRelevance",
+      "opportunity.createOpportunity",
+      "opportunity.deleteOpportunity",
+      "opportunity.getInjectableOpportunities",
+      "opportunity.getOpportunityStats",
+      "opportunity.getRelevantOpportunities",
+      "opportunity.getStudentOpportunities",
+      "opportunity.getUnassignedOpportunities",
+      "opportunity.getUpcomingDeadlines",
+      "opportunity.recalculateAllRelevance",
+      "opportunity.updateOpportunity",
+      "opportunity.updateStatus",
+      "plan.completeBlock",
+      "plan.generatePlan",
+      "plan.getBlocksInRange",
+      "plan.getCurrentBlock",
+      "plan.getOrGenerateTodaysPlan",
+      "plan.getPlanBlocks",
+      "plan.getPlanStats",
+      "plan.getUpcomingBlocks",
+      "plan.missBlock",
+      "plan.regeneratePlan",
+      "plan.updateBlock",
+      "scraping.addCustomScrapingUrl",
+      "scraping.getScrapedContent",
+      "scraping.markAsRead",
+      "scraping.scrapeAllPlatforms",
+      "scraping.scrapePlatform",
+      "scraping.scrapeUserProfiles",
+      "student.createProfile",
+      "student.deleteProfile",
+      "student.getProfile",
+      "student.getProfileByEmail",
+      "student.updateProfile"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "briefly-8vuocf": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=nkhWLC0WTOU",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/bluestemso/briefly",
+    "status": "notFound"
+   }
+  },
+  "draft-e1dwhi": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=D_M7Q0juK00",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "adex-adaptive-data-extraction-system": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=ZS7hfa1IW0c",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/kanakapalli/adex",
+    "status": "public",
+    "commits": {
+     "total": 19,
+     "beforeOpen": 0,
+     "inWindow": 17,
+     "afterDeadline": 2,
+     "first": "2026-01-21T18:15:38Z",
+     "last": "2026-02-28T17:41:55Z",
+     "activeDays": 5,
+     "windowSpanMinutes": 11913
+    },
+    "snapshot": {
+     "sha": "b821713f61b2",
+     "date": "2026-01-30T06:18:57+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "adex_server",
+     "client": [
+      "adex_client"
+     ],
+     "flutter": [
+      "adex_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_cloud_storage_s3",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 7859,
+     "editedTemplateLines": 155,
+     "delta": 8014,
+     "byArea": {
+      "client": 2,
+      "flutter": 6182,
+      "server": 1830
+     },
+     "byLanguage": {
+      "Dart": 8014
+     },
+     "untouchedTemplateFiles": [
+      "adex_flutter/test/widget_test.dart",
+      "adex_server/bin/main.dart",
+      "adex_server/lib/src/auth/email_idp_endpoint.dart",
+      "adex_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "adex_server/lib/src/greetings/greeting_endpoint.dart",
+      "adex_server/lib/src/web/routes/app_config_route.dart",
+      "adex_server/lib/src/web/routes/root.dart",
+      "adex_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "adex_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 2,
+     "tables": 2,
+     "enums": 0,
+     "endpoints": [
+      "AdexServiceEndpoint",
+      "UploadEndpoint",
+      "VideoExtractionEndpoint"
+     ],
+     "endpointMethods": 29,
+     "streamMethods": 0,
+     "dbCallSites": 16,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": true,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 2,
+     "generatedProtocol": true,
+     "appCalls": [
+      "adexService.getAllAdexModels",
+      "adexService.processVideo"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "my-butler-habngj": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=m4sqYgqk2tk",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "http://my-butler.online",
+     "http": 500,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://my-butler-web-619514705439.us-central1.run.app/",
+     "http": 503,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "lifebutler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=sCX1Bg4qg_Q",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/kartikchill/LifeButler",
+    "status": "public",
+    "commits": {
+     "total": 16,
+     "beforeOpen": 0,
+     "inWindow": 16,
+     "afterDeadline": 0,
+     "first": "2025-12-21T16:46:20Z",
+     "last": "2026-01-28T20:34:03Z",
+     "activeDays": 3,
+     "windowSpanMinutes": 54948
+    },
+    "snapshot": {
+     "sha": "9527c77625b9",
+     "date": "2026-01-29T02:04:03+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "lifebutler_server",
+     "client": [
+      "lifebutler_client"
+     ],
+     "flutter": [
+      "lifebutler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_cli",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 4547,
+     "editedTemplateLines": 32,
+     "delta": 4579,
+     "byArea": {
+      "client": 16,
+      "flutter": 4336,
+      "server": 227
+     },
+     "byLanguage": {
+      "Dart": 4539,
+      "SQL": 40
+     },
+     "untouchedTemplateFiles": [
+      "lifebutler_flutter/lib/config/app_config.dart",
+      "lifebutler_flutter/test/widget_test.dart",
+      "lifebutler_server/lib/src/greetings/greeting_endpoint.dart",
+      "lifebutler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 6,
+     "tables": 6,
+     "enums": 0,
+     "endpoints": [
+      "GoalEndpoint",
+      "StreakEndpoint",
+      "TaskEndpoint"
+     ],
+     "endpointMethods": 7,
+     "streamMethods": 0,
+     "dbCallSites": 11,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 11,
+     "generatedProtocol": true,
+     "appCalls": []
+    },
+    "tests": {
+     "files": 1,
+     "cases": 5,
+     "paths": [
+      "lifebutler_flutter/test/qa_audit_test.dart"
+     ]
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "bulter-ai-personal-assistant": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=krwLt3MPpH8",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://mybutler.pixelapp.tech/",
+     "http": 0,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "symptomscribe": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=JEziYq2l5mE",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://symptomscribe.serverpod.space/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "focus-buttler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=lxoOXhRGHVg",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "minimlfit": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "private",
+    "url": "https://www.youtube.com/watch?v=-UrjElJ0y8g",
+    "http": 403
+   },
+   "live": [
+    {
+     "url": "https://testflight.apple.com/join/HknP4mQa",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "podbutler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=xm2PO_5bl80",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://task-butler.serverpod.space/app",
+     "http": 404,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://drive.google.com/file/d/1GVytQQkD3KaVB99ZhthHecuoTV5ZU1cN/view?usp=sharing",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/Psianturi/assist_dart",
+    "status": "public",
+    "commits": {
+     "total": 21,
+     "beforeOpen": 0,
+     "inWindow": 20,
+     "afterDeadline": 1,
+     "first": "2026-01-23T18:34:30Z",
+     "last": "2026-01-31T13:24:42Z",
+     "activeDays": 6,
+     "windowSpanMinutes": 9818
+    },
+    "snapshot": {
+     "sha": "b9b2807cbc29",
+     "date": "2026-01-30T21:12:10+07:00",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "assist_dart_temp/assist_server",
+     "client": [
+      "assist_dart_temp/assist_client"
+     ],
+     "flutter": [
+      "assist_dart_temp/assist_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_core_client",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_server",
+      "serverpod_cli",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 3090,
+     "editedTemplateLines": 31,
+     "delta": 3121,
+     "byArea": {
+      "client": 191,
+      "flutter": 2213,
+      "server": 613,
+      "other": 104
+     },
+     "byLanguage": {
+      "Dart": 3017,
+      "Python": 104
+     },
+     "untouchedTemplateFiles": [
+      "assist_dart_temp/assist_flutter/test/widget_test.dart",
+      "assist_dart_temp/assist_server/bin/main.dart",
+      "assist_dart_temp/assist_server/lib/server.dart",
+      "assist_dart_temp/assist_server/lib/src/auth/email_idp_endpoint.dart",
+      "assist_dart_temp/assist_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "assist_dart_temp/assist_server/lib/src/greetings/greeting_endpoint.dart",
+      "assist_dart_temp/assist_server/lib/src/web/routes/app_config_route.dart",
+      "assist_dart_temp/assist_server/lib/src/web/routes/root.dart",
+      "assist_dart_temp/assist_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "assist_dart_temp/assist_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 2,
+     "tables": 2,
+     "enums": 0,
+     "endpoints": [
+      "TaskEndpoint",
+      "TraceEndpoint"
+     ],
+     "endpointMethods": 9,
+     "streamMethods": 0,
+     "dbCallSites": 12,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": [
+      "task.complete",
+      "task.completeAll",
+      "task.delete",
+      "task.deleteAll",
+      "task.deleteCompleted",
+      "task.list",
+      "task.parseAndCreateMany"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "butler-lee": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Itmtn8nfdrU",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/anomihe/buttle_lee",
+    "status": "public",
+    "commits": {
+     "total": 16,
+     "beforeOpen": 0,
+     "inWindow": 16,
+     "afterDeadline": 0,
+     "first": "2026-01-15T14:38:11Z",
+     "last": "2026-01-30T15:24:06Z",
+     "activeDays": 8,
+     "windowSpanMinutes": 21646
+    },
+    "snapshot": {
+     "sha": "78ed3f85c82e",
+     "date": "2026-01-30T16:24:06+01:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "^3.2.0",
+     "major": 3,
+     "server": "my_butler_server",
+     "client": [
+      "my_butler_client"
+     ],
+     "flutter": [
+      "my_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_core_client",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_server",
+      "serverpod_auth_shared_flutter",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.0",
+     "authoredLines": 11979,
+     "editedTemplateLines": 250,
+     "delta": 12229,
+     "byArea": {
+      "client": 2,
+      "flutter": 10743,
+      "server": 1484
+     },
+     "byLanguage": {
+      "Dart": 12229
+     },
+     "untouchedTemplateFiles": [
+      "my_butler_flutter/test/widget_test.dart",
+      "my_butler_server/bin/main.dart",
+      "my_butler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 7,
+     "tables": 7,
+     "enums": 2,
+     "endpoints": [
+      "AiEndpoint",
+      "AnalyticsEndpoint",
+      "AuthEndpoint",
+      "BookEndpoint",
+      "HouseholdEndpoint",
+      "ReminderEndpoint",
+      "UserProfileEndpoint"
+     ],
+     "endpointMethods": 39,
+     "streamMethods": 1,
+     "dbCallSites": 67,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 1,
+     "migrations": 10,
+     "generatedProtocol": true,
+     "appCalls": [
+      "ai.processCommand",
+      "analytics.getWeeklyProductivity",
+      "auth.checkEmailExists",
+      "auth.getUserProfile",
+      "auth.registerWithProfile",
+      "auth.resetPassword",
+      "auth.updateProfileImage",
+      "book.addBook",
+      "book.addBookWithChapters",
+      "book.completeBook",
+      "book.completeChapter",
+      "book.finishBook",
+      "book.getBooks",
+      "book.getChapters",
+      "book.uncompleteChapter",
+      "book.updateLessons",
+      "household.createHousehold",
+      "household.deleteHousehold",
+      "household.getHouseholdMembers",
+      "household.getMyHouseholds",
+      "household.getSharedRoutines",
+      "household.joinHousehold",
+      "household.leaveHousehold",
+      "household.shareRoutine",
+      "household.startFocusSession",
+      "household.stopFocusSession",
+      "reminder.createReminder",
+      "reminder.deleteReminder",
+      "reminder.getCompletedReminders",
+      "reminder.getUserReminders",
+      "reminder.snoozeReminder",
+      "reminder.updateReminder",
+      "userProfile.getProfile",
+      "userProfile.incrementXp",
+      "userProfile.updateFocusStats",
+      "userProfile.updateHydration",
+      "userProfile.updateRoutineSettings"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": [
+     "Firebase"
+    ]
+   }
+  },
+  "awhar": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "notLinked"
+   },
+   "live": [
+    {
+     "url": "https://www.awhar.com",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "crewboard": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=cqfBFUfqoOw",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://crewboard-pm.web.app",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/crewboard/crewboard",
+    "status": "public",
+    "commits": {
+     "total": 38,
+     "beforeOpen": 0,
+     "inWindow": 34,
+     "afterDeadline": 4,
+     "first": "2025-12-23T14:00:56Z",
+     "last": "2026-04-14T15:08:53Z",
+     "activeDays": 12,
+     "windowSpanMinutes": 54798
+    },
+    "snapshot": {
+     "sha": "37b5c1faccba",
+     "date": "2026-01-30T20:48:42+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "crewboard_server",
+     "client": [
+      "crewboard_client"
+     ],
+     "flutter": [
+      "crewboard_flutter",
+      "landing"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_client",
+      "serverpod_auth_core_client",
+      "serverpod_auth_core_flutter",
+      "serverpod_auth_core_server",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_server",
+      "serverpod_auth_shared_flutter",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 210671,
+     "editedTemplateLines": 514,
+     "delta": 211185,
+     "byArea": {
+      "client": 2,
+      "flutter": 206480,
+      "server": 4703
+     },
+     "byLanguage": {
+      "Dart": 211185
+     },
+     "untouchedTemplateFiles": [
+      "crewboard_flutter/lib/config/app_config.dart",
+      "crewboard_flutter/test/widget_test.dart",
+      "crewboard_server/lib/src/auth/email_idp_endpoint.dart",
+      "crewboard_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "crewboard_server/lib/src/greetings/greeting_endpoint.dart",
+      "crewboard_server/lib/src/web/routes/app_config_route.dart",
+      "crewboard_server/lib/src/web/routes/root.dart",
+      "crewboard_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "crewboard_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 66,
+     "tables": 32,
+     "enums": 2,
+     "endpoints": [
+      "AdminEndpoint",
+      "AuthEndpoint",
+      "ChatEndpoint",
+      "DocsEndpoint",
+      "EmojiEndpoint",
+      "GiphyEndpoint",
+      "PlannerEndpoint",
+      "UploadEndpoint"
+     ],
+     "endpointMethods": 64,
+     "streamMethods": 1,
+     "dbCallSites": 274,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 32,
+     "generatedProtocol": true,
+     "appCalls": [
+      "admin.addApp",
+      "admin.addColor",
+      "admin.createUser",
+      "admin.deleteFontSetting",
+      "admin.getApps",
+      "admin.getAttendanceData",
+      "admin.getColors",
+      "admin.getFontSettings",
+      "admin.getLeaveConfigs",
+      "admin.getSystemVariables",
+      "admin.getUserTypes",
+      "admin.getUsers",
+      "admin.punch",
+      "admin.saveFontSetting",
+      "admin.saveLeaveConfig",
+      "admin.updateSystemVariables",
+      "auth.checkOrganization",
+      "auth.checkUsername",
+      "auth.registerAdmin",
+      "auth.simpleLogin",
+      "chat.createDirectRoom",
+      "chat.getMessages",
+      "chat.getRooms",
+      "chat.markAsRead",
+      "chat.searchUsers",
+      "chat.sendMessage",
+      "chat.sendTyping",
+      "chat.subscribeToRoom",
+      "docs.addDoc",
+      "docs.createFlow",
+      "docs.deleteFlow",
+      "docs.getDocs",
+      "docs.getFlow",
+      "docs.getFlows",
+      "docs.saveDoc",
+      "docs.updateFlow",
+      "emoji.getEmojiCount",
+      "emoji.getEmojis",
+      "emoji.map",
+      "emoji.replaceFirst",
+      "emoji.toString",
+      "giphy.getApiKey",
+      "giphy.getGifs",
+      "planner.addBucket",
+      "planner.addComment",
+      "planner.addPriority",
+      "planner.addStatus",
+      "planner.addTicket",
+      "planner.addTicketType",
+      "planner.changeBucket",
+      "planner.changePriority",
+      "planner.deletePlannerVariable",
+      "planner.getAddTicketData",
+      "planner.getAllTickets",
+      "planner.getPlannerData",
+      "planner.getTicketComments",
+      "planner.getTicketData",
+      "planner.getTicketThread",
+      "planner.updateTicket",
+      "upload.uploadFile"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "kindred-ai": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "unavailable",
+    "url": "https://www.youtube.com/watch?v=z08DPMRFml0",
+    "http": 404
+   },
+   "live": [
+    {
+     "url": "https://docs.google.com/presentation/d/10_-PcwavX5ZQyR_kVi_u4NDMQMxpBEbH0KXyznr5EHc/edit?usp=sharing",
+     "http": 410,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "edgar": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=uyP7aKl3-L0",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "carbon-footprint-tracker-your-digital-eco-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=vYo7qL8eD_M",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://rachelcooray.github.io/carbon-footprint-tracker/",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "stvn": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=wumx6lJyIC8",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/maylems/AI-LogButler",
+    "status": "public",
+    "commits": {
+     "total": 8,
+     "beforeOpen": 0,
+     "inWindow": 8,
+     "afterDeadline": 0,
+     "first": "2026-01-29T15:53:57Z",
+     "last": "2026-01-29T19:43:49Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 230
+    },
+    "snapshot": {
+     "sha": "f87d9d6b37fe",
+     "date": "2026-01-29T19:43:49+00:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "ai_logb_server",
+     "client": [
+      "ai_logb_client"
+     ],
+     "flutter": [
+      "ai_logb_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 1949,
+     "editedTemplateLines": 87,
+     "delta": 2036,
+     "byArea": {
+      "client": 2,
+      "flutter": 1853,
+      "server": 181
+     },
+     "byLanguage": {
+      "Dart": 2036
+     },
+     "untouchedTemplateFiles": [
+      "ai_logb_server/bin/main.dart",
+      "ai_logb_server/lib/server.dart",
+      "ai_logb_server/lib/src/auth/email_idp_endpoint.dart",
+      "ai_logb_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "ai_logb_server/lib/src/web/routes/app_config_route.dart",
+      "ai_logb_server/lib/src/web/routes/root.dart",
+      "ai_logb_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 1,
+     "tables": 0,
+     "enums": 0,
+     "endpoints": [
+      "LogAnalysisEndpoint"
+     ],
+     "endpointMethods": 2,
+     "streamMethods": 0,
+     "dbCallSites": 0,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": true,
+     "appCalls": [
+      "logAnalysis.analyzeLog"
+     ]
+    },
+    "tests": {
+     "files": 1,
+     "cases": 2,
+     "paths": [
+      "ai_logb_server/test/log_analysis_endpoint_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "nudge-fit": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=V_bueacOuiQ",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Salimer/workout-reminder",
+    "status": "public",
+    "commits": {
+     "total": 91,
+     "beforeOpen": 2,
+     "inWindow": 88,
+     "afterDeadline": 1,
+     "first": "2025-11-30T17:00:48Z",
+     "last": "2026-02-11T09:03:27Z",
+     "activeDays": 28,
+     "windowSpanMinutes": 72148
+    },
+    "snapshot": {
+     "sha": "096979544713",
+     "date": "2026-01-29T12:22:52+03:00",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "workouts_reminder_server",
+     "client": [
+      "workouts_reminder_client"
+     ],
+     "flutter": [
+      "workouts_reminder_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 12049,
+     "editedTemplateLines": 238,
+     "delta": 12287,
+     "byArea": {
+      "other": 8,
+      "client": 2,
+      "flutter": 10523,
+      "server": 1754
+     },
+     "byLanguage": {
+      "Dart": 12279,
+      "SQL": 8
+     },
+     "untouchedTemplateFiles": [
+      "workouts_reminder_flutter/test/widget_test.dart",
+      "workouts_reminder_server/bin/main.dart",
+      "workouts_reminder_server/lib/src/auth/email_idp_endpoint.dart",
+      "workouts_reminder_server/lib/src/web/routes/root.dart",
+      "workouts_reminder_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "workouts_reminder_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 7,
+     "tables": 6,
+     "enums": 2,
+     "endpoints": [
+      "DayScheduleEndpoint",
+      "ProfileEndpoint",
+      "ProgressEndpoint",
+      "WeekScheduleEndpoint"
+     ],
+     "endpointMethods": 8,
+     "streamMethods": 0,
+     "dbCallSites": 40,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 9,
+     "generatedProtocol": true,
+     "appCalls": [
+      "daySchedule.updateTodayStatus",
+      "profile.deleteUser",
+      "profile.getProfile",
+      "profile.updateProfile",
+      "progress.getProgress",
+      "weekSchedule.createWeekSchedule",
+      "weekSchedule.deleteWeekSchedule",
+      "weekSchedule.finishWeek"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "realestate-universe": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=E7GQIdY-m_M",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "recall-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=s2uuKfmVcLA",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://recall-butler-web.web.app",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/samalpartha/Recall-Butler",
+    "status": "public",
+    "commits": {
+     "total": 5,
+     "beforeOpen": 0,
+     "inWindow": 5,
+     "afterDeadline": 0,
+     "first": "2026-01-20T05:47:56Z",
+     "last": "2026-01-30T15:17:54Z",
+     "activeDays": 3,
+     "windowSpanMinutes": 14970
+    },
+    "snapshot": {
+     "sha": "c28e217e879a",
+     "date": "2026-01-30T10:17:54-05:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "recall_butler/recall_butler_server",
+     "client": [
+      "recall_butler/recall_butler_client"
+     ],
+     "flutter": [
+      "recall_butler/recall_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 43966,
+     "editedTemplateLines": 66,
+     "delta": 44032,
+     "byArea": {
+      "other": 2931,
+      "client": 2,
+      "flutter": 28517,
+      "server": 12582
+     },
+     "byLanguage": {
+      "Dart": 41101,
+      "JavaScript": 2931
+     },
+     "untouchedTemplateFiles": [
+      "recall_butler/recall_butler_flutter/lib/screens/greetings_screen.dart",
+      "recall_butler/recall_butler_flutter/lib/screens/sign_in_screen.dart",
+      "recall_butler/recall_butler_flutter/test/widget_test.dart",
+      "recall_butler/recall_butler_server/bin/main.dart",
+      "recall_butler/recall_butler_server/lib/src/auth/email_idp_endpoint.dart",
+      "recall_butler/recall_butler_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "recall_butler/recall_butler_server/lib/src/greetings/greeting_endpoint.dart",
+      "recall_butler/recall_butler_server/lib/src/web/routes/app_config_route.dart",
+      "recall_butler/recall_butler_server/lib/src/web/routes/root.dart",
+      "recall_butler/recall_butler_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "recall_butler/recall_butler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 10,
+     "tables": 4,
+     "enums": 1,
+     "endpoints": [
+      "ActionEndpoint",
+      "AnalyticsEndpoint",
+      "AuthEndpoint",
+      "DocumentEndpoint",
+      "HealthEndpoint",
+      "McpEndpoint",
+      "RealtimeEndpoint",
+      "ReminderEndpoint",
+      "SearchEndpoint",
+      "SuggestionEndpoint"
+     ],
+     "endpointMethods": 62,
+     "streamMethods": 0,
+     "dbCallSites": 68,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": false,
+     "appCalls": [
+      "action.execute",
+      "action.objectify",
+      "document.createFromImage",
+      "document.createFromText",
+      "document.createFromUrl",
+      "document.deleteDocument",
+      "document.getDocument",
+      "document.getDocuments",
+      "document.getStats",
+      "search.quickSearch",
+      "search.search",
+      "suggestion.accept",
+      "suggestion.createReminder",
+      "suggestion.dismiss",
+      "suggestion.getPendingCount",
+      "suggestion.getSuggestions"
+     ]
+    },
+    "tests": {
+     "files": 18,
+     "cases": 258,
+     "paths": [
+      "recall_butler/recall_butler_flutter/integration_test/ui_functional_test.dart",
+      "recall_butler/recall_butler_flutter/test/ui_functional_widget_test.dart",
+      "recall_butler/recall_butler_flutter/test/integration/e2e_test.dart",
+      "recall_butler/recall_butler_flutter/test/ui/auth_functional_test.dart",
+      "recall_butler/recall_butler_flutter/test/ui/home_functional_test.dart",
+      "recall_butler/recall_butler_flutter/test/ui/home_screen_test.dart",
+      "recall_butler/recall_butler_flutter/test/ui/ingest_functional_test.dart",
+      "recall_butler/recall_butler_flutter/test/unit/api_service_test.dart",
+      "recall_butler/recall_butler_flutter/test/unit/documents_provider_test.dart",
+      "recall_butler/recall_butler_flutter/test/unit/offline_service_test.dart",
+      "recall_butler/recall_butler_server/test/comprehensive_test.dart",
+      "recall_butler/recall_butler_server/test/functional/complete_functional_test.dart",
+      "recall_butler/recall_butler_server/test/functional/full_coverage_test.dart",
+      "recall_butler/recall_butler_server/test/functional/functional_test.dart",
+      "recall_butler/recall_butler_server/test/integration/api_test.dart",
+      "recall_butler/recall_butler_server/test/unit/auth_service_test.dart",
+      "recall_butler/recall_butler_server/test/unit/document_endpoint_test.dart",
+      "recall_butler/recall_butler_server/test/unit/vector_search_service_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "Gemini",
+     "Other hosted AI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "form-concierge": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Y_oOLR__WBI",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "guide-me-out": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=WAZ9LTDOtpQ",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "naggy": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=ceZED9ji6tI",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "http://naggy.app",
+     "http": 200,
+     "status": "reachable"
+    },
+    {
+     "url": "https://www.notion.so/lishiyo/naggy-screenshots-2f81cd190ccc80088a3ae296de4b12fa?source=copy_link",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/lishiyo/naggy-demo",
+    "status": "public",
+    "commits": {
+     "total": 1,
+     "beforeOpen": 0,
+     "inWindow": 1,
+     "afterDeadline": 0,
+     "first": "2026-01-30T10:07:33Z",
+     "last": "2026-01-30T10:07:33Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 0
+    },
+    "snapshot": {
+     "sha": "a3538def5c05",
+     "date": "2026-01-30T02:07:33-08:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.1.1",
+     "major": 3,
+     "server": "naggy_ai_server",
+     "client": [
+      "naggy_ai_client"
+     ],
+     "flutter": [
+      "naggy_ai_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.1.1",
+     "authoredLines": 66846,
+     "editedTemplateLines": 242,
+     "delta": 67088,
+     "byArea": {
+      "other": 5232,
+      "client": 2,
+      "flutter": 39373,
+      "server": 22481
+     },
+     "byLanguage": {
+      "Dart": 61630,
+      "Python": 5232,
+      "JavaScript": 226
+     },
+     "untouchedTemplateFiles": [
+      "naggy_ai_flutter/test/widget_test.dart",
+      "naggy_ai_server/lib/src/auth/email_idp_endpoint.dart",
+      "naggy_ai_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "naggy_ai_server/lib/src/web/routes/root.dart",
+      "naggy_ai_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 27,
+     "tables": 8,
+     "enums": 10,
+     "endpoints": [
+      "AssistantEndpoint",
+      "BodyDoublingAgentEndpoint",
+      "BodyDoublingEndpoint",
+      "ConfigEndpoint",
+      "ConversationEndpoint",
+      "PhoneAuthEndpoint",
+      "StatsEndpoint",
+      "TaskEndpoint",
+      "TimelineEndpoint",
+      "UserEndpoint",
+      "WebhookEndpoint"
+     ],
+     "endpointMethods": 81,
+     "streamMethods": 0,
+     "dbCallSites": 339,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 1,
+     "migrations": 19,
+     "generatedProtocol": true,
+     "appCalls": [
+      "assistant.getOrCreateConversation",
+      "assistant.sendMessage",
+      "assistant.startNewConversation",
+      "bodyDoubling.addParkingLotItem",
+      "bodyDoubling.deleteParkingLotItem",
+      "bodyDoubling.endSession",
+      "bodyDoubling.getSessionDetail",
+      "bodyDoubling.listAllParkingLotItems",
+      "bodyDoubling.listParkingLot",
+      "bodyDoubling.listSessions",
+      "bodyDoubling.listSessionsForTask",
+      "bodyDoubling.listTimeline",
+      "bodyDoubling.pauseSession",
+      "bodyDoubling.resumeSession",
+      "bodyDoubling.setAgentMuteState",
+      "bodyDoubling.setMuteState",
+      "bodyDoubling.startSession",
+      "bodyDoubling.updateParkingLotItem",
+      "config.getConfig",
+      "phoneAuth.requestPhoneChangeVerification",
+      "phoneAuth.requestVerification",
+      "phoneAuth.verifyAndAuthenticate",
+      "phoneAuth.verifyPhoneChange",
+      "stats.getStats",
+      "task.acknowledgeTask",
+      "task.backlogTask",
+      "task.completeTask",
+      "task.createTask",
+      "task.deleteTask",
+      "task.failTask",
+      "task.getTask",
+      "task.getTasks",
+      "task.rescheduleTask",
+      "task.uncompleteTask",
+      "timeline.appendProposalResult",
+      "timeline.listTimeline",
+      "user.clearMute",
+      "user.createProfile",
+      "user.getBodyDoublingPreferences",
+      "user.getProfile",
+      "user.setActivationStep",
+      "user.setActivationStepEnabled",
+      "user.setMaxNagRetries",
+      "user.setMuteUntil",
+      "user.setPauseAllCalls",
+      "user.updateBodyDoublingPreferences",
+      "user.updateProfile"
+     ]
+    },
+    "tests": {
+     "files": 96,
+     "cases": 1866,
+     "paths": [
+      "naggy_ai_agent/tests/test_agent.py",
+      "naggy_ai_agent/tests/test_api_client.py",
+      "naggy_ai_agent/tests/test_audio_tracker.py",
+      "naggy_ai_agent/tests/test_prompts.py",
+      "naggy_ai_agent/tests/test_tools.py",
+      "naggy_ai_flutter/test/calls_pause_ux_test.dart",
+      "naggy_ai_flutter/test/home_screen_flows_test.dart",
+      "naggy_ai_flutter/test/main_screen_add_task_prefill_test.dart",
+      "naggy_ai_flutter/test/main_screen_mascot_integration_test.dart",
+      "naggy_ai_flutter/test/config/app_config_test.dart",
+      "naggy_ai_flutter/test/design_system/naggy_primary_button_test.dart",
+      "naggy_ai_flutter/test/design_system/naggy_progress_meter_test.dart",
+      "naggy_ai_flutter/test/design_system/naggy_quick_chip_test.dart",
+      "naggy_ai_flutter/test/design_system/naggy_status_pill_test.dart",
+      "naggy_ai_flutter/test/integration/stats_backlog_navigation_test.dart",
+      "naggy_ai_flutter/test/screens/backlog_screen_filter_test.dart",
+      "naggy_ai_flutter/test/screens/body_double_focus_header_test.dart",
+      "naggy_ai_flutter/test/screens/body_double_mute_button_test.dart",
+      "naggy_ai_flutter/test/screens/body_double_task_feedback_test.dart",
+      "naggy_ai_flutter/test/screens/chat_screen_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding_phone_number_input_test.dart",
+      "naggy_ai_flutter/test/screens/session_detail_screen_test.dart",
+      "naggy_ai_flutter/test/screens/sessions_history_screen_test.dart",
+      "naggy_ai_flutter/test/screens/settings_logout_row_test.dart",
+      "naggy_ai_flutter/test/screens/stats_screen_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding/onboarding_contact_page_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding/onboarding_done_page_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding/onboarding_flow_screen_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding/onboarding_focus_mode_page_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding/onboarding_phone_page_test.dart",
+      "naggy_ai_flutter/test/screens/onboarding/onboarding_welcome_page_test.dart",
+      "naggy_ai_flutter/test/services/data_channel_service_test.dart",
+      "naggy_ai_flutter/test/services/onboarding_preferences_service_test.dart",
+      "naggy_ai_flutter/test/services/proposal_actions_service_test.dart",
+      "naggy_ai_flutter/test/services/stale_task_validator_test.dart",
+      "naggy_ai_flutter/test/services/timeline_service_test.dart",
+      "naggy_ai_flutter/test/services/timezone_sync_service_test.dart",
+      "naggy_ai_flutter/test/services/user_service_defaults_test.dart",
+      "naggy_ai_flutter/test/util/timezone_utils_test.dart",
+      "naggy_ai_flutter/test/widgets/add_task_dialog_test.dart",
+      "naggy_ai_flutter/test/widgets/chat_message_list_test.dart",
+      "naggy_ai_flutter/test/widgets/confetti_celebration_test.dart",
+      "naggy_ai_flutter/test/widgets/date_navigation_strip_test.dart",
+      "naggy_ai_flutter/test/widgets/empty_states_test.dart",
+      "naggy_ai_flutter/test/widgets/mascot_state_deriver_test.dart",
+      "naggy_ai_flutter/test/widgets/naggy_empty_state_test.dart",
+      "naggy_ai_flutter/test/widgets/naggy_mascot_image_test.dart",
+      "naggy_ai_flutter/test/widgets/naggy_mascot_test.dart",
+      "naggy_ai_flutter/test/widgets/nav_mascot_test.dart",
+      "naggy_ai_flutter/test/widgets/not_done_dialog_test.dart",
+      "naggy_ai_flutter/test/widgets/not_done_flow_test.dart",
+      "naggy_ai_flutter/test/widgets/session_summary_modal_test.dart",
+      "naggy_ai_flutter/test/widgets/stale_task_dialog_test.dart",
+      "naggy_ai_flutter/test/widgets/task_card_test.dart",
+      "naggy_ai_flutter/test/widgets/task_sessions_modal_test.dart",
+      "naggy_ai_flutter/test/widgets/task_status_presentation_test.dart",
+      "naggy_ai_flutter/test/widgets/onboarding/focus_mode_step_card_test.dart",
+      "naggy_ai_flutter/test/widgets/onboarding/onboarding_mascot_header_test.dart",
+      "naggy_ai_flutter/test/widgets/onboarding/onboarding_progress_indicator_test.dart",
+      "naggy_ai_flutter/test/widgets/tutorial/full_tutorial_modal_test.dart",
+      "naggy_ai_flutter/test/widgets/tutorial/inline_steps_test.dart",
+      "naggy_ai_flutter/test/widgets/tutorial/tutorial_banner_test.dart",
+      "naggy_ai_flutter/test/widgets/tutorial/tutorial_slide_test.dart",
+      "naggy_ai_server/test/integration/ai_chat_smoke_test.dart",
+      "naggy_ai_server/test/integration/assistant_endpoint_integration_test.dart",
+      "naggy_ai_server/test/integration/body_doubling_endpoint_test.dart",
+      "naggy_ai_server/test/integration/body_doubling_service_test.dart",
+      "naggy_ai_server/test/integration/nag_loop_e2e_test.dart",
+      "naggy_ai_server/test/integration/phone_verification_test.dart",
+      "naggy_ai_server/test/integration/shared_foundation_f2_test.dart",
+      "naggy_ai_server/test/unit/config/env_config_twilio_test.dart",
+      "naggy_ai_server/test/unit/endpoints/assistant_endpoint_test.dart",
+      "naggy_ai_server/test/unit/endpoints/config_endpoint_test.dart",
+      "naggy_ai_server/test/unit/endpoints/phone_auth_endpoint_test.dart",
+      "naggy_ai_server/test/unit/endpoints/stats_endpoint_test.dart",
+      "naggy_ai_server/test/unit/endpoints/task_endpoint_test.dart",
+      "naggy_ai_server/test/unit/endpoints/user_endpoint_test.dart",
+      "naggy_ai_server/test/unit/endpoints/webhook_endpoint_test.dart",
+      "naggy_ai_server/test/unit/future_calls/scheduled_nag_call_test.dart",
+      "naggy_ai_server/test/unit/future_calls/stuck_call_watchdog_test.dart",
+      "naggy_ai_server/test/unit/guides/current_retell_prompt_test.dart",
+      "naggy_ai_server/test/unit/prompts/naggy_personality_test.dart",
+      "naggy_ai_server/test/unit/services/assistant_service_test.dart",
+      "naggy_ai_server/test/unit/services/body_doubling_focus_change_test.dart",
+      "naggy_ai_server/test/unit/services/body_doubling_preferences_test.dart",
+      "naggy_ai_server/test/unit/services/call_orchestrator_test.dart",
+      "naggy_ai_server/test/unit/services/event_ledger_service_test.dart",
+      "naggy_ai_server/test/unit/services/intent_parser_test.dart",
+      "naggy_ai_server/test/unit/services/livekit_room_service_test.dart",
+      "naggy_ai_server/test/unit/services/livekit_token_service_test.dart",
+      "naggy_ai_server/test/unit/services/summary_generation_service_test.dart",
+      "naggy_ai_server/test/unit/services/task_state_machine_test.dart",
+      "naggy_ai_server/test/unit/services/timeline_service_test.dart",
+      "naggy_ai_server/test/unit/services/twilio_verify_service_test.dart",
+      "naggy_ai_server/test/unit/util/agent_auth_test.dart",
+      "naggy_ai_server/test/unit/util/assistant_time_repair_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "OpenAI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "resonate-4kmxfz": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=vBoS0uidsPs",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://ahammadshawki8.github.io/Resonate/",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/ahammadshawki8/Resonate",
+    "status": "public",
+    "commits": {
+     "total": 43,
+     "beforeOpen": 0,
+     "inWindow": 43,
+     "afterDeadline": 0,
+     "first": "2026-01-22T17:25:27Z",
+     "last": "2026-01-30T08:41:01Z",
+     "activeDays": 5,
+     "windowSpanMinutes": 10996
+    },
+    "snapshot": {
+     "sha": "fe51b03f83bd",
+     "date": "2026-01-30T14:41:01+06:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "resonate_server/resonate_server_server",
+     "client": [
+      "resonate_server/resonate_server_client"
+     ],
+     "flutter": [
+      "resonate_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_core_server",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_cli",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 19512,
+     "editedTemplateLines": 103,
+     "delta": 19615,
+     "byArea": {
+      "flutter": 16876,
+      "other": 1189,
+      "client": 2,
+      "server": 1548
+     },
+     "byLanguage": {
+      "Dart": 18426,
+      "Python": 1189
+     },
+     "untouchedTemplateFiles": [
+      "resonate_server/resonate_server_server/lib/server.dart",
+      "resonate_server/resonate_server_server/lib/src/auth/email_idp_endpoint.dart",
+      "resonate_server/resonate_server_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "resonate_server/resonate_server_server/lib/src/greetings/greeting_endpoint.dart",
+      "resonate_server/resonate_server_server/lib/src/web/routes/app_config_route.dart",
+      "resonate_server/resonate_server_server/lib/src/web/routes/root.dart",
+      "resonate_server/resonate_server_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "resonate_server/resonate_server_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 22,
+     "tables": 13,
+     "enums": 0,
+     "endpoints": [
+      "AnalyticsEndpoint",
+      "InsightEndpoint",
+      "SettingsEndpoint",
+      "TagEndpoint",
+      "UserDataEndpoint",
+      "UserProfileEndpoint",
+      "VoiceEntryEndpoint",
+      "WellnessEndpoint"
+     ],
+     "endpointMethods": 54,
+     "streamMethods": 0,
+     "dbCallSites": 107,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": [
+      "analytics.getMoodDistribution",
+      "analytics.getPatterns",
+      "analytics.getTimeOfDayAnalysis",
+      "analytics.getWeeklyAnalytics",
+      "insight.createInsight",
+      "insight.generateAIInsight",
+      "insight.generateInsight",
+      "insight.getInsights",
+      "insight.getUnreadCount",
+      "insight.markAsRead",
+      "settings.getSettings",
+      "settings.toggleDarkMode",
+      "settings.toggleNotifications",
+      "settings.updateSettings",
+      "tag.addTagToEntry",
+      "tag.createTag",
+      "tag.deleteTag",
+      "tag.getTags",
+      "userData.deleteAllData",
+      "userData.exportAllData",
+      "userData.getDataCounts",
+      "userProfile.changePassword",
+      "userProfile.deleteAccount",
+      "userProfile.getProfile",
+      "userProfile.getStats",
+      "userProfile.updateProfile",
+      "voiceEntry.deleteEntry",
+      "voiceEntry.getCalendarMonth",
+      "voiceEntry.getEntries",
+      "voiceEntry.getEntry",
+      "voiceEntry.getTodayEntry",
+      "voiceEntry.uploadAndAnalyze",
+      "wellness.createContact",
+      "wellness.createGoal",
+      "wellness.createGratitude",
+      "wellness.createJournal",
+      "wellness.deleteContact",
+      "wellness.deleteGoal",
+      "wellness.deleteGratitude",
+      "wellness.deleteJournal",
+      "wellness.getContacts",
+      "wellness.getGoals",
+      "wellness.getGratitudes",
+      "wellness.getJournals",
+      "wellness.toggleGoal"
+     ]
+    },
+    "tests": {
+     "files": 1,
+     "cases": 11,
+     "paths": [
+      "resonate_python/test_service.py"
+     ]
+    },
+    "aiInCode": [
+     "OpenAI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "momentumbuilder": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=UlYA9W-bf9k",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/jayabha-jayas/MomentumButler",
+    "status": "notFound"
+   }
+  },
+  "pocket-butler-anti-theft-security-app": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=hJdUsEQu3F8",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Ashil2005/Pocket-butler",
+    "status": "public",
+    "commits": {
+     "total": 3,
+     "beforeOpen": 0,
+     "inWindow": 2,
+     "afterDeadline": 1,
+     "first": "2026-01-30T14:59:45Z",
+     "last": "2026-07-21T18:53:22Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 52
+    },
+    "snapshot": {
+     "sha": "1b33f1132923",
+     "date": "2026-01-30T21:21:40+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.0.0-rc.3",
+     "major": 3,
+     "server": "flutter_butler/flutter_butler_server",
+     "client": [
+      "flutter_butler/flutter_butler_client"
+     ],
+     "flutter": [
+      "flutter_butler/flutter_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.0.0",
+     "authoredLines": 4537,
+     "editedTemplateLines": 55,
+     "delta": 4592,
+     "byArea": {
+      "client": 2,
+      "flutter": 4483,
+      "server": 107
+     },
+     "byLanguage": {
+      "Dart": 3369,
+      "Kotlin": 1223
+     },
+     "untouchedTemplateFiles": [
+      "flutter_butler/flutter_butler_flutter/test/widget_test.dart",
+      "flutter_butler/flutter_butler_server/bin/main.dart",
+      "flutter_butler/flutter_butler_server/lib/src/greeting_endpoint.dart",
+      "flutter_butler/flutter_butler_server/lib/src/web/routes/root.dart",
+      "flutter_butler/flutter_butler_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "flutter_butler/flutter_butler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 5,
+     "tables": 5,
+     "enums": 0,
+     "endpoints": [
+      "AlertEndpoint",
+      "LocationEndpoint"
+     ],
+     "endpointMethods": 4,
+     "streamMethods": 0,
+     "dbCallSites": 5,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 1,
+     "generatedProtocol": true,
+     "appCalls": [
+      "alert.createAlert",
+      "alert.resolveAlert"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "textpilot-your-system-wide-flutter-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "notLinked"
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "taskflow-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=XhiC9kWUlvM",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "platelist": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=B2d40p_hEd8",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/droidbg/platelist",
+    "status": "notFound"
+   }
+  },
+  "stock-pick-challenge": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=20B9EF4llUQ",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://play.google.com/store/apps/details?id=com.stockleague.app",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "chef-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=kHKtuIRj_Lo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "chefbutler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=rPPMuPWh2dU",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "wp-launchpad": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=DA8DPr_BXrA",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "pos-sip-sync": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=RBXfDrSfcAc",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/ihebmeftah/pos-flutter-serverpod",
+    "status": "public",
+    "commits": {
+     "total": 101,
+     "beforeOpen": 0,
+     "inWindow": 101,
+     "afterDeadline": 0,
+     "first": "2025-12-27T11:45:54Z",
+     "last": "2026-01-30T13:52:34Z",
+     "activeDays": 26,
+     "windowSpanMinutes": 49087
+    },
+    "snapshot": {
+     "sha": "2f4c806908df",
+     "date": "2026-01-30T14:52:34+01:00",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "pos_server",
+     "client": [
+      "pos_client"
+     ],
+     "flutter": [
+      "pos_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 16653,
+     "editedTemplateLines": 178,
+     "delta": 16831,
+     "byArea": {
+      "client": 2,
+      "flutter": 13085,
+      "server": 3744
+     },
+     "byLanguage": {
+      "Dart": 16831
+     },
+     "untouchedTemplateFiles": [
+      "pos_flutter/test/widget_test.dart",
+      "pos_server/bin/main.dart",
+      "pos_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "pos_server/lib/src/web/routes/app_config_route.dart",
+      "pos_server/lib/src/web/routes/root.dart",
+      "pos_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 34,
+     "tables": 11,
+     "enums": 8,
+     "endpoints": [
+      "AccessEndpoint",
+      "ArticleEndpoint",
+      "BuildingEndpoint",
+      "BuildingTablesEndpoint",
+      "CashRegisterEndpoint",
+      "CategorieEndpoint",
+      "EmployerEndpoint",
+      "IngredientEndpoint",
+      "OrderEndpoint",
+      "OrderItemEndpoint",
+      "StatsEndpoint"
+     ],
+     "endpointMethods": 54,
+     "streamMethods": 2,
+     "dbCallSites": 98,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 57,
+     "generatedProtocol": true,
+     "appCalls": [
+      "access.createAccess",
+      "access.deleteAccess",
+      "access.getAccessById",
+      "access.getAccessesByBuildingId",
+      "access.map",
+      "access.updateAccess",
+      "article.createArticle",
+      "article.getArticleById",
+      "article.getArticlesByBuildingId",
+      "article.updateArticle",
+      "building.createBuilding",
+      "building.getBuildingById",
+      "building.getBuildingsOfOwner",
+      "building.updateBuilding",
+      "buildingTables.createTables",
+      "buildingTables.getTableById",
+      "buildingTables.getTablesByBuildingId",
+      "buildingTables.mangeTableActivation",
+      "cashRegister.closeLastCashRegister",
+      "cashRegister.createCashRegister",
+      "cashRegister.getCashRegisters",
+      "categorie.createCategorie",
+      "categorie.getCategorieById",
+      "categorie.getCategories",
+      "categorie.updateCategorie",
+      "employer.assignAccessToEmployer",
+      "employer.blockEmployer",
+      "employer.createEmployerAccount",
+      "employer.getEmployerByIdentifier",
+      "employer.getEmployers",
+      "ingredient.createIngredient",
+      "ingredient.getIngredientsByBuildingId",
+      "ingredient.getIngredintById",
+      "order.createOrder",
+      "order.getOrderById",
+      "order.getOrderCurrOfTable",
+      "order.getOrdersByBuilingId",
+      "order.getOrdersOfTable",
+      "order.watchChanges",
+      "orderItem.appendItemsToOrder",
+      "orderItem.changeOrderItemsStatus",
+      "orderItem.payAllItems",
+      "orderItem.payOrderItem",
+      "stats.getBuildingDetailedStats",
+      "stats.getCashRegisterStats",
+      "stats.getStats"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "cuecard": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=QUFZJDFlQgc",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://snipper.sound.fan/",
+     "http": 0,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "insomnia-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Nv9RRJnVVbQ",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Naazimsnh02/insomniabutler",
+    "status": "public",
+    "commits": {
+     "total": 66,
+     "beforeOpen": 0,
+     "inWindow": 66,
+     "afterDeadline": 0,
+     "first": "2026-01-17T15:01:33Z",
+     "last": "2026-01-29T05:23:55Z",
+     "activeDays": 12,
+     "windowSpanMinutes": 16702
+    },
+    "snapshot": {
+     "sha": "8849d6ddc8a1",
+     "date": "2026-01-29T10:53:55+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.2",
+     "major": 3,
+     "server": "insomniabutler_server",
+     "client": [
+      "insomniabutler_client"
+     ],
+     "flutter": [
+      "insomniabutler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_auth_shared_flutter",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.2",
+     "authoredLines": 20565,
+     "editedTemplateLines": 267,
+     "delta": 20832,
+     "byArea": {
+      "client": 2,
+      "flutter": 17778,
+      "server": 3052
+     },
+     "byLanguage": {
+      "Dart": 20832
+     },
+     "untouchedTemplateFiles": [
+      "insomniabutler_flutter/lib/screens/greetings_screen.dart",
+      "insomniabutler_flutter/test/widget_test.dart",
+      "insomniabutler_server/bin/main.dart",
+      "insomniabutler_server/lib/src/auth/email_idp_endpoint.dart",
+      "insomniabutler_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "insomniabutler_server/lib/src/greetings/greeting_endpoint.dart",
+      "insomniabutler_server/lib/src/web/routes/app_config_route.dart",
+      "insomniabutler_server/lib/src/web/routes/root.dart",
+      "insomniabutler_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "insomniabutler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 14,
+     "tables": 8,
+     "enums": 0,
+     "endpoints": [
+      "AuthEndpoint",
+      "DevEndpoint",
+      "InsightsEndpoint",
+      "JournalEndpoint",
+      "SleepSessionEndpoint",
+      "ThoughtClearingEndpoint"
+     ],
+     "endpointMethods": 46,
+     "streamMethods": 0,
+     "dbCallSites": 125,
+     "futureCalls": true,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 11,
+     "generatedProtocol": true,
+     "appCalls": [
+      "auth.deleteUser",
+      "auth.getUserById",
+      "auth.getUserStats",
+      "auth.login",
+      "auth.register",
+      "auth.updatePreferences",
+      "auth.updateUserProfile",
+      "dev.clearUserData",
+      "dev.generateRealisticData",
+      "insights.getPersonalizedSleepInsights",
+      "insights.getSleepTrend",
+      "insights.getUserInsights",
+      "journal.createEntry",
+      "journal.deleteEntry",
+      "journal.getDailyPrompts",
+      "journal.getEntry",
+      "journal.getJournalInsights",
+      "journal.getJournalStats",
+      "journal.getUserEntries",
+      "journal.toggleFavorite",
+      "journal.updateEntry",
+      "sleepSession.createSleepSession",
+      "sleepSession.deleteSession",
+      "sleepSession.getSessionForDate",
+      "sleepSession.getUserSessions",
+      "sleepSession.logManualSession",
+      "sleepSession.updateMoodForLatestSession",
+      "sleepSession.updateSession",
+      "thoughtClearing.deleteChatSession",
+      "thoughtClearing.getChatHistory",
+      "thoughtClearing.getChatSessionMessages",
+      "thoughtClearing.processThought"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "echo-ledger": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=9RQwfohB8KQ",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://echo-ledger.serverpod.space/app",
+     "http": 404,
+     "status": "unreachable"
+    },
+    {
+     "url": "https://echo-ledger.api.serverpod.space",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "my-coach-ai": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=UXbRxMiZZPo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Nikzed/my-coach",
+    "status": "public",
+    "commits": {
+     "total": 6,
+     "beforeOpen": 0,
+     "inWindow": 5,
+     "afterDeadline": 1,
+     "first": "2026-01-30T01:16:47Z",
+     "last": "2026-01-31T19:06:37Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 801
+    },
+    "snapshot": {
+     "sha": "febc42982bd7",
+     "date": "2026-01-30T16:38:14+02:00",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "my_coach_serverpod_challenge_server",
+     "client": [
+      "my_coach_serverpod_challenge_client"
+     ],
+     "flutter": [
+      "my_coach_serverpod_challenge_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 11176,
+     "editedTemplateLines": 549,
+     "delta": 11725,
+     "byArea": {
+      "client": 2,
+      "flutter": 9427,
+      "server": 2296
+     },
+     "byLanguage": {
+      "Dart": 11725
+     },
+     "untouchedTemplateFiles": [
+      "my_coach_serverpod_challenge_flutter/lib/screens/greetings_screen.dart",
+      "my_coach_serverpod_challenge_flutter/test/widget_test.dart",
+      "my_coach_serverpod_challenge_server/bin/main.dart",
+      "my_coach_serverpod_challenge_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "my_coach_serverpod_challenge_server/lib/src/greetings/greeting_endpoint.dart",
+      "my_coach_serverpod_challenge_server/lib/src/web/routes/app_config_route.dart",
+      "my_coach_serverpod_challenge_server/lib/src/web/routes/root.dart",
+      "my_coach_serverpod_challenge_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "my_coach_serverpod_challenge_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 7,
+     "tables": 7,
+     "enums": 0,
+     "endpoints": [
+      "AudioEndpoint",
+      "CoachEndpoint",
+      "DeviceEndpoint",
+      "SubtaskEndpoint",
+      "TaskEndpoint",
+      "TaskReminderEndpoint",
+      "VoiceInputEndpoint"
+     ],
+     "endpointMethods": 34,
+     "streamMethods": 0,
+     "dbCallSites": 107,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 6,
+     "generatedProtocol": true,
+     "appCalls": [
+      "audio.getAudio",
+      "audio.getMessage",
+      "audio.getMessagesForTask",
+      "coach.getCoach",
+      "coach.getCoaches",
+      "device.registerDevice",
+      "device.unregisterDevice",
+      "subtask.addSubtask",
+      "subtask.completeSubtask",
+      "subtask.getSubtasks",
+      "subtask.uncompleteSubtask",
+      "subtask.updateSubtask",
+      "task.completeTask",
+      "task.createTask",
+      "task.createTaskWithReminders",
+      "task.deleteTask",
+      "task.getUserTasks",
+      "task.uncompleteTask",
+      "task.updateTask",
+      "taskReminder.addReminder",
+      "taskReminder.getReminders",
+      "taskReminder.removeReminder",
+      "voiceInput.confirmDraft",
+      "voiceInput.discardDraft",
+      "voiceInput.parseVoiceInput"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": [
+     "Firebase"
+    ]
+   }
+  },
+  "bookbutler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=KCEvbYFLBd8",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://drive.google.com/file/d/1dC4RrHUJ6tyyCULzG-HPEDxXeHpRI4SM/view?usp=sharing",
+     "http": 200,
+     "status": "reachable"
+    },
+    {
+     "url": "https://drive.google.com/file/d/1_S7_drpR-qfV-FUiApyQOWH_ghazVWqu/view?usp=sharing",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "nudge-cy03h5": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=-NqXRqagi6U",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/CH4RUU/nudge",
+    "status": "public",
+    "commits": {
+     "total": 9,
+     "beforeOpen": 0,
+     "inWindow": 9,
+     "afterDeadline": 0,
+     "first": "2026-01-30T10:21:52Z",
+     "last": "2026-01-30T14:50:15Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 268
+    },
+    "snapshot": {
+     "sha": "baec73db9022",
+     "date": "2026-01-30T20:20:15+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "nudge_server",
+     "client": [
+      "nudge_client"
+     ],
+     "flutter": [
+      "nudge_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 89,
+     "editedTemplateLines": 600,
+     "delta": 689,
+     "byArea": {
+      "client": 2,
+      "flutter": 600,
+      "server": 87
+     },
+     "byLanguage": {
+      "Dart": 689
+     },
+     "untouchedTemplateFiles": [
+      "nudge_flutter/lib/screens/greetings_screen.dart",
+      "nudge_flutter/lib/screens/sign_in_screen.dart",
+      "nudge_flutter/test/widget_test.dart",
+      "nudge_server/lib/server.dart",
+      "nudge_server/lib/src/auth/email_idp_endpoint.dart",
+      "nudge_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "nudge_server/lib/src/greetings/greeting_endpoint.dart",
+      "nudge_server/lib/src/web/routes/app_config_route.dart",
+      "nudge_server/lib/src/web/routes/root.dart",
+      "nudge_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "nudge_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 1,
+     "tables": 1,
+     "enums": 0,
+     "endpoints": [
+      "NudgeDataEndpoint"
+     ],
+     "endpointMethods": 3,
+     "streamMethods": 0,
+     "dbCallSites": 3,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 2,
+     "generatedProtocol": false,
+     "appCalls": [
+      "nudgeData.create",
+      "nudgeData.delete",
+      "nudgeData.getAll"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "barops": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=Uk98R_qsRKo",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Wolfof420Street/BarButler",
+    "status": "notFound"
+   }
+  },
+  "friday-s9tg32": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=XLAWiJkG-HQ",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://algospend.tech",
+     "http": 0,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "lifeflow-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=IdoDKsBLt9I",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/yogesh4216/LifeFlow-Butler",
+    "status": "public",
+    "commits": {
+     "total": 3,
+     "beforeOpen": 0,
+     "inWindow": 3,
+     "afterDeadline": 0,
+     "first": "2026-01-30T15:31:02Z",
+     "last": "2026-01-30T15:40:53Z",
+     "activeDays": 1,
+     "windowSpanMinutes": 10
+    },
+    "snapshot": {
+     "sha": "e5b74077a336",
+     "date": "2026-01-30T21:10:53+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "lifeflow_butler_server",
+     "client": [
+      "lifeflow_butler_client"
+     ],
+     "flutter": [
+      "lifeflow_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 1345,
+     "editedTemplateLines": 8,
+     "delta": 1353,
+     "byArea": {
+      "client": 2,
+      "flutter": 1187,
+      "server": 164
+     },
+     "byLanguage": {
+      "Dart": 1353
+     },
+     "untouchedTemplateFiles": [
+      "lifeflow_butler_flutter/lib/screens/greetings_screen.dart",
+      "lifeflow_butler_flutter/lib/screens/sign_in_screen.dart",
+      "lifeflow_butler_flutter/test/widget_test.dart",
+      "lifeflow_butler_server/bin/main.dart",
+      "lifeflow_butler_server/lib/server.dart",
+      "lifeflow_butler_server/lib/src/auth/email_idp_endpoint.dart",
+      "lifeflow_butler_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "lifeflow_butler_server/lib/src/greetings/greeting_endpoint.dart",
+      "lifeflow_butler_server/lib/src/web/routes/app_config_route.dart",
+      "lifeflow_butler_server/lib/src/web/routes/root.dart",
+      "lifeflow_butler_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "lifeflow_butler_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 3,
+     "tables": 2,
+     "enums": 0,
+     "endpoints": [
+      "ButlerEndpoint"
+     ],
+     "endpointMethods": 7,
+     "streamMethods": 0,
+     "dbCallSites": 12,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 3,
+     "generatedProtocol": true,
+     "appCalls": [
+      "butler.addTask",
+      "butler.deleteTask",
+      "butler.getDailyOverview",
+      "butler.getTaskHistory",
+      "butler.updateTask"
+     ]
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [],
+    "otherBackends": []
+   }
+  },
+  "filo-ai": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=impBWClEYPE",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://filo-ai.vercel.app/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/Danithagod/Filo.ai",
+    "status": "public",
+    "commits": {
+     "total": 24,
+     "beforeOpen": 0,
+     "inWindow": 23,
+     "afterDeadline": 1,
+     "first": "2025-12-18T18:24:15Z",
+     "last": "2026-01-30T16:01:51Z",
+     "activeDays": 8,
+     "windowSpanMinutes": 61719
+    },
+    "snapshot": {
+     "sha": "db6fbb35bfa8",
+     "date": "2026-01-30T20:32:48+05:30",
+     "isHead": false
+    },
+    "serverpod": {
+     "constraint": "3.1.0",
+     "major": 3,
+     "server": "semantic_butler/semantic_butler_server",
+     "client": [
+      "semantic_butler/semantic_butler_client"
+     ],
+     "flutter": [
+      "semantic_butler/semantic_butler_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_cli",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.0.0",
+     "authoredLines": 44402,
+     "editedTemplateLines": 353,
+     "delta": 44755,
+     "byArea": {
+      "other": 1369,
+      "client": 2,
+      "flutter": 26430,
+      "server": 16954
+     },
+     "byLanguage": {
+      "Dart": 43384,
+      "JavaScript": 1319,
+      "SQL": 52
+     },
+     "untouchedTemplateFiles": [
+      "semantic_butler/semantic_butler_flutter/test/widget_test.dart",
+      "semantic_butler/semantic_butler_server/lib/src/web/routes/root.dart",
+      "semantic_butler/semantic_butler_server/lib/src/web/widgets/built_with_serverpod_page.dart"
+     ]
+    },
+    "footprint": {
+     "models": 37,
+     "tables": 10,
+     "enums": 0,
+     "endpoints": [
+      "AgentEndpoint",
+      "ButlerEndpoint",
+      "FileSystemEndpoint",
+      "HealthEndpoint",
+      "IndexingEndpoint"
+     ],
+     "endpointMethods": 80,
+     "streamMethods": 4,
+     "dbCallSites": 190,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": true,
+     "webRoutes": 0,
+     "migrations": 11,
+     "generatedProtocol": true,
+     "appCalls": [
+      "agent.streamChat",
+      "butler.aiSearch",
+      "butler.cleanupOrphanedFiles",
+      "butler.clearSearchHistory",
+      "butler.deleteSearchHistoryItem",
+      "butler.fixMissingEmbeddings",
+      "butler.generateResetConfirmationCode",
+      "butler.getIndexHealthReport",
+      "butler.getIndexingStatus",
+      "butler.getRelatedTags",
+      "butler.getSearchFacets",
+      "butler.getSearchHistory",
+      "butler.getSearchSuggestions",
+      "butler.getTopTags",
+      "butler.getWatchedFolders",
+      "butler.hybridSearch",
+      "butler.mergeTags",
+      "butler.previewReset",
+      "butler.recordLocalSearch",
+      "butler.refreshStaleEntries",
+      "butler.removeDuplicates",
+      "butler.removeFromIndex",
+      "butler.renameTag",
+      "butler.resetDatabase",
+      "butler.semanticSearch",
+      "butler.semanticSearchStream",
+      "butler.streamIndexingProgress",
+      "butler.summarizeFile",
+      "butler.toggleSmartIndexing",
+      "fileSystem.getDrives",
+      "fileSystem.listDirectory",
+      "fileSystem.move",
+      "fileSystem.rename",
+      "indexing.cancelJob",
+      "indexing.checkHash",
+      "indexing.createClientJob",
+      "indexing.getJobDetails",
+      "indexing.updateJobDetail",
+      "indexing.updateJobStatus",
+      "indexing.uploadIndex"
+     ]
+    },
+    "tests": {
+     "files": 3,
+     "cases": 8,
+     "paths": [
+      "semantic_butler/semantic_butler_flutter/test/connectivity_test.dart",
+      "semantic_butler/semantic_butler_flutter/test/providers/search_controller_test.dart",
+      "semantic_butler/semantic_butler_flutter/test/services/chat_storage_service_test.dart"
+     ]
+    },
+    "aiInCode": [
+     "Gemini",
+     "Other hosted AI"
+    ],
+    "otherBackends": []
+   }
+  },
+  "archii": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=yUZdBMaLfMY",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/nidhisingh5958/Archii",
+    "status": "public",
+    "commits": {
+     "total": 6,
+     "beforeOpen": 0,
+     "inWindow": 6,
+     "afterDeadline": 0,
+     "first": "2026-01-26T18:43:03Z",
+     "last": "2026-01-30T13:54:46Z",
+     "activeDays": 3,
+     "windowSpanMinutes": 5472
+    },
+    "snapshot": {
+     "sha": "b2f7c50309aa",
+     "date": "2026-01-30T19:24:46+05:30",
+     "isHead": true
+    },
+    "serverpod": {
+     "constraint": "3.2.3",
+     "major": 3,
+     "server": "archii_server/archii_server_server",
+     "client": [
+      "archii_server/archii_server_client"
+     ],
+     "flutter": [
+      "app",
+      "archii_server/archii_server_flutter"
+     ],
+     "serverpodDeps": [
+      "serverpod",
+      "serverpod_auth_idp_client",
+      "serverpod_auth_idp_flutter",
+      "serverpod_auth_idp_server",
+      "serverpod_client",
+      "serverpod_flutter",
+      "serverpod_test"
+     ],
+     "unresolvedDeps": []
+    },
+    "scaffold": {
+     "templateVersion": "3.2.3",
+     "authoredLines": 5797,
+     "editedTemplateLines": 31,
+     "delta": 5828,
+     "byArea": {
+      "other": 1347,
+      "flutter": 4012,
+      "client": 2,
+      "server": 467
+     },
+     "byLanguage": {
+      "Dart": 4481,
+      "Python": 1347
+     },
+     "untouchedTemplateFiles": [
+      "archii_server/archii_server_flutter/lib/main.dart",
+      "archii_server/archii_server_flutter/lib/screens/greetings_screen.dart",
+      "archii_server/archii_server_flutter/lib/screens/sign_in_screen.dart",
+      "archii_server/archii_server_flutter/test/widget_test.dart",
+      "archii_server/archii_server_server/bin/main.dart",
+      "archii_server/archii_server_server/lib/server.dart",
+      "archii_server/archii_server_server/lib/src/auth/email_idp_endpoint.dart",
+      "archii_server/archii_server_server/lib/src/auth/jwt_refresh_endpoint.dart",
+      "archii_server/archii_server_server/lib/src/greetings/greeting_endpoint.dart",
+      "archii_server/archii_server_server/lib/src/web/routes/app_config_route.dart",
+      "archii_server/archii_server_server/lib/src/web/routes/root.dart",
+      "archii_server/archii_server_server/lib/src/web/widgets/built_with_serverpod_page.dart",
+      "archii_server/archii_server_server/test/integration/greeting_endpoint_test.dart"
+     ]
+    },
+    "footprint": {
+     "models": 7,
+     "tables": 2,
+     "enums": 6,
+     "endpoints": [
+      "ChatEndpoint",
+      "DesignEndpoint",
+      "LargeScaleEndpoint",
+      "ProjectEndpoint"
+     ],
+     "endpointMethods": 20,
+     "streamMethods": 1,
+     "dbCallSites": 12,
+     "futureCalls": false,
+     "caching": false,
+     "fileUploads": false,
+     "authInCustomCode": false,
+     "webRoutes": 0,
+     "migrations": 2,
+     "generatedProtocol": true,
+     "appCalls": []
+    },
+    "tests": {
+     "files": 0,
+     "cases": 0,
+     "paths": []
+    },
+    "aiInCode": [
+     "Gemini"
+    ],
+    "otherBackends": []
+   }
+  },
+  "resonance-knowledge-graph-builder": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=WWvWffGp8B4",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://resonance.serverpod.space/app/",
+     "http": 404,
+     "status": "unreachable"
+    }
+   ],
+   "repo": {
+    "url": "https://github.com/toseefkhan403/resonance",
+    "status": "notFound"
+   }
+  },
+  "mong-oe6fhr": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=jpEvzQHpCNM",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/Javadov/MongApp",
+    "status": "notFound"
+   }
+  },
+  "family-butler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=dtiKx0J3Qiw",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/kerrilija/family_butler",
+    "status": "notFound"
+   }
+  },
+  "codi-mobile-butler-for-building-apps-automating-the-web": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=_4Eq2JzUNhg",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/ineffablesam/codi-serverpod",
+    "status": "notFound"
+   }
+  },
+  "papiertiger": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "notLinked"
+   },
+   "live": [],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  },
+  "launchprove": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=3KRFByXb5m4",
+    "http": 200
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/HectorTa1989/LaunchProve-Flutter-Butler-with-Serverpod-hackathon",
+    "status": "notFound"
+   }
+  },
+  "documentabot": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "notLinked"
+   },
+   "live": [],
+   "repo": {
+    "url": "https://github.com/marketplace/documentabot",
+    "status": "notFound"
+   }
+  },
+  "taskbutler": {
+   "checked": "2026-09-28",
+   "demo": {
+    "status": "available",
+    "url": "https://www.youtube.com/watch?v=FwIbrQgJINY",
+    "http": 200
+   },
+   "live": [
+    {
+     "url": "https://www.axionexholdings.com/taskbuttuler.apk",
+     "http": 200,
+     "status": "reachable"
+    },
+    {
+     "url": "https://www.youtube.com/watch?v=GTYJ4hNjJNo",
+     "http": 200,
+     "status": "reachable"
+    }
+   ],
+   "repo": {
+    "url": null,
+    "status": "notLinked"
+   }
+  }
+ }
+}

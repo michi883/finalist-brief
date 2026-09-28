@@ -1,274 +1,228 @@
 {
-  "version": 1,
-  "provenance": "Manually interpreted from the checked-in submissions.json and analyses.json. Dimensions are descriptive placements, not judge scores or calibrated measurements. Only the six requested contestant slugs are included. No automatic extraction.",
+  "version": 2,
+  "competition": {
+    "title": "Humor Genome / Build with Gemma",
+    "sponsorTech": "Gemma"
+  },
+  "provenance": "Manually interpreted from the six contestants' writeups, repositories and demo recordings, checked on 2026-09-24. Placements are descriptive, not judge scores. Evidence statuses record what Finalist Brief could inspect; nothing is extracted automatically. The laughlens-platform entry is excluded.",
   "projects": [
     {
       "id": "crowdwork-copilot",
       "title": "Crowdwork Copilot",
       "creator": "Cary Chan",
       "summary": "A text-based audience simulator that returns structured reactions from three audience personas so comedians can test and revise stand-up material.",
+      "sources": {
+        "writeup": {"kind": "writeup", "label": "Kaggle writeup", "url": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784121414897"},
+        "repo": {"kind": "repo", "label": "GitHub repository", "url": "https://github.com/alphago-master/Crowdwork-Copilot"},
+        "notebook": {"kind": "notebook", "label": "Kaggle notebook", "url": "https://kaggle.com/code/srchancary/crowdwork-copilot"}
+      },
       "competitionDimensions": {
-        "structuralDistinctiveness": {
-          "value": 0.42,
-          "note": "A compact persona-rehearsal loop."
-        },
-        "evidenceInspectability": {
-          "value": 0.32,
-          "note": "Inspection centers on the Kaggle notebook; the repository README is minimal."
-        },
-        "humanWorldGrounding": {
-          "value": 0.33,
-          "note": "Audience reactions are simulated, not measured."
-        },
-        "interactionDepth": {
-          "value": 0.72,
-          "note": "A creator can revise a bit after persona feedback."
-        },
-        "systemOrchestration": {
-          "value": 0.24,
-          "note": "Few-shot prompts inside a Gradio notebook."
-        },
-        "creativeScope": {
-          "value": 0.52,
-          "note": "Focused on stand-up material and revision."
-        },
-        "audienceCentrality": {
-          "value": 0.82,
-          "note": "Three audience personas drive the feedback."
-        }
+        "ideaDistinctiveness": {"value": 0.28, "note": "A persona rehearsal loop; simulated audiences also appear in two other entries."},
+        "integrationDepth": {"value": 0.2, "note": "One prompt, one Gemma 2B call and a Gradio UI inside a notebook."},
+        "sponsorCentrality": {"value": 0.8, "note": "Every persona reaction is a Gemma 2B generation."},
+        "sponsorEvidence": {"value": 0.34, "note": "Model and prompt are in the notebook; no recorded Gemma output exists."}
       },
       "idea": {
         "topology": "loop",
         "description": "A rehearsal loop: the comedian owns the revision; the audience is simulated.",
         "nodes": [
           {
-            "id": "bit",
-            "label": "Stand-up bit",
-            "kind": "artifact",
-            "detail": "Material to rehearse"
+            "id": "bit", "label": "Stand-up bit", "kind": "artifact", "detail": "Material to rehearse",
+            "evidence": {"status": "foundInCode", "note": "The notebook takes one joke (setup and punchline) as free text.",
+              "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "get_crowd_feedback(joke_text)"}]}
           },
           {
-            "id": "personas",
-            "label": "Three personas",
-            "kind": "model",
-            "detail": "Simulated audiences"
+            "id": "personas", "label": "Three personas", "kind": "model", "detail": "Boomer Dad · Gen Z · Critic",
+            "evidence": {"status": "foundInCode", "note": "Boomer Dad, Gen Z Scroller and Comedy Critic are defined together in one system prompt.",
+              "refs": [
+                {"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "SYSTEM_PROMPT defines all three personas and their tastes"},
+                {"source": "writeup", "detail": "Three audience personas return structured reactions."}
+              ]}
           },
           {
-            "id": "reactions",
-            "label": "Audience reactions",
-            "kind": "artifact",
-            "detail": "Structured feedback"
+            "id": "reactions", "label": "Audience reactions", "kind": "artifact", "detail": "Structured feedback",
+            "evidence": {"status": "foundInCode", "note": "Each persona returns Laugh / Groan / Silence, a 1–10 confidence and a one-line roast.",
+              "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "JSON keys boomer_dad, gen_z_scroller, comedy_critic"}]}
           },
           {
-            "id": "creator",
-            "label": "Comedian revises",
-            "kind": "human",
-            "detail": "Human judgment"
+            "id": "creator", "label": "Comedian revises", "kind": "human", "detail": "Human judgment",
+            "evidence": {"status": "described", "note": "Revision is the writeup's intended use; the tool keeps no history between runs.",
+              "refs": [{"source": "writeup", "detail": "So comedians can test and revise stand-up material."}]}
           }
         ],
         "edges": [
-          {
-            "to": "personas",
-            "label": "",
-            "kind": "flow",
-            "from": "bit"
-          },
-          {
-            "to": "reactions",
-            "label": "",
-            "kind": "flow",
-            "from": "personas"
-          },
-          {
-            "to": "creator",
-            "label": "",
-            "kind": "flow",
-            "from": "reactions"
-          },
-          {
-            "to": "bit",
-            "label": "revise",
-            "kind": "feedback",
-            "from": "creator"
-          }
+          {"from": "bit", "to": "personas"},
+          {"from": "personas", "to": "reactions"},
+          {"from": "reactions", "to": "creator"},
+          {"from": "creator", "to": "bit", "kind": "feedback", "label": "revise",
+            "evidence": {"status": "described", "note": "Revision happens outside the tool: the comedian edits the joke and submits it again.",
+              "refs": [{"source": "writeup"}]}}
         ]
       },
       "integration": {
         "topology": "flow",
-        "description": "A notebook interface wraps a small, prompt-led model integration.",
+        "description": "A notebook interface wraps one prompt and one Gemma 2B call.",
         "nodes": [
           {
-            "id": "ui",
-            "label": "Gradio notebook",
-            "kind": "surface",
-            "detail": "Kaggle interface"
+            "id": "ui", "label": "Gradio notebook", "kind": "surface", "detail": "Notebook UI",
+            "evidence": {"status": "foundInCode", "note": "A Gradio UI launched from the notebook; saved outputs show it started, but no reactions.",
+              "refs": [
+                {"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "gr.Blocks UI; saved output ends at the launch URL"},
+                {"source": "notebook", "detail": "Runnable copy on Kaggle"}
+              ]}
           },
           {
-            "id": "prompt",
-            "label": "Persona prompts",
-            "kind": "transformation",
-            "detail": "Few-shot examples"
+            "id": "prompt", "label": "One persona prompt", "kind": "transformation", "detail": "Three personas, one JSON",
+            "evidence": {"status": "foundInCode", "note": "A single system prompt asks for all three personas in one JSON object.",
+              "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "SYSTEM_PROMPT + \"Analyze this joke\""}]}
           },
           {
-            "id": "model",
-            "label": "Gemma 2B",
-            "kind": "model",
-            "detail": "Instruction-tuned"
+            "id": "model", "label": "Gemma 2B", "kind": "model", "detail": "gemma-2b-it · one call",
+            "evidence": {"status": "foundInCode", "note": "google/gemma-2b-it via Hugging Face transformers, sampled at temperature 0.7.",
+              "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "MODEL_NAME = \"google/gemma-2b-it\""}]}
           },
           {
-            "id": "output",
-            "label": "Structured reactions",
-            "kind": "artifact",
-            "detail": "Persona feedback"
+            "id": "output", "label": "Structured reactions", "kind": "artifact", "detail": "Parsed JSON → Markdown",
+            "evidence": {"status": "foundInCode", "note": "The response is parsed as JSON and formatted per persona with an emoji verdict.",
+              "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "parse_gemma_json, formatted_output"}]}
           }
         ],
         "edges": [
-          {
-            "to": "prompt",
-            "label": "",
-            "kind": "flow",
-            "from": "ui"
-          },
-          {
-            "to": "model",
-            "label": "",
-            "kind": "flow",
-            "from": "prompt"
-          },
-          {
-            "to": "output",
-            "label": "",
-            "kind": "flow",
-            "from": "model"
-          },
-          {
-            "to": "ui",
-            "label": "another bit",
-            "kind": "feedback",
-            "from": "output"
-          }
+          {"from": "ui", "to": "prompt"},
+          {"from": "prompt", "to": "model"},
+          {"from": "model", "to": "output"},
+          {"from": "output", "to": "ui", "kind": "feedback", "label": "another bit"}
         ]
-      }
+      },
+      "mapping": [
+        {"label": "Bit → one text box", "idea": ["bit"], "integration": ["ui"],
+          "evidence": {"status": "foundInCode", "note": "The joke is typed into the Gradio textbox.",
+            "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb"}]}},
+        {"label": "3 personas → 1 prompt, 1 call", "idea": ["personas"], "integration": ["prompt", "model"],
+          "evidence": {"status": "foundInCode", "note": "All three audiences are written by one Gemma 2B generation from a single prompt.",
+            "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "get_crowd_feedback makes one pipe() call"}]}},
+        {"label": "Reactions → one JSON object", "idea": ["reactions"], "integration": ["output"],
+          "evidence": {"status": "foundInCode", "note": "The three reactions arrive together in one parsed response.",
+            "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb"}]}},
+        {"label": "Revision → outside the tool", "idea": ["creator"], "integration": [],
+          "evidence": {"status": "foundInCode", "note": "Each run is stateless; revising means pasting a new version of the joke.",
+            "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "get_crowd_feedback keeps no history"}]}}
+      ],
+      "questions": [
+        {
+          "id": "one-call-personas", "kind": "mismatch",
+          "question": "All three personas come from one Gemma 2B call that writes a single JSON object. What keeps their reactions independent of each other?",
+          "basis": "The Idea presents three distinct audiences. The notebook defines them in one system prompt and samples all three in one response.",
+          "anchors": [
+            {"lens": "integration", "node": "prompt"},
+            {"lens": "integration", "node": "model"},
+            {"lens": "idea", "node": "personas"}
+          ],
+          "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "SYSTEM_PROMPT, get_crowd_feedback"}]
+        },
+        {
+          "id": "stateless-loop", "kind": "mismatch",
+          "question": "The idea is a revision loop, but each run is stateless. Does the tool help a comedian compare versions of a bit, or is that left entirely to them?",
+          "basis": "The Idea's topology is a loop through the comedian; in the notebook, nothing carries over from one run to the next.",
+          "anchors": [
+            {"lens": "idea", "node": "creator"},
+            {"lens": "idea", "edge": ["creator", "bit"]},
+            {"lens": "integration", "node": "ui"}
+          ],
+          "refs": [{"source": "repo", "at": "crowdwork-copilot.ipynb"}, {"source": "writeup"}]
+        },
+        {
+          "id": "no-recorded-output", "kind": "unverified",
+          "question": "No recording or saved output shows a persona reaction. Can the team show a real bit and the three reactions it received?",
+          "basis": "The README contains only the title, there is no demo video, and the notebook's saved outputs stop at the Gradio launch.",
+          "anchors": [
+            {"lens": "integration", "node": "output"},
+            {"lens": "idea", "node": "reactions"}
+          ],
+          "refs": [
+            {"source": "repo", "at": "README.md", "detail": "Title only"},
+            {"source": "repo", "at": "crowdwork-copilot.ipynb", "detail": "Saved outputs: model load, Gradio launch"}
+          ]
+        }
+      ]
     },
     {
       "id": "humor-genome-studio",
       "title": "Humor Genome Studio",
       "creator": "Aryan Yadav",
       "summary": "A modular browser workbench for creating, explaining, adapting, analyzing and performing humor through six dedicated tools.",
+      "sources": {
+        "writeup": {"kind": "writeup", "label": "Kaggle writeup", "url": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/humor-genome-studio"},
+        "repo": {"kind": "repo", "label": "GitHub repository", "url": "https://github.com/yadav-aryan18/humor-genome-nyc-kaggle"},
+        "video": {"kind": "video", "label": "Demo video", "url": "https://www.youtube.com/watch?v=Lt3YAZ7956k"}
+      },
       "competitionDimensions": {
-        "structuralDistinctiveness": {
-          "value": 0.7,
-          "note": "Six creative capabilities share a workbench."
-        },
-        "evidenceInspectability": {
-          "value": 0.89,
-          "note": "Repository documentation and a recorded demo expose the pipeline."
-        },
-        "humanWorldGrounding": {
-          "value": 0.24,
-          "note": "Primarily model interpretation and generation, without observed audience signals."
-        },
-        "interactionDepth": {
-          "value": 0.88,
-          "note": "Multiple tools and studio controls support exploration."
-        },
-        "systemOrchestration": {
-          "value": 0.86,
-          "note": "Shared validation, repair, retry, fallback and critic stages."
-        },
-        "creativeScope": {
-          "value": 0.94,
-          "note": "Creation, explanation, translation, improv, sets and analysis."
-        },
-        "audienceCentrality": {
-          "value": 0.38,
-          "note": "Audience context is one concern among several."
-        }
+        "ideaDistinctiveness": {"value": 0.52, "note": "A multi-tool workbench: broad rather than structurally unusual."},
+        "integrationDepth": {"value": 0.84, "note": "A shared pipeline with retries, fallback models, schema repair and a critic pass."},
+        "sponsorCentrality": {"value": 0.7, "note": "Every tool routes through the Gemma pipeline, but Gemini models are selectable."},
+        "sponsorEvidence": {"value": 0.88, "note": "The recorded run logs gemma-4-31b-it; the pipeline code is in the repo."}
       },
       "idea": {
         "topology": "hub",
         "description": "One body of comedy material, six different instruments. The hub represents shared subject matter.",
         "nodes": [
           {
-            "id": "material",
-            "label": "Comedy material",
-            "kind": "artifact",
-            "detail": "The shared subject"
+            "id": "material", "label": "Comedy material", "kind": "artifact", "detail": "The shared subject",
+            "evidence": {"status": "inferred", "note": "Finalist Brief's reading: the tools share a subject, not data. Each tool takes its own input."}
           },
           {
-            "id": "copilot",
-            "label": "Joke Copilot",
-            "kind": "transformation",
-            "detail": "Create a joke"
+            "id": "copilot", "label": "Joke Copilot", "kind": "transformation", "detail": "Create a joke",
+            "evidence": {"status": "demonstrated", "note": "Generates jokes with controls for format, audience and spice; shown with Studio Controls open.",
+              "refs": [
+                {"source": "video", "t": 44, "detail": "Joke Copilot with Studio Controls"},
+                {"source": "repo", "at": "app/src/pages/studio/CopilotPage.tsx"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-44.jpg", "source": "video", "t": 44}}
           },
           {
-            "id": "explain",
-            "label": "Explanation Engine",
-            "kind": "transformation",
-            "detail": "Unpack the mechanism"
+            "id": "explain", "label": "Explanation Engine", "kind": "transformation", "detail": "Unpack the mechanism",
+            "evidence": {"status": "foundInCode", "note": "Module 'explain' has its own prompt and schema; the demo shows it only as a tile.",
+              "refs": [
+                {"source": "repo", "at": "app/src/lib/moduleDefs.ts", "detail": "id: 'explain'"},
+                {"source": "video", "t": 36, "detail": "Tile in the tool grid"}
+              ]}
           },
           {
-            "id": "translate",
-            "label": "Cultural Translator",
-            "kind": "transformation",
-            "detail": "Adapt the context"
+            "id": "translate", "label": "Cultural Translator", "kind": "transformation", "detail": "Adapt the context",
+            "evidence": {"status": "demonstrated", "note": "Returns localized adaptations with reference swaps and a risk level.",
+              "refs": [
+                {"source": "video", "t": 70, "detail": "Three adaptations for India"},
+                {"source": "repo", "at": "app/src/pages/studio/TranslatorPage.tsx"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-70.jpg", "source": "video", "t": 70}}
           },
           {
-            "id": "improv",
-            "label": "Improv Partner",
-            "kind": "transformation",
-            "detail": "Explore a scene"
+            "id": "improv", "label": "Improv Partner", "kind": "transformation", "detail": "Explore a scene",
+            "evidence": {"status": "foundInCode", "note": "The only multi-turn tool: the page keeps the scene's message history.",
+              "refs": [{"source": "repo", "at": "app/src/pages/studio/ImprovPage.tsx", "detail": "messages state, startScene()"}]}
           },
           {
-            "id": "set",
-            "label": "Tight 5 Generator",
-            "kind": "transformation",
-            "detail": "Build a set"
+            "id": "set", "label": "Tight 5 Generator", "kind": "transformation", "detail": "Build a set",
+            "evidence": {"status": "foundInCode", "note": "Module 'tight5' builds a set with beats and callbacks; it is not shown running.",
+              "refs": [{"source": "repo", "at": "app/src/lib/moduleDefs.ts", "detail": "id: 'tight5'"}]}
           },
           {
-            "id": "genome",
-            "label": "Genome Lab",
-            "kind": "transformation",
-            "detail": "Analyze the structure"
+            "id": "genome", "label": "Genome Lab", "kind": "transformation", "detail": "Analyze the structure",
+            "evidence": {"status": "demonstrated", "note": "Sequences a joke into a radar profile and theory fit, with the pipeline log visible.",
+              "refs": [
+                {"source": "video", "t": 88, "detail": "Genome Lab result and stage strip"},
+                {"source": "repo", "at": "app/src/pages/studio/LabPage.tsx"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-88.jpg", "source": "video", "t": 88}}
           }
         ],
         "edges": [
-          {
-            "to": "copilot",
-            "label": "",
-            "kind": "flow",
-            "from": "material"
-          },
-          {
-            "to": "explain",
-            "label": "",
-            "kind": "flow",
-            "from": "material"
-          },
-          {
-            "to": "translate",
-            "label": "",
-            "kind": "flow",
-            "from": "material"
-          },
-          {
-            "to": "improv",
-            "label": "",
-            "kind": "flow",
-            "from": "material"
-          },
-          {
-            "to": "set",
-            "label": "",
-            "kind": "flow",
-            "from": "material"
-          },
-          {
-            "to": "genome",
-            "label": "",
-            "kind": "flow",
-            "from": "material"
-          }
+          {"from": "material", "to": "copilot"},
+          {"from": "material", "to": "explain"},
+          {"from": "material", "to": "translate"},
+          {"from": "material", "to": "improv"},
+          {"from": "material", "to": "set"},
+          {"from": "material", "to": "genome"}
         ],
         "focus": "material"
       },
@@ -277,165 +231,169 @@
         "description": "Shared orchestration with explicit repair and retry paths; the critic pass is optional.",
         "nodes": [
           {
-            "id": "modules",
-            "label": "Six browser tools",
-            "kind": "surface",
-            "detail": "React / TypeScript"
+            "id": "modules", "label": "Six browser tools", "kind": "surface", "detail": "React / TypeScript",
+            "evidence": {"status": "demonstrated", "note": "The tool grid; each tool is a page under app/src/pages/studio/, with no backend.",
+              "refs": [
+                {"source": "video", "t": 36, "detail": "\"Six instruments. One comedy laboratory.\""},
+                {"source": "repo", "at": "app/src/pages/studio/"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-36.jpg", "source": "video", "t": 36}}
           },
           {
-            "id": "assemble",
-            "label": "Assemble prompts",
-            "kind": "transformation",
-            "detail": "Task-specific schema"
+            "id": "assemble", "label": "Assemble prompt", "kind": "transformation", "detail": "Per-tool prompt + schema",
+            "evidence": {"status": "foundInCode", "note": "Each tool is a system prompt and JSON schema, run by one shared runPipeline().",
+              "refs": [
+                {"source": "repo", "at": "app/src/lib/moduleDefs.ts", "detail": "Six module definitions"},
+                {"source": "repo", "at": "app/src/lib/pipeline.ts", "detail": "runPipeline()"}
+              ]}
           },
           {
-            "id": "gemma",
-            "label": "Gemma via AI Studio",
-            "kind": "model",
-            "detail": "Selectable model"
+            "id": "gemma", "label": "Gemma via AI Studio", "kind": "model", "detail": "gemma-4-31b-it + fallbacks",
+            "evidence": {"status": "demonstrated", "note": "Studio Controls select gemma-4-31b-it with a Gemma fallback chain; Gemini models are also offered.",
+              "refs": [
+                {"source": "video", "t": 44, "detail": "Model and fallback models in Studio Controls"},
+                {"source": "video", "t": 88, "detail": "Run log: generate gemma-4-31b-it · attempt 1"},
+                {"source": "repo", "at": "app/src/lib/pipeline.ts", "detail": "Retries with backoff, then fallback models"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-44.jpg", "source": "video", "t": 44}}
           },
           {
-            "id": "validate",
-            "label": "Validate / repair",
-            "kind": "transformation",
-            "detail": "Schema + auto-repair"
+            "id": "validate", "label": "Validate / repair", "kind": "transformation", "detail": "Schema + auto-repair",
+            "evidence": {"status": "demonstrated", "note": "The recorded run logs 'validate: schema OK' and 'repair: fixed after 1 pass'.",
+              "refs": [
+                {"source": "video", "t": 88, "detail": "Stage log under the pipeline strip"},
+                {"source": "repo", "at": "app/src/lib/pipeline.ts", "detail": "Auto-repair loop"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-88.jpg", "source": "video", "t": 88}}
           },
           {
-            "id": "critic",
-            "label": "Critic / render",
-            "kind": "artifact",
-            "detail": "Optional critique"
+            "id": "critic", "label": "Critic + render", "kind": "artifact", "detail": "Critic pass optional",
+            "evidence": {"status": "demonstrated", "note": "An optional second call critiques and rewrites; the recorded run shows it completed.",
+              "refs": [
+                {"source": "video", "t": 88, "detail": "Critic pass marked done"},
+                {"source": "video", "t": 102, "detail": "Landing page describes the six stages"},
+                {"source": "repo", "at": "app/src/lib/pipeline.ts", "detail": "settings.critiquePass"}
+              ],
+              "frame": {"image": "assets/evidence/humor-genome-studio-102.jpg", "source": "video", "t": 102}}
           }
         ],
         "edges": [
-          {
-            "to": "assemble",
-            "label": "",
-            "kind": "flow",
-            "from": "modules"
-          },
-          {
-            "to": "gemma",
-            "label": "",
-            "kind": "flow",
-            "from": "assemble"
-          },
-          {
-            "to": "validate",
-            "label": "",
-            "kind": "flow",
-            "from": "gemma"
-          },
-          {
-            "to": "critic",
-            "label": "",
-            "kind": "flow",
-            "from": "validate"
-          },
-          {
-            "to": "gemma",
-            "label": "retry / fallback",
-            "kind": "feedback",
-            "from": "validate"
-          }
+          {"from": "modules", "to": "assemble"},
+          {"from": "assemble", "to": "gemma"},
+          {"from": "gemma", "to": "validate"},
+          {"from": "validate", "to": "critic"},
+          {"from": "validate", "to": "gemma", "kind": "feedback", "label": "auto-repair",
+            "evidence": {"status": "demonstrated", "note": "Invalid output goes back to the model with its validation errors.",
+              "refs": [{"source": "video", "t": 88}, {"source": "repo", "at": "app/src/lib/pipeline.ts"}]}}
         ]
-      }
+      },
+      "mapping": [
+        {"label": "6 tools → 1 pipeline", "idea": ["copilot", "explain", "translate", "improv", "set", "genome"], "integration": ["modules", "assemble"],
+          "evidence": {"status": "foundInCode", "note": "All six run through the same runPipeline(); they differ by prompt and schema, and Improv keeps chat history.",
+            "refs": [
+              {"source": "repo", "at": "app/src/lib/pipeline.ts"},
+              {"source": "repo", "at": "app/src/lib/moduleDefs.ts"},
+              {"source": "repo", "at": "app/src/pages/studio/ImprovPage.tsx"}
+            ]}},
+        {"label": "Shared material → no hand-off found", "idea": ["material"], "integration": [],
+          "evidence": {"status": "inferred", "note": "No path passing one tool's output into another was found in the reviewed source."}}
+      ],
+      "questions": [
+        {
+          "id": "shared-pipeline", "kind": "mismatch",
+          "question": "Six tools share one assemble → Gemma → validate pipeline and differ mainly by prompt and schema. Where does tool-specific logic live beyond the prompt?",
+          "basis": "The Idea presents six instruments. moduleDefs.ts defines each as a system prompt plus JSON schema run by one runPipeline(); only Improv Partner adds its own state.",
+          "anchors": [
+            {"lens": "integration", "node": "assemble"},
+            {"lens": "integration", "node": "modules"},
+            {"lens": "idea", "node": "copilot"},
+            {"lens": "idea", "node": "explain"},
+            {"lens": "idea", "node": "translate"},
+            {"lens": "idea", "node": "improv"},
+            {"lens": "idea", "node": "set"},
+            {"lens": "idea", "node": "genome"}
+          ],
+          "refs": [{"source": "repo", "at": "app/src/lib/moduleDefs.ts"}, {"source": "repo", "at": "app/src/lib/pipeline.ts"}]
+        },
+        {
+          "id": "hub-material", "kind": "unclear",
+          "question": "The six tools are presented as one comedy lab, but each takes its own input. Can material move between tools, for example Copilot jokes into a Tight 5 set?",
+          "basis": "The shared-material hub is Finalist Brief's reading of \"one comedy laboratory\"; no hand-off between modules was found in the reviewed source.",
+          "anchors": [{"lens": "idea", "node": "material"}],
+          "refs": [{"source": "video", "t": 36}]
+        },
+        {
+          "id": "gemini-options", "kind": "unverified",
+          "question": "The recorded run used gemma-4-31b-it, but Gemini models are one click away. Were all six tools tested on Gemma, and does any rely on Gemini to work well?",
+          "basis": "Studio Controls offer Gemma and Gemini models side by side. The only run log in the demo (Genome Lab) shows gemma-4-31b-it.",
+          "anchors": [{"lens": "integration", "node": "gemma"}],
+          "refs": [{"source": "video", "t": 44}, {"source": "video", "t": 88}]
+        }
+      ]
     },
     {
       "id": "killjoy",
       "title": "Killjoy",
       "creator": "Musliadi",
       "summary": "An interactive meme explainer that identifies a joke's mechanism, cultural reference, likely audience and the cost of explaining it.",
+      "sources": {
+        "writeup": {"kind": "writeup", "label": "Kaggle writeup", "url": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/killjoy-the-ai-that-explains-why-its-funny"},
+        "repo": {"kind": "repo", "label": "GitHub repository", "url": "https://github.com/Mussliadii/Killjoy"},
+        "video": {"kind": "video", "label": "Demo video", "url": "https://www.youtube.com/watch?v=zOM_J-YPhJk"}
+      },
       "competitionDimensions": {
-        "structuralDistinctiveness": {
-          "value": 0.3,
-          "note": "A focused image-to-explanation structure."
-        },
-        "evidenceInspectability": {
-          "value": 0.79,
-          "note": "The small backend, schema and demo make the core call inspectable."
-        },
-        "humanWorldGrounding": {
-          "value": 0.4,
-          "note": "Starts with an actual meme and cultural context, but audience fit is inferred."
-        },
-        "interactionDepth": {
-          "value": 0.42,
-          "note": "Choose an image and inspect its explanation."
-        },
-        "systemOrchestration": {
-          "value": 0.35,
-          "note": "One multimodal call behind a small API, with a mock fallback."
-        },
-        "creativeScope": {
-          "value": 0.24,
-          "note": "Deliberately narrow: explain an existing meme."
-        },
-        "audienceCentrality": {
-          "value": 0.3,
-          "note": "Likely audience is an output field, not a measured input."
-        }
+        "ideaDistinctiveness": {"value": 0.4, "note": "A focused explainer; the self-aware 'funniness lost' score is its distinctive turn."},
+        "integrationDepth": {"value": 0.45, "note": "A small FastAPI backend: one multimodal call, a schema and a mock fallback."},
+        "sponsorCentrality": {"value": 0.92, "note": "One Gemma call is the product; the mock only covers failures."},
+        "sponsorEvidence": {"value": 0.9, "note": "The recorded result carries a Live Gemma badge; the call is in humor_engine.py."}
       },
       "idea": {
         "topology": "flow",
         "description": "A meme is unpacked into an explanation and its cultural and human context.",
         "nodes": [
           {
-            "id": "meme",
-            "label": "Meme",
-            "kind": "artifact",
-            "detail": "An image or screenshot"
+            "id": "meme", "label": "Meme", "kind": "artifact", "detail": "An image or screenshot",
+            "evidence": {"status": "demonstrated", "note": "Paste a link, upload a screenshot or pick one of the bundled samples.",
+              "refs": [
+                {"source": "video", "t": 46, "detail": "Link, upload and sample inputs"},
+                {"source": "repo", "at": "data/samples/samples_manifest.json"}
+              ],
+              "frame": {"image": "assets/evidence/killjoy-46.jpg", "source": "video", "t": 46}}
           },
           {
-            "id": "reading",
-            "label": "Read the joke",
-            "kind": "transformation",
-            "detail": "Explain why it works"
+            "id": "reading", "label": "Read the joke", "kind": "transformation", "detail": "Explain why it works",
+            "evidence": {"status": "demonstrated", "note": "One multimodal Gemma call reads the image and returns the explanation.",
+              "refs": [
+                {"source": "video", "t": 66, "detail": "\"Gemma is thinking about the joke…\""},
+                {"source": "video", "t": 76, "detail": "Result card"},
+                {"source": "repo", "at": "backend/humor_engine.py", "detail": "explain_humor()"}
+              ],
+              "frame": {"image": "assets/evidence/killjoy-76.jpg", "source": "video", "t": 76}}
           },
           {
-            "id": "mechanism",
-            "label": "Mechanism + explanation",
-            "kind": "artifact",
-            "detail": "What makes it funny"
+            "id": "mechanism", "label": "Mechanism + explanation", "kind": "artifact", "detail": "What makes it funny",
+            "evidence": {"status": "demonstrated", "note": "The sample result labels the mechanism 'visual gag' with a short, playful explanation.",
+              "refs": [{"source": "video", "t": 76}],
+              "frame": {"image": "assets/evidence/killjoy-76.jpg", "source": "video", "t": 76}}
           },
           {
-            "id": "context",
-            "label": "Culture + audience",
-            "kind": "artifact",
-            "detail": "References and likely fit"
+            "id": "context", "label": "Culture + audience", "kind": "artifact", "detail": "References and likely fit",
+            "evidence": {"status": "demonstrated", "note": "Cultural reference 'Distracted Boyfriend meme'; likely audience 'Web developers and coders'.",
+              "refs": [{"source": "video", "t": 76}, {"source": "repo", "at": "backend/schemas.py", "detail": "cultural_reference, likely_audience"}],
+              "frame": {"image": "assets/evidence/killjoy-76.jpg", "source": "video", "t": 76}}
           },
           {
-            "id": "cost",
-            "label": "Cost of explaining",
-            "kind": "artifact",
-            "detail": "“Funniness lost” estimate"
+            "id": "cost", "label": "Cost of explaining", "kind": "artifact", "detail": "“Funniness lost” estimate",
+            "evidence": {"status": "demonstrated", "note": "A model-reported 0–100 score; the sample shows 20% funniness lost.",
+              "refs": [{"source": "video", "t": 76}, {"source": "repo", "at": "backend/humor_engine.py", "detail": "funniness_lost_score"}],
+              "frame": {"image": "assets/evidence/killjoy-76.jpg", "source": "video", "t": 76}}
           }
         ],
         "edges": [
-          {
-            "to": "reading",
-            "label": "",
-            "kind": "flow",
-            "from": "meme"
-          },
-          {
-            "to": "mechanism",
-            "label": "",
-            "kind": "flow",
-            "from": "reading"
-          },
-          {
-            "to": "context",
-            "label": "",
-            "kind": "flow",
-            "from": "reading"
-          },
-          {
-            "to": "cost",
-            "label": "",
-            "kind": "flow",
-            "from": "reading"
-          }
+          {"from": "meme", "to": "reading"},
+          {"from": "reading", "to": "mechanism"},
+          {"from": "reading", "to": "context"},
+          {"from": "reading", "to": "cost"}
         ]
       },
       "integration": {
@@ -443,379 +401,334 @@
         "description": "One multimodal call does the core work. A labeled mock path supports the demo.",
         "nodes": [
           {
-            "id": "surface",
-            "label": "Image input",
-            "kind": "surface",
-            "detail": "Link / upload / sample"
+            "id": "surface", "label": "Image input", "kind": "surface", "detail": "Link / upload / sample",
+            "evidence": {"status": "demonstrated", "note": "Three input paths in a static frontend.",
+              "refs": [{"source": "video", "t": 46}, {"source": "repo", "at": "frontend/app.html"}],
+              "frame": {"image": "assets/evidence/killjoy-46.jpg", "source": "video", "t": 46}}
           },
           {
-            "id": "api",
-            "label": "FastAPI",
-            "kind": "external",
-            "detail": "Prompt + JSON schema"
+            "id": "api", "label": "FastAPI", "kind": "external", "detail": "Prompt + JSON schema",
+            "evidence": {"status": "foundInCode", "note": "/explain tries the live Gemma call first and falls back to the mock engine on any failure.",
+              "refs": [{"source": "repo", "at": "backend/main.py", "detail": "/explain"}]}
           },
           {
-            "id": "gemma",
-            "label": "Gemma 4",
-            "kind": "model",
-            "detail": "One multimodal call"
+            "id": "gemma", "label": "Gemma 4", "kind": "model", "detail": "One multimodal call",
+            "evidence": {"status": "demonstrated", "note": "gemma-4-31b-it by default; the recorded result carries a 'Live Gemma' badge.",
+              "refs": [
+                {"source": "video", "t": 76, "detail": "\"Live Gemma\" badge"},
+                {"source": "repo", "at": "backend/humor_engine.py", "detail": "DEFAULT_MODEL = \"gemma-4-31b-it\""},
+                {"source": "repo", "at": "scripts/smoke_test_gemma.py"}
+              ],
+              "frame": {"image": "assets/evidence/killjoy-76.jpg", "source": "video", "t": 76}}
           },
           {
-            "id": "mock",
-            "label": "Mock fallback",
-            "kind": "artifact",
-            "detail": "Demo fallback"
+            "id": "mock", "label": "Mock fallback", "kind": "artifact", "detail": "Demo fallback",
+            "evidence": {"status": "foundInCode", "note": "Canned results tagged 'mock', used on any live failure, including a 20-second timeout.",
+              "refs": [
+                {"source": "repo", "at": "backend/mock_engine.py"},
+                {"source": "repo", "at": "backend/humor_engine.py", "detail": "timeout=20_000"}
+              ]}
           },
           {
-            "id": "result",
-            "label": "Five-field result",
-            "kind": "artifact",
-            "detail": "Static frontend"
+            "id": "result", "label": "Five-field result", "kind": "artifact", "detail": "Static frontend",
+            "evidence": {"status": "demonstrated", "note": "Five fields plus a live / mock source tag, defined once in schemas.py.",
+              "refs": [{"source": "video", "t": 76}, {"source": "repo", "at": "backend/schemas.py", "detail": "ExplainResponse"}],
+              "frame": {"image": "assets/evidence/killjoy-76.jpg", "source": "video", "t": 76}}
           }
         ],
         "edges": [
-          {
-            "to": "api",
-            "label": "",
-            "kind": "flow",
-            "from": "surface"
-          },
-          {
-            "to": "gemma",
-            "label": "",
-            "kind": "flow",
-            "from": "api"
-          },
-          {
-            "to": "mock",
-            "label": "fallback",
-            "kind": "flow",
-            "from": "api"
-          },
-          {
-            "to": "result",
-            "label": "",
-            "kind": "flow",
-            "from": "gemma"
-          },
-          {
-            "to": "result",
-            "label": "",
-            "kind": "flow",
-            "from": "mock"
-          }
+          {"from": "surface", "to": "api"},
+          {"from": "api", "to": "gemma"},
+          {"from": "api", "to": "mock", "label": "fallback",
+            "evidence": {"status": "foundInCode", "note": "Any exception from the live engine is caught and served by the mock.",
+              "refs": [{"source": "repo", "at": "backend/main.py"}]}},
+          {"from": "gemma", "to": "result"},
+          {"from": "mock", "to": "result"}
         ]
-      }
+      },
+      "mapping": [
+        {"label": "Meme → link / upload / sample", "idea": ["meme"], "integration": ["surface"],
+          "evidence": {"status": "demonstrated", "note": "All three input paths appear in the recording.",
+            "refs": [{"source": "video", "t": 46}]}},
+        {"label": "Reading → 1 multimodal call", "idea": ["reading"], "integration": ["api", "gemma"],
+          "evidence": {"status": "demonstrated", "note": "The whole reading is a single Gemma call behind the API.",
+            "refs": [{"source": "video", "t": 76}, {"source": "repo", "at": "backend/humor_engine.py"}]}},
+        {"label": "3 outputs → 5 schema fields", "idea": ["mechanism", "context", "cost"], "integration": ["result"],
+          "evidence": {"status": "foundInCode", "note": "Mechanism, explanation, reference, audience and funniness lost share one response schema.",
+            "refs": [{"source": "repo", "at": "backend/schemas.py"}]}}
+      ],
+      "questions": [
+        {
+          "id": "self-reported-scores", "kind": "unverified",
+          "question": "'Funniness lost' and 'likely audience' are the model's own estimates. The repo includes a small user-test template: was it run, and did people agree?",
+          "basis": "Both fields come straight from the model's JSON. eval/mini_usertest_template.md plans a 3–5 person test, but its results table is empty.",
+          "anchors": [
+            {"lens": "idea", "node": "cost"},
+            {"lens": "idea", "node": "context"},
+            {"lens": "integration", "node": "result"}
+          ],
+          "refs": [
+            {"source": "repo", "at": "eval/mini_usertest_template.md", "detail": "Empty results table"},
+            {"source": "repo", "at": "backend/humor_engine.py"}
+          ]
+        },
+        {
+          "id": "mock-frequency", "kind": "implementation",
+          "question": "Any live failure, including a 20-second timeout, switches to canned mock results. How often did that happen while testing with real memes?",
+          "basis": "main.py catches every live-engine exception and serves mock_engine output; results are tagged live or mock.",
+          "anchors": [
+            {"lens": "integration", "node": "mock"},
+            {"lens": "integration", "node": "api"}
+          ],
+          "refs": [{"source": "repo", "at": "backend/main.py"}, {"source": "repo", "at": "backend/humor_engine.py"}]
+        }
+      ]
     },
     {
       "id": "laughlensai",
       "title": "LaughLensAI",
       "creator": "Abhishek Gaduputi",
       "summary": "A text-joke analysis tool that visualizes structural dimensions as a humor genome and compares Gemma's hypothesis with anonymous human ratings.",
+      "sources": {
+        "writeup": {"kind": "writeup", "label": "Kaggle writeup", "url": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/laughlensai"},
+        "repo": {"kind": "repo", "label": "GitHub repository", "url": "https://github.com/sairam782/laughlens"},
+        "video": {"kind": "video", "label": "Recording in repo", "url": "https://github.com/sairam782/laughlens/blob/main/submission/laughlens.mov"},
+        "site": {"kind": "site", "label": "Live site", "url": "https://abhigaduputi.vercel.app/"},
+        "cover": {"kind": "image", "label": "Writeup cover image"}
+      },
       "competitionDimensions": {
-        "structuralDistinctiveness": {
-          "value": 0.8,
-          "note": "Contrasts a model hypothesis with anonymous human ratings."
-        },
-        "evidenceInspectability": {
-          "value": 0.65,
-          "note": "A repo and live site exist; no recorded demo and a heuristic demo mode."
-        },
-        "humanWorldGrounding": {
-          "value": 0.77,
-          "note": "Human ratings provide a direct comparison signal."
-        },
-        "interactionDepth": {
-          "value": 0.62,
-          "note": "Inspect the genome and contribute an anonymous rating."
-        },
-        "systemOrchestration": {
-          "value": 0.6,
-          "note": "Validated model output plus a separate ratings store and comparison."
-        },
-        "creativeScope": {
-          "value": 0.43,
-          "note": "Analysis and human comparison, rather than broad creative generation."
-        },
-        "audienceCentrality": {
-          "value": 0.71,
-          "note": "Human perception tests the model’s reading."
-        }
+        "ideaDistinctiveness": {"value": 0.74, "note": "Treats the model's reading as a hypothesis to test against people."},
+        "integrationDepth": {"value": 0.58, "note": "Schema-checked Gemma call, heuristic fallback, ratings store and agreement metric."},
+        "sponsorCentrality": {"value": 0.55, "note": "Gemma supplies the hypothesis; the human side and heuristic mode do not use it."},
+        "sponsorEvidence": {"value": 0.4, "note": "The Gemma call is in the code, but the recorded analysis matches seeded data."}
       },
       "idea": {
         "topology": "flow",
         "description": "Two readings of one joke: a model hypothesis and human ratings meet in comparison.",
         "nodes": [
           {
-            "id": "joke",
-            "label": "Text joke",
-            "kind": "artifact",
-            "detail": "One shared input"
+            "id": "joke", "label": "Text joke", "kind": "artifact", "detail": "One shared input",
+            "evidence": {"status": "demonstrated", "note": "One text joke, with optional context, audience and performer.",
+              "refs": [{"source": "video", "t": 12, "detail": "\"Results for: I named my Wi-Fi Pretty Fly for a Wi-Fi.\""}, {"source": "repo", "at": "src/app/api/analyze/route.ts"}],
+              "frame": {"image": "assets/evidence/laughlensai-12.jpg", "source": "video", "t": 12}}
           },
           {
-            "id": "hypothesis",
-            "label": "Model hypothesis",
-            "kind": "model",
-            "detail": "Nine humor dimensions"
+            "id": "hypothesis", "label": "Model hypothesis", "kind": "model", "detail": "Nine humor dimensions",
+            "evidence": {"status": "foundInCode", "note": "analyzeHumor() asks Gemma for scored mechanisms and explanations. The recorded example matches a seeded record.",
+              "refs": [
+                {"source": "repo", "at": "src/lib/gemma.ts", "detail": "SYSTEM_PROMPT and schema instruction"},
+                {"source": "repo", "at": "src/lib/demo-data.ts", "detail": "Seeded Wi-Fi analysis, score 86"}
+              ]}
           },
           {
-            "id": "people",
-            "label": "Human readers",
-            "kind": "human",
-            "detail": "Anonymous raters"
+            "id": "people", "label": "Human readers", "kind": "human", "detail": "Anonymous raters",
+            "evidence": {"status": "described", "note": "Anonymous raters are the intended human side; in the recording, the presenter submits the ratings.",
+              "refs": [{"source": "repo", "at": "DEMO.md", "detail": "\"Submit a 1-5 anonymous human rating.\""}, {"source": "writeup"}]}
           },
           {
-            "id": "ratings",
-            "label": "Human ratings",
-            "kind": "signal",
-            "detail": "Reported perception"
+            "id": "ratings", "label": "Human ratings", "kind": "signal", "detail": "1–5 reaction",
+            "evidence": {"status": "demonstrated", "note": "One 1–5 answer to \"Does this AI explanation match your laugh?\"; the comparison updates after each.",
+              "refs": [{"source": "video", "t": 92}, {"source": "repo", "at": "src/app/api/ratings/route.ts"}],
+              "frame": {"image": "assets/evidence/laughlensai-92.jpg", "source": "video", "t": 92}}
           },
           {
-            "id": "compare",
-            "label": "Agreement / difference",
-            "kind": "transformation",
-            "detail": "Hypothesis meets people"
+            "id": "compare", "label": "Agreement / difference", "kind": "transformation", "detail": "Hypothesis meets people",
+            "evidence": {"status": "demonstrated", "note": "AI 86/100 vs. human 30/100 gives 44% agreement; agreement is 100 − |AI − human|.",
+              "refs": [{"source": "video", "t": 92, "detail": "AI vs Human Comparison"}, {"source": "repo", "at": "src/lib/metrics.ts", "detail": "agreementFromScores()"}],
+              "frame": {"image": "assets/evidence/laughlensai-92.jpg", "source": "video", "t": 92}}
           }
         ],
         "edges": [
-          {
-            "to": "hypothesis",
-            "label": "",
-            "kind": "flow",
-            "from": "joke"
-          },
-          {
-            "to": "people",
-            "label": "",
-            "kind": "flow",
-            "from": "joke"
-          },
-          {
-            "to": "ratings",
-            "label": "",
-            "kind": "flow",
-            "from": "people"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "hypothesis"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "ratings"
-          }
+          {"from": "joke", "to": "hypothesis"},
+          {"from": "joke", "to": "people"},
+          {"from": "people", "to": "ratings"},
+          {"from": "hypothesis", "to": "compare"},
+          {"from": "ratings", "to": "compare"}
         ]
       },
       "integration": {
         "topology": "layers",
-        "description": "A web surface sits above two distinct paths: validated model analysis and stored human ratings.",
+        "description": "A web surface sits above two paths: a Gemma analysis with a heuristic fallback, and a file-backed ratings store.",
         "nodes": [
           {
-            "id": "web",
-            "label": "Next.js interface",
-            "kind": "surface",
-            "detail": "Joke + ratings UI"
+            "id": "web", "label": "Next.js interface", "kind": "surface", "detail": "Joke + ratings UI",
+            "evidence": {"status": "demonstrated", "note": "One page: analysis, genome, comparison, feedback and explorer.",
+              "refs": [{"source": "video", "t": 12}, {"source": "repo", "at": "src/app/page.tsx"}],
+              "frame": {"image": "assets/evidence/laughlensai-12.jpg", "source": "video", "t": 12}}
           },
           {
-            "id": "analyze",
-            "label": "analyzeHumor()",
-            "kind": "transformation",
-            "detail": "Google Gen AI SDK"
+            "id": "analyze", "label": "analyzeHumor()", "kind": "transformation", "detail": "Google Gen AI SDK",
+            "evidence": {"status": "foundInCode", "note": "One Gemma call with a schema check and one stricter retry; without a key it returns heuristics.",
+              "refs": [{"source": "repo", "at": "src/lib/gemma.ts", "detail": "analyzeHumor()"}]}
           },
           {
-            "id": "store",
-            "label": "JSON ratings store",
-            "kind": "external",
-            "detail": "File-backed MVP"
+            "id": "store", "label": "JSON ratings store", "kind": "external", "detail": "File-backed MVP",
+            "evidence": {"status": "foundInCode", "note": "Seeded with seven demo analyses and their ratings; on Vercel the file lives in a temp directory.",
+              "refs": [
+                {"source": "repo", "at": "src/lib/store.ts", "detail": "tmpdir() on Vercel"},
+                {"source": "repo", "at": "src/lib/demo-data.ts", "detail": "Seven seeded analyses, two ratings each"},
+                {"source": "video", "t": 108, "detail": "Explorer: \"insufficient data for statistical conclusions\""}
+              ],
+              "frame": {"image": "assets/evidence/laughlensai-108.jpg", "source": "video", "t": 108}}
           },
           {
-            "id": "gemma",
-            "label": "Gemma 4",
-            "kind": "model",
-            "detail": "Schema-validated output"
+            "id": "gemma", "label": "Gemma 4", "kind": "model", "detail": "Schema-validated output",
+            "evidence": {"status": "foundInCode", "note": "gemma-4-26b-a4b-it by default, overridable via GEMMA_MODEL. The cover art names a different model.",
+              "refs": [
+                {"source": "repo", "at": "src/lib/gemma.ts", "detail": "gemmaModelName()"},
+                {"source": "cover", "detail": "Illustration labels the engine \"Gemma 2.9B Instruct\""}
+              ]}
           },
           {
-            "id": "compare",
-            "label": "Genome + comparison",
-            "kind": "artifact",
-            "detail": "Radar and agreement"
+            "id": "demo", "label": "Heuristic mode", "kind": "transformation", "detail": "Used without an API key",
+            "evidence": {"status": "foundInCode", "note": "Keyword heuristics produce a low-confidence analysis when no key is configured.",
+              "refs": [{"source": "repo", "at": "src/lib/demo-data.ts", "detail": "heuristicAnalysis()"}]}
+          },
+          {
+            "id": "compare", "label": "Genome + comparison", "kind": "artifact", "detail": "Radar and agreement",
+            "evidence": {"status": "demonstrated", "note": "A radar of the model's scores above the AI-vs-human metric bar.",
+              "refs": [{"source": "video", "t": 80, "detail": "Genome radar"}, {"source": "video", "t": 92}, {"source": "repo", "at": "src/lib/metrics.ts"}],
+              "frame": {"image": "assets/evidence/laughlensai-80.jpg", "source": "video", "t": 80}}
           }
         ],
         "edges": [
-          {
-            "to": "analyze",
-            "label": "",
-            "kind": "flow",
-            "from": "web"
-          },
-          {
-            "to": "store",
-            "label": "",
-            "kind": "flow",
-            "from": "web"
-          },
-          {
-            "to": "gemma",
-            "label": "",
-            "kind": "flow",
-            "from": "analyze"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "gemma"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "store"
-          }
+          {"from": "web", "to": "analyze"},
+          {"from": "web", "to": "store"},
+          {"from": "analyze", "to": "gemma"},
+          {"from": "analyze", "to": "demo", "label": "no key",
+            "evidence": {"status": "foundInCode", "note": "Without GEMINI_API_KEY or GOOGLE_API_KEY, analyzeHumor() returns heuristics in 'demo' mode.",
+              "refs": [{"source": "repo", "at": "src/lib/gemma.ts"}]}},
+          {"from": "gemma", "to": "compare"},
+          {"from": "demo", "to": "compare"},
+          {"from": "store", "to": "compare"}
         ]
-      }
+      },
+      "mapping": [
+        {"label": "Joke → analysis form", "idea": ["joke"], "integration": ["web"],
+          "evidence": {"status": "demonstrated", "note": "The joke is entered in the Analysis Engine form.",
+            "refs": [{"source": "video", "t": 12}]}},
+        {"label": "Hypothesis → Gemma or heuristics", "idea": ["hypothesis"], "integration": ["analyze", "gemma", "demo"],
+          "evidence": {"status": "foundInCode", "note": "The same screen shows Gemma output or keyword heuristics, depending on whether a key is set.",
+            "refs": [{"source": "repo", "at": "src/lib/gemma.ts"}]}},
+        {"label": "Human readers → a JSON file", "idea": ["people", "ratings"], "integration": ["store"],
+          "evidence": {"status": "foundInCode", "note": "Ratings are appended to a file-backed store that ships with pre-written ratings.",
+            "refs": [{"source": "repo", "at": "src/lib/store.ts"}, {"source": "repo", "at": "src/lib/demo-data.ts"}]}},
+        {"label": "9 dimensions vs. 1 rating → 1 number", "idea": ["compare"], "integration": ["compare"],
+          "evidence": {"status": "foundInCode", "note": "Only the overall score is compared with the human 1–5 average.",
+            "refs": [{"source": "repo", "at": "src/lib/metrics.ts"}]}}
+      ],
+      "questions": [
+        {
+          "id": "overall-only", "kind": "mismatch",
+          "question": "The genome has nine dimensions, but agreement compares only the overall score with one 1–5 rating. Is any individual dimension ever tested against people?",
+          "basis": "metrics.ts maps the 1–5 average to 0–100 and reports 100 − |AI − human|; raters answer a single question.",
+          "anchors": [
+            {"lens": "idea", "node": "compare"},
+            {"lens": "integration", "node": "compare"},
+            {"lens": "idea", "node": "hypothesis"}
+          ],
+          "refs": [{"source": "repo", "at": "src/lib/metrics.ts"}, {"source": "repo", "at": "src/app/api/ratings/route.ts"}]
+        },
+        {
+          "id": "seeded-demo", "kind": "unverified",
+          "question": "The analysis in the recording matches a seeded record in demo-data.ts word for word. Can the team show an analysis produced live by Gemma?",
+          "basis": "Without an API key the app answers with heuristics. The recorded joke, 86/100 score and explanation are identical to the first seeded example.",
+          "anchors": [
+            {"lens": "integration", "node": "gemma"},
+            {"lens": "integration", "node": "demo"},
+            {"lens": "idea", "node": "hypothesis"}
+          ],
+          "refs": [
+            {"source": "video", "t": 12},
+            {"source": "repo", "at": "src/lib/demo-data.ts", "detail": "First seeded record"},
+            {"source": "repo", "at": "src/lib/gemma.ts"}
+          ]
+        },
+        {
+          "id": "real-raters", "kind": "unverified",
+          "question": "Seeded examples ship with pre-written ratings, and on Vercel new ratings go to a temporary file. How many ratings come from real people, and do they persist?",
+          "basis": "store.ts seeds seven analyses with two ratings each and writes to tmpdir() on Vercel; the explorer itself notes insufficient data.",
+          "anchors": [
+            {"lens": "idea", "node": "people"},
+            {"lens": "integration", "node": "store"}
+          ],
+          "refs": [
+            {"source": "repo", "at": "src/lib/store.ts"},
+            {"source": "repo", "at": "src/lib/demo-data.ts"},
+            {"source": "video", "t": 108}
+          ]
+        }
+      ]
     },
     {
       "id": "room-sense-text",
       "title": "Room Sense Text",
       "creator": "samuel tan",
       "summary": "A clonable Kaggle notebook that shows how one joke is received by four simulated audience personas and rewrites it for a colder room.",
+      "sources": {
+        "writeup": {"kind": "writeup", "label": "Kaggle writeup", "url": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784903515323"},
+        "notebook": {"kind": "notebook", "label": "Kaggle notebook", "url": "https://www.kaggle.com/code/simingtan/room-sense-text-gemma4"},
+        "cover": {"kind": "image", "label": "Writeup cover image"}
+      },
       "competitionDimensions": {
-        "structuralDistinctiveness": {
-          "value": 0.57,
-          "note": "Fan-out to four rooms, then a targeted rewrite."
-        },
-        "evidenceInspectability": {
-          "value": 0.26,
-          "note": "The clonable notebook is the main inspectable artifact."
-        },
-        "humanWorldGrounding": {
-          "value": 0.47,
-          "note": "Audience variation is simulated, rather than observed."
-        },
-        "interactionDepth": {
-          "value": 0.51,
-          "note": "A creator chooses a colder audience for rewriting."
-        },
-        "systemOrchestration": {
-          "value": 0.44,
-          "note": "Local inference coordinates reactions, explanation and rewrite."
-        },
-        "creativeScope": {
-          "value": 0.63,
-          "note": "Audience analysis plus targeted creative adaptation."
-        },
-        "audienceCentrality": {
-          "value": 0.94,
-          "note": "Different audience interpretations organize the whole experiment."
-        }
+        "ideaDistinctiveness": {"value": 0.5, "note": "Audience disagreement over one joke, then a rewrite for a colder room."},
+        "integrationDepth": {"value": 0.38, "note": "Local llama.cpp inference coordinating three notebook tasks."},
+        "sponsorCentrality": {"value": 0.88, "note": "Gemma 4 performs the reactions, the explanation and the rewrite."},
+        "sponsorEvidence": {"value": 0.22, "note": "Described in the writeup; the notebook must be run to see any output."}
       },
       "idea": {
         "topology": "flow",
         "description": "The same joke meets four simulated rooms; their differences inform a targeted rewrite.",
         "nodes": [
           {
-            "id": "joke",
-            "label": "Same joke",
-            "kind": "artifact",
-            "detail": "One input, four contexts"
+            "id": "joke", "label": "Same joke", "kind": "artifact", "detail": "One input, four contexts",
+            "evidence": {"status": "described", "note": "One joke is shown to every audience.",
+              "refs": [{"source": "writeup", "detail": "Same joke, four Gemma audiences"}]}
           },
           {
-            "id": "room1",
-            "label": "Audience 1",
-            "kind": "model",
-            "detail": "Simulated interpretation"
+            "id": "room1", "label": "Comedy Nerd", "kind": "model", "detail": "Simulated audience",
+            "evidence": {"status": "described", "note": "One of four simulated audiences named on the writeup's cover.",
+              "refs": [{"source": "cover"}, {"source": "writeup"}],
+              "frame": {"image": "assets/covers/room-sense-text.jpg", "source": "cover"}}
           },
           {
-            "id": "room2",
-            "label": "Audience 2",
-            "kind": "model",
-            "detail": "Simulated interpretation"
+            "id": "room2", "label": "Casual Fan", "kind": "model", "detail": "Simulated audience",
+            "evidence": {"status": "described", "note": "One of four simulated audiences named on the writeup's cover.",
+              "refs": [{"source": "cover"}, {"source": "writeup"}],
+              "frame": {"image": "assets/covers/room-sense-text.jpg", "source": "cover"}}
           },
           {
-            "id": "room3",
-            "label": "Audience 3",
-            "kind": "model",
-            "detail": "Simulated interpretation"
+            "id": "room3", "label": "ESL listener", "kind": "model", "detail": "Simulated audience",
+            "evidence": {"status": "described", "note": "One of four simulated audiences named on the writeup's cover.",
+              "refs": [{"source": "cover"}, {"source": "writeup"}],
+              "frame": {"image": "assets/covers/room-sense-text.jpg", "source": "cover"}}
           },
           {
-            "id": "room4",
-            "label": "Audience 4",
-            "kind": "model",
-            "detail": "Simulated interpretation"
+            "id": "room4", "label": "HR", "kind": "model", "detail": "Simulated audience",
+            "evidence": {"status": "described", "note": "One of four simulated audiences named on the writeup's cover.",
+              "refs": [{"source": "cover"}, {"source": "writeup"}],
+              "frame": {"image": "assets/covers/room-sense-text.jpg", "source": "cover"}}
           },
           {
-            "id": "compare",
-            "label": "Compare the rooms",
-            "kind": "transformation",
-            "detail": "Structure, risks, reactions"
+            "id": "compare", "label": "Compare the rooms", "kind": "transformation", "detail": "Structure, risks, reactions",
+            "evidence": {"status": "inferred", "note": "Finalist Brief's reading. The writeup describes reactions and an explanation, not a comparison step."}
           },
           {
-            "id": "rewrite",
-            "label": "Targeted rewrite",
-            "kind": "artifact",
-            "detail": "For a chosen colder room"
+            "id": "rewrite", "label": "Targeted rewrite", "kind": "artifact", "detail": "For a chosen colder room",
+            "evidence": {"status": "described", "note": "A rewrite for a colder audience the user selects.",
+              "refs": [{"source": "writeup", "detail": "Rewrite it for a selected colder audience"}]}
           }
         ],
         "edges": [
-          {
-            "to": "room1",
-            "label": "",
-            "kind": "flow",
-            "from": "joke"
-          },
-          {
-            "to": "room2",
-            "label": "",
-            "kind": "flow",
-            "from": "joke"
-          },
-          {
-            "to": "room3",
-            "label": "",
-            "kind": "flow",
-            "from": "joke"
-          },
-          {
-            "to": "room4",
-            "label": "",
-            "kind": "flow",
-            "from": "joke"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "room1"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "room2"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "room3"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "room4"
-          },
-          {
-            "to": "rewrite",
-            "label": "",
-            "kind": "flow",
-            "from": "compare"
-          }
+          {"from": "joke", "to": "room1"},
+          {"from": "joke", "to": "room2"},
+          {"from": "joke", "to": "room3"},
+          {"from": "joke", "to": "room4"},
+          {"from": "room1", "to": "compare"},
+          {"from": "room2", "to": "compare"},
+          {"from": "room3", "to": "compare"},
+          {"from": "room4", "to": "compare"},
+          {"from": "compare", "to": "rewrite"}
         ]
       },
       "integration": {
@@ -823,184 +736,149 @@
         "description": "One local runtime supports three notebook tasks. The rewrite uses the reaction and explanation context.",
         "nodes": [
           {
-            "id": "runtime",
-            "label": "Gemma 4 / llama.cpp",
-            "kind": "model",
-            "detail": "Local notebook inference"
+            "id": "runtime", "label": "Gemma 4 / llama.cpp", "kind": "model", "detail": "Local notebook inference",
+            "evidence": {"status": "described", "note": "Gemma 4 through llama.cpp inside the notebook; the notebook was not inspected.",
+              "refs": [{"source": "writeup", "detail": "Runs Gemma 4 through llama.cpp"}, {"source": "notebook"}]}
           },
           {
-            "id": "notebook",
-            "label": "Kaggle notebook",
-            "kind": "surface",
-            "detail": "Joke + audience choice"
+            "id": "notebook", "label": "Kaggle notebook", "kind": "surface", "detail": "Joke + audience choice",
+            "evidence": {"status": "described", "note": "A clonable Kaggle notebook is the only runnable artifact; there is no repository or recording.",
+              "refs": [{"source": "notebook"}, {"source": "writeup"}]}
           },
           {
-            "id": "react",
-            "label": "Four reactions",
-            "kind": "artifact",
-            "detail": "Persona prompting"
+            "id": "react", "label": "Four reactions", "kind": "artifact", "detail": "Persona prompting",
+            "evidence": {"status": "described", "note": "Four persona reactions from the same runtime.",
+              "refs": [{"source": "writeup", "detail": "Produce four audience reactions"}]}
           },
           {
-            "id": "explain",
-            "label": "Structure + risks",
-            "kind": "artifact",
-            "detail": "Explanation task"
+            "id": "explain", "label": "Structure + risks", "kind": "artifact", "detail": "Explanation task",
+            "evidence": {"status": "described", "note": "An explanation of the joke's structure and risks.",
+              "refs": [{"source": "writeup", "detail": "Explain the joke's structure and risks"}]}
           },
           {
-            "id": "rewrite",
-            "label": "Colder-room rewrite",
-            "kind": "artifact",
-            "detail": "Rewrite task"
+            "id": "rewrite", "label": "Colder-room rewrite", "kind": "artifact", "detail": "Rewrite task",
+            "evidence": {"status": "described", "note": "Rewrites the joke for the selected colder audience, using the reactions and explanation.",
+              "refs": [{"source": "writeup", "detail": "Rewrite it for a selected colder audience"}]}
           }
         ],
         "edges": [
-          {
-            "to": "runtime",
-            "label": "",
-            "kind": "flow",
-            "from": "notebook"
-          },
-          {
-            "to": "react",
-            "label": "",
-            "kind": "flow",
-            "from": "runtime"
-          },
-          {
-            "to": "explain",
-            "label": "",
-            "kind": "flow",
-            "from": "runtime"
-          },
-          {
-            "to": "rewrite",
-            "label": "",
-            "kind": "flow",
-            "from": "runtime"
-          },
-          {
-            "to": "rewrite",
-            "label": "",
-            "kind": "flow",
-            "from": "react"
-          },
-          {
-            "to": "rewrite",
-            "label": "",
-            "kind": "flow",
-            "from": "explain"
-          }
+          {"from": "notebook", "to": "runtime"},
+          {"from": "runtime", "to": "react"},
+          {"from": "runtime", "to": "explain"},
+          {"from": "runtime", "to": "rewrite"},
+          {"from": "react", "to": "rewrite"},
+          {"from": "explain", "to": "rewrite"}
         ],
         "focus": "runtime"
-      }
+      },
+      "mapping": [
+        {"label": "4 audiences → 1 runtime", "idea": ["room1", "room2", "room3", "room4"], "integration": ["runtime", "react"],
+          "evidence": {"status": "described", "note": "The four persona reactions come from the same local Gemma 4 runtime.",
+            "refs": [{"source": "writeup"}]}},
+        {"label": "Room comparison → no counterpart", "idea": ["compare"], "integration": [],
+          "evidence": {"status": "inferred", "note": "No comparison step is described; the rewrite targets a room the user picks."}},
+        {"label": "Rewrite → rewrite task", "idea": ["rewrite"], "integration": ["rewrite"],
+          "evidence": {"status": "described", "note": "The third notebook task rewrites for the chosen audience.",
+            "refs": [{"source": "writeup"}]}}
+      ],
+      "questions": [
+        {
+          "id": "four-audiences", "kind": "mismatch",
+          "question": "These four audiences appear to use the same model. What mechanism keeps their behavior meaningfully distinct?",
+          "basis": "The Idea presents four rooms. The writeup runs all four as persona reactions on one local Gemma 4 runtime.",
+          "anchors": [
+            {"lens": "integration", "node": "runtime"},
+            {"lens": "integration", "node": "react"},
+            {"lens": "idea", "node": "room1"},
+            {"lens": "idea", "node": "room2"},
+            {"lens": "idea", "node": "room3"},
+            {"lens": "idea", "node": "room4"}
+          ],
+          "refs": [{"source": "writeup"}, {"source": "cover"}]
+        },
+        {
+          "id": "no-comparison", "kind": "unclear",
+          "question": "The idea implies the rooms are compared before the rewrite, but no comparison step is described. Does anything compare the four reactions, or does the user pick the colder room by reading them?",
+          "basis": "'Compare the rooms' is Finalist Brief's inference. The writeup describes reactions, an explanation and a rewrite for a selected audience.",
+          "anchors": [
+            {"lens": "idea", "node": "compare"},
+            {"lens": "integration", "node": "rewrite"}
+          ],
+          "refs": [{"source": "writeup"}]
+        },
+        {
+          "id": "notebook-only", "kind": "unverified",
+          "question": "There is no repository or recording, and the notebook needs local llama.cpp inference to run. Does it keep saved outputs from a full run?",
+          "basis": "The Kaggle notebook is the only artifact; no Gemma output was visible to Finalist Brief without running it.",
+          "anchors": [{"lens": "integration", "node": "notebook"}],
+          "refs": [{"source": "notebook"}]
+        }
+      ]
     },
     {
       "id": "why-they-laugh",
       "title": "Why'd They Laugh?",
       "creator": "okkotsu_senpai",
       "summary": "A performance-feedback prototype that analyzes recordings or text, compares detected audience laughter with Gemma's predicted beats and returns structured, timestamped notes.",
+      "sources": {
+        "writeup": {"kind": "writeup", "label": "Kaggle writeup", "url": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784949428310"},
+        "repo": {"kind": "repo", "label": "GitHub repository", "url": "https://github.com/venvennnn/humor_genome_kaggle"},
+        "video": {"kind": "video", "label": "Demo video", "url": "https://www.youtube.com/watch?v=acdk3T5B_uw"}
+      },
       "competitionDimensions": {
-        "structuralDistinctiveness": {
-          "value": 0.92,
-          "note": "Measured laughter and predicted beats converge in a feedback loop."
-        },
-        "evidenceInspectability": {
-          "value": 0.95,
-          "note": "Repo paths and demo timestamps expose the signal-processing and comparison."
-        },
-        "humanWorldGrounding": {
-          "value": 0.94,
-          "note": "Audio-derived laugh regions ground the model in a real performance."
-        },
-        "interactionDepth": {
-          "value": 0.79,
-          "note": "Timestamped notes and targeted revision support iteration."
-        },
-        "systemOrchestration": {
-          "value": 0.95,
-          "note": "Media extraction, signal processing, model reasoning and alignment."
-        },
-        "creativeScope": {
-          "value": 0.74,
-          "note": "Performance analysis, audience simulation and rewriting."
-        },
-        "audienceCentrality": {
-          "value": 0.88,
-          "note": "Actual audience response is central to the comparison."
-        }
+        "ideaDistinctiveness": {"value": 0.92, "note": "The only entry that tests predictions against measured audience laughter."},
+        "integrationDepth": {"value": 0.93, "note": "Media extraction, signal processing, model reasoning and timeline alignment."},
+        "sponsorCentrality": {"value": 0.6, "note": "Gemma reasons about the material; measured laughter comes from signal processing."},
+        "sponsorEvidence": {"value": 0.8, "note": "The recorded session shows the Ollama gemma3 backend; client code is in the repo."}
       },
       "idea": {
         "topology": "flow",
         "description": "A performance splits into prediction and observation. Their comparison feeds a human revision loop.",
         "nodes": [
           {
-            "id": "performance",
-            "label": "Performance",
-            "kind": "human",
-            "detail": "Recording or stand-up bit"
+            "id": "performance", "label": "Performance", "kind": "human", "detail": "Recording or stand-up bit",
+            "evidence": {"status": "demonstrated", "note": "A real 28-second stand-up clip is uploaded and played back.",
+              "refs": [{"source": "video", "t": 22}, {"source": "video", "t": 46, "detail": "Duration 28 s"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-22.jpg", "source": "video", "t": 22}}
           },
           {
-            "id": "predicted",
-            "label": "Predicted laugh beats",
-            "kind": "model",
-            "detail": "The model’s reading"
+            "id": "predicted", "label": "Predicted laugh beats", "kind": "model", "detail": "The model’s reading",
+            "evidence": {"status": "demonstrated", "note": "Gemma predicts laughs blind from the transcript; they appear as diamonds on the timeline.",
+              "refs": [
+                {"source": "video", "t": 64},
+                {"source": "repo", "at": "humor_genome/engine.py", "detail": "_predict_and_compare()"},
+                {"source": "repo", "at": "humor_genome/prompts.py", "detail": "laugh_prediction_prompt"}
+              ],
+              "frame": {"image": "assets/evidence/why-they-laugh-64.jpg", "source": "video", "t": 64}}
           },
           {
-            "id": "observed",
-            "label": "Observed laughter",
-            "kind": "signal",
-            "detail": "Detected from clip audio"
+            "id": "observed", "label": "Observed laughter", "kind": "signal", "detail": "Detected from clip audio",
+            "evidence": {"status": "demonstrated", "note": "Three laugh regions detected from the clip's audio and drawn on the timeline.",
+              "refs": [{"source": "video", "t": 46, "detail": "Laughs detected: 3"}, {"source": "repo", "at": "humor_genome/laughter.py"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-46.jpg", "source": "video", "t": 46}}
           },
           {
-            "id": "compare",
-            "label": "Compare the beats",
-            "kind": "transformation",
-            "detail": "Expected vs. actual"
+            "id": "compare", "label": "Compare the beats", "kind": "transformation", "detail": "Expected vs. actual",
+            "evidence": {"status": "demonstrated", "note": "Matched 2 · Bombed 2 · Surprise laughs 1, each with an explanation.",
+              "refs": [{"source": "video", "t": 76, "detail": "Predicted vs. actual"}, {"source": "repo", "at": "humor_genome/engine.py", "detail": "_compare_laughs()"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-76.jpg", "source": "video", "t": 76}}
           },
           {
-            "id": "revise",
-            "label": "Explain + revise",
-            "kind": "artifact",
-            "detail": "Notes for the performer"
+            "id": "revise", "label": "Explain + revise", "kind": "artifact", "detail": "Notes for the performer",
+            "evidence": {"status": "demonstrated", "note": "What worked, what fell flat and beat-by-beat fixes for the performer.",
+              "refs": [{"source": "video", "t": 76}, {"source": "repo", "at": "app.py"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-76.jpg", "source": "video", "t": 76}}
           }
         ],
         "edges": [
-          {
-            "to": "predicted",
-            "label": "",
-            "kind": "flow",
-            "from": "performance"
-          },
-          {
-            "to": "observed",
-            "label": "",
-            "kind": "flow",
-            "from": "performance"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "predicted"
-          },
-          {
-            "to": "compare",
-            "label": "",
-            "kind": "flow",
-            "from": "observed"
-          },
-          {
-            "to": "revise",
-            "label": "",
-            "kind": "flow",
-            "from": "compare"
-          },
-          {
-            "to": "performance",
-            "label": "rehearse again",
-            "kind": "feedback",
-            "from": "revise"
-          }
+          {"from": "performance", "to": "predicted"},
+          {"from": "performance", "to": "observed"},
+          {"from": "predicted", "to": "compare"},
+          {"from": "observed", "to": "compare"},
+          {"from": "compare", "to": "revise"},
+          {"from": "revise", "to": "performance", "kind": "feedback", "label": "rehearse again",
+            "evidence": {"status": "described", "note": "The writeup's intended loop; the recording shows one analysis, not a second rehearsal.",
+              "refs": [{"source": "writeup"}]}}
         ]
       },
       "integration": {
@@ -1008,87 +886,103 @@
         "description": "Media branches into model reasoning and classical signal processing, then merges on a timeline. Text can enter reasoning directly.",
         "nodes": [
           {
-            "id": "upload",
-            "label": "Streamlit input",
-            "kind": "surface",
-            "detail": "Clip or text"
+            "id": "upload", "label": "Streamlit input", "kind": "surface", "detail": "Clip, transcript or text",
+            "evidence": {"status": "demonstrated", "note": "Joke, Video and Set tabs; the Video tab needs a transcript for predicted-vs-actual.",
+              "refs": [{"source": "video", "t": 22}, {"source": "repo", "at": "app.py", "detail": "text_tab, video_tab, set_tab"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-22.jpg", "source": "video", "t": 22}}
           },
           {
-            "id": "media",
-            "label": "Media extraction",
-            "kind": "transformation",
-            "detail": "FFmpeg: frames + audio"
+            "id": "media", "label": "Media extraction", "kind": "transformation", "detail": "FFmpeg: frames + audio",
+            "evidence": {"status": "foundInCode", "note": "ffmpeg samples frames and extracts a WAV track.",
+              "refs": [{"source": "repo", "at": "humor_genome/video.py"}]}
           },
           {
-            "id": "gemma",
-            "label": "Gemma reasoning",
-            "kind": "model",
-            "detail": "Decompose + predict"
+            "id": "gemma", "label": "Gemma reasoning", "kind": "model", "detail": "gemma3 via Ollama",
+            "evidence": {"status": "demonstrated", "note": "The recorded session shows 'Active backend: Ollama · text=gemma3 · vision=gemma3'.",
+              "refs": [
+                {"source": "video", "t": 64, "detail": "Settings sidebar"},
+                {"source": "repo", "at": "humor_genome/gemma_client.py", "detail": "Ollama, transformers or mock backends"}
+              ],
+              "frame": {"image": "assets/evidence/why-they-laugh-64.jpg", "source": "video", "t": 64}}
           },
           {
-            "id": "signal",
-            "label": "Laugh-burst detector",
-            "kind": "transformation",
-            "detail": "Audio signal processing"
+            "id": "signal", "label": "Laugh-burst detector", "kind": "transformation", "detail": "Audio signal processing",
+            "evidence": {"status": "demonstrated", "note": "Loud, broadband bursts above the speech baseline; not a trained classifier.",
+              "refs": [{"source": "video", "t": 46}, {"source": "repo", "at": "humor_genome/laughter.py", "detail": "RMS energy + zero-crossing rate"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-46.jpg", "source": "video", "t": 46}}
           },
           {
-            "id": "align",
-            "label": "Align on timeline",
-            "kind": "transformation",
-            "detail": "Measured vs. predicted"
+            "id": "align", "label": "Align on timeline", "kind": "transformation", "detail": "Measured vs. predicted",
+            "evidence": {"status": "demonstrated", "note": "Predicted laughs are matched to measured ones within a 4-second window.",
+              "refs": [{"source": "video", "t": 64}, {"source": "repo", "at": "humor_genome/engine.py", "detail": "_compare_laughs(window=4.0)"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-64.jpg", "source": "video", "t": 64}}
           },
           {
-            "id": "notes",
-            "label": "Timestamped notes",
-            "kind": "artifact",
-            "detail": "Fit, genome, rewrites"
+            "id": "notes", "label": "Timestamped notes", "kind": "artifact", "detail": "Fit, genome, rewrites",
+            "evidence": {"status": "demonstrated", "note": "Genome radar, detected punchlines and audience-fit verdicts.",
+              "refs": [{"source": "video", "t": 100}, {"source": "repo", "at": "app.py"}],
+              "frame": {"image": "assets/evidence/why-they-laugh-100.jpg", "source": "video", "t": 100}}
           }
         ],
         "edges": [
-          {
-            "to": "media",
-            "label": "",
-            "kind": "flow",
-            "from": "upload"
-          },
-          {
-            "to": "gemma",
-            "label": "text",
-            "kind": "flow",
-            "from": "upload"
-          },
-          {
-            "to": "gemma",
-            "label": "",
-            "kind": "flow",
-            "from": "media"
-          },
-          {
-            "to": "signal",
-            "label": "",
-            "kind": "flow",
-            "from": "media"
-          },
-          {
-            "to": "align",
-            "label": "",
-            "kind": "flow",
-            "from": "gemma"
-          },
-          {
-            "to": "align",
-            "label": "",
-            "kind": "flow",
-            "from": "signal"
-          },
-          {
-            "to": "notes",
-            "label": "",
-            "kind": "flow",
-            "from": "align"
-          }
+          {"from": "upload", "to": "media"},
+          {"from": "upload", "to": "gemma", "label": "transcript / text"},
+          {"from": "media", "to": "gemma"},
+          {"from": "media", "to": "signal"},
+          {"from": "gemma", "to": "align"},
+          {"from": "signal", "to": "align"},
+          {"from": "align", "to": "notes"}
         ]
-      }
+      },
+      "mapping": [
+        {"label": "Performance → uploaded clip", "idea": ["performance"], "integration": ["upload"],
+          "evidence": {"status": "demonstrated", "note": "The performance enters as an uploaded clip plus its transcript.",
+            "refs": [{"source": "video", "t": 22}]}},
+        {"label": "Predicted beats → Gemma on the transcript", "idea": ["predicted"], "integration": ["gemma"],
+          "evidence": {"status": "demonstrated", "note": "Gemma predicts laughs from the words alone, before seeing the measurement.",
+            "refs": [{"source": "video", "t": 64}, {"source": "repo", "at": "humor_genome/engine.py"}]}},
+        {"label": "Observed laughter → signal processing", "idea": ["observed"], "integration": ["media", "signal"],
+          "evidence": {"status": "demonstrated", "note": "Measured laughter comes from classical audio processing, not the model.",
+            "refs": [{"source": "video", "t": 46}, {"source": "repo", "at": "humor_genome/laughter.py"}]}},
+        {"label": "Comparison → 4-second match window", "idea": ["compare"], "integration": ["align"],
+          "evidence": {"status": "foundInCode", "note": "A predicted laugh counts as matched if a measured one falls within 4 seconds.",
+            "refs": [{"source": "repo", "at": "humor_genome/engine.py"}]}},
+        {"label": "Revision → notes (one pass)", "idea": ["revise"], "integration": ["notes"],
+          "evidence": {"status": "demonstrated", "note": "The notes are shown; a second, revised performance is not.",
+            "refs": [{"source": "video", "t": 100}]}}
+      ],
+      "questions": [
+        {
+          "id": "burst-detector", "kind": "implementation",
+          "question": "The detector finds loud, broadband bursts and treats laughter and applause alike. How does it behave on clips with applause, music or crowd noise?",
+          "basis": "laughter.py uses RMS energy and zero-crossing rate, not a trained classifier. The demo shows one 28-second clip with three detected laughs.",
+          "anchors": [
+            {"lens": "integration", "node": "signal"},
+            {"lens": "idea", "node": "observed"}
+          ],
+          "refs": [{"source": "repo", "at": "humor_genome/laughter.py"}, {"source": "video", "t": 46}]
+        },
+        {
+          "id": "match-window", "kind": "unclear",
+          "question": "Predicted-vs-actual needs the clip's transcript, and beats count as matched within 4 seconds. How sensitive are 'matched' and 'bombed' to transcript timing and that window?",
+          "basis": "engine.py skips prediction without a transcript and matches within window=4.0 s; timed cues (SRT/VTT) are optional.",
+          "anchors": [
+            {"lens": "idea", "node": "compare"},
+            {"lens": "integration", "node": "align"}
+          ],
+          "refs": [{"source": "repo", "at": "humor_genome/engine.py"}, {"source": "repo", "at": "app.py", "detail": "Transcript field"}]
+        },
+        {
+          "id": "rehearsal-loop", "kind": "unverified",
+          "question": "The rehearsal loop is the product's promise, but the recording shows a single analysis. Has a performer revised a bit with these notes and measured it again?",
+          "basis": "The 'rehearse again' relationship is described in the writeup; no second pass appears in the demo.",
+          "anchors": [
+            {"lens": "idea", "node": "revise"},
+            {"lens": "idea", "edge": ["revise", "performance"]}
+          ],
+          "refs": [{"source": "writeup"}, {"source": "video", "t": 76}]
+        }
+      ]
     }
   ]
 }

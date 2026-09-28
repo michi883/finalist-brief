@@ -20,3 +20,14 @@ pubspec_overrides.yaml
 
 # Secrets
 .env
+.env.*
+!.env.example
+!.env.*.example
+secrets/
+.secrets/
+credentials/
+*.pem
+*.p12
+*.pfx
+*.key
+service-account*.json

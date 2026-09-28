@@ -1,0 +1,42 @@
+{
+ "notes": [
+  "Which provider and model runs each model stage of the deep-review pipeline.",
+  "Pick a profile with DEEP_REVIEW_PROFILE=<name> (default: the `default` key), or route one stage with DEEP_REVIEW_<STAGE>=<provider>:<model>, e.g. DEEP_REVIEW_OBSERVE=gemini:gemini-3.8-flash.",
+  "Gemini routes may set thinking (thinkingLevel) and mediaResolution; both are part of the response cache key.",
+  "Stages: observe (blind demo-frame description), generate (draft and its repairs), verify (independent check of demonstrated and foundInCode claims), investigate (the evidence dossier's narrow Gemini investigators; the `dossier` profile runs only observe and investigate).",
+  "Every profile other than the default writes its model-dependent outputs to .cache/<id>/runs/<profile>/ so an A/B run never overwrites the baseline.",
+  "Prices are USD per million tokens at list price without promotions or credits. Gemini 3.6-3.8 Flash are half price until 2026-12-31; the 2027 list price is used here. Checked 2026-09-26."
+ ],
+ "default": "claude-baseline",
+ "profiles": {
+  "claude-baseline": {
+   "observe": {"provider": "claude-cli", "model": "claude-opus-5-5"},
+   "generate": {"provider": "claude-cli", "model": "claude-opus-5-5"},
+   "verify": {"provider": "claude-cli", "model": "claude-opus-5-5"}
+  },
+  "gemini-first": {
+   "observe": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "medium"},
+   "generate": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "medium"},
+   "verify": {"provider": "claude-cli", "model": "claude-opus-5-5"}
+  },
+  "dossier": {
+   "observe": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "medium"},
+   "investigate": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "low"},
+   "investigate-deep": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "medium"}
+  },
+  "gemini-high": {
+   "observe": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "medium"},
+   "generate": {"provider": "gemini", "model": "gemini-3.8-flash", "thinking": "high"},
+   "verify": {"provider": "claude-cli", "model": "claude-opus-5-5"}
+  }
+ },
+ "prices": {
+  "claude-opus-5-5": {"input": 4.0, "cacheWrite5m": 5.0, "cacheWrite1h": 8.0, "cacheRead": 0.2, "output": 20.0},
+  "claude-sonnet-5": {"input": 2.0, "cacheWrite5m": 2.5, "cacheWrite1h": 4.0, "cacheRead": 0.2, "output": 10.0},
+  "gemini-3.8-flash": {"input": 1.5, "cacheRead": 0.15, "output": 7.5},
+  "gemini-3.5-flash": {"input": 1.5, "cacheRead": 0.15, "output": 9.0},
+  "gemini-3.5-flash-lite": {"input": 0.3, "cacheRead": 0.03, "output": 2.5},
+  "gemini-3.1-pro-preview": {"input": 2.0, "cacheRead": 0.2, "output": 12.0},
+  "jev-1.13.0": {"input": 0.042, "output": 0.0}
+ }
+}

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'client.dart';
 import 'demo_mode.dart';
 import 'screens/submissions_screen.dart';
-import 'views/exploration_screen.dart';
+import 'views/hackathon_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,7 +46,7 @@ class FinalistBriefApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       home: Uri.base.queryParameters['legacy'] == '1'
           ? SubmissionsScreen(demoMode: isDemoMode)
-          : const ExplorationScreen(),
+          : HackathonShell(initial: Uri.base.queryParameters['hackathon']),
     );
   }
 }

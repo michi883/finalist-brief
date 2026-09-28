@@ -9,6 +9,10 @@ const ink = Color(0xFF263B3C);
 const muted = Color(0xFF677875);
 const accent = Color(0xFF26776D);
 const paper = Color(0xFFF7F8F3);
+const rule = Color(0xFFD4DED5);
+
+/// Judge questions use one calm, distinct hue: attention, not alarm.
+const questionColor = Color(0xFF4C5AA8);
 
 extension NodeAppearance on NodeKind {
   String get label => switch (this) {
@@ -36,54 +40,193 @@ extension NodeAppearance on NodeKind {
   };
 }
 
+/// One glyph per evidence tier, from solid (seen working) to dotted (read in).
+class EvidenceGlyph extends StatelessWidget {
+  const EvidenceGlyph(this.status, {super.key, this.size = 10});
+  final EvidenceStatus status;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child: CustomPaint(painter: _GlyphPainter(status)),
+  );
+}
+
+class _GlyphPainter extends CustomPainter {
+  _GlyphPainter(this.status);
+  final EvidenceStatus status;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = size.shortestSide / 2 - .75;
+    final c = size.center(Offset.zero);
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.3
+      ..color = status == EvidenceStatus.inferred ? muted : accent;
+    switch (status) {
+      case EvidenceStatus.demonstrated:
+        canvas.drawCircle(c, r + .6, Paint()..color = accent);
+      case EvidenceStatus.foundInCode:
+        canvas.drawCircle(c, r, stroke);
+        canvas.drawArc(
+          Rect.fromCircle(center: c, radius: r),
+          math.pi / 2,
+          math.pi,
+          true,
+          Paint()..color = accent,
+        );
+      case EvidenceStatus.described:
+        canvas.drawCircle(c, r, stroke);
+      case EvidenceStatus.inferred:
+        for (var i = 0; i < 8; i++) {
+          canvas.drawArc(
+            Rect.fromCircle(center: c, radius: r),
+            i * math.pi / 4,
+            math.pi / 8,
+            false,
+            stroke,
+          );
+        }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_GlyphPainter oldDelegate) => oldDelegate.status != status;
+}
+
+/// How a node participates in the current focus.
+enum NodeEmphasis { normal, related, selected, dimmed }
+
 class GraphView extends StatelessWidget {
-  const GraphView({super.key, required this.graph});
+  const GraphView({
+    super.key,
+    required this.graph,
+    this.lens,
+    this.compact = false,
+    this.maxScale = 1.25,
+    this.emphasis = const {},
+    this.dimEdges = false,
+    this.onNodeTap,
+    this.onNodeHover,
+  });
   final SemanticGraph graph;
+  final SubmissionLens? lens;
+  final bool compact;
+
+  /// Caps the fit, so graphs shown together can share one scale.
+  final double maxScale;
+  final Map<String, NodeEmphasis> emphasis;
+
+  /// Fades edges that do not join two emphasized nodes.
+  final bool dimEdges;
+  final ValueChanged<String>? onNodeTap;
+  final ValueChanged<String?>? onNodeHover;
 
   @override
   Widget build(BuildContext context) {
-    final layout = layoutGraph(graph);
-    return FittedBox(
-      fit: BoxFit.contain,
-      child: SizedBox.fromSize(
-        size: layout.size,
-        child: Stack(
+    final layout = layoutGraph(graph, compact: compact);
+    return LayoutBuilder(
+      builder: (context, box) {
+        final fit = GraphFit(layout.size, box.biggest, maxScale: maxScale);
+        return Stack(
           children: [
-            Positioned.fill(
-              child: CustomPaint(painter: GraphEdges(graph, layout)),
-            ),
-            for (final node in graph.nodes)
-              Positioned.fromRect(
-                rect: layout.nodes[node.id]!,
-                child: SemanticNodeView(node: node),
+            Positioned.fromRect(
+              rect: fit.rect,
+              child: FittedBox(
+                child: SizedBox.fromSize(
+                  size: layout.size,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: GraphEdges(
+                            graph,
+                            layout,
+                            dimEdges
+                                ? {
+                                    for (final e in emphasis.entries)
+                                      if (e.value != NodeEmphasis.dimmed) e.key,
+                                  }
+                                : null,
+                          ),
+                        ),
+                      ),
+                      for (final node in graph.nodes)
+                        Positioned.fromRect(
+                          rect: layout.nodes[node.id]!,
+                          child: SemanticNodeView(
+                            key: lens == null
+                                ? null
+                                : ValueKey('node-${lens!.name}-${node.id}'),
+                            node: node,
+                            emphasis: emphasis[node.id] ?? NodeEmphasis.normal,
+                            onTap: onNodeTap == null
+                                ? null
+                                : () => onNodeTap!(node.id),
+                            onHover: onNodeHover == null
+                                ? null
+                                : (inside) =>
+                                      onNodeHover!(inside ? node.id : null),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
+            ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class SemanticNodeView extends StatelessWidget {
-  const SemanticNodeView({super.key, required this.node});
+  const SemanticNodeView({
+    super.key,
+    required this.node,
+    this.emphasis = NodeEmphasis.normal,
+    this.onTap,
+    this.onHover,
+  });
   final SemanticNode node;
+  final NodeEmphasis emphasis;
+  final VoidCallback? onTap;
+  final ValueChanged<bool>? onHover;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: '${node.kind.label}: ${node.label}. ${node.detail}',
-    child: Container(
+  Widget build(BuildContext context) {
+    final evidence = node.evidence ?? Evidence.unrecorded;
+    final inferred = evidence.status == EvidenceStatus.inferred;
+    final radius = BorderRadius.circular(node.kind == NodeKind.human ? 26 : 9);
+    final ring = switch (emphasis) {
+      NodeEmphasis.selected => Border.all(color: accent, width: 2),
+      NodeEmphasis.related => Border.all(
+        color: accent.withValues(alpha: .7),
+        width: 1.6,
+      ),
+      _ =>
+        inferred
+            ? null
+            : Border.all(color: node.kind.color.withValues(alpha: .3)),
+    };
+    Widget card = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: BoxDecoration(
-        color: node.kind == NodeKind.model
+        // Inferred structure is drawn lighter: no fill, dotted outline.
+        color: inferred
+            ? paper
+            : node.kind == NodeKind.model
             ? const Color(0xFFEAF3EF)
             : Colors.white,
-        border: Border.all(color: node.kind.color.withValues(alpha: .3)),
-        borderRadius: BorderRadius.circular(
-          node.kind == NodeKind.human ? 26 : 9,
-        ),
+        border: ring,
+        borderRadius: radius,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
@@ -97,6 +240,11 @@ class SemanticNodeView extends StatelessWidget {
                   color: node.kind.color,
                 ),
               ),
+              const Spacer(),
+              Tooltip(
+                message: evidence.status.label,
+                child: EvidenceGlyph(evidence.status, size: 9),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -104,30 +252,85 @@ class SemanticNodeView extends StatelessWidget {
             node.label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12.5,
               height: 1.2,
               fontWeight: FontWeight.w600,
-              color: ink,
+              color: inferred ? muted : ink,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            node.detail,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 10, color: muted),
-          ),
+          if (node.detail.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              node.detail,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 10, color: muted),
+            ),
+          ],
         ],
       ),
-    ),
-  );
+    );
+    if (inferred && ring == null) {
+      card = CustomPaint(
+        foregroundPainter: _DottedOutline(radius, node.kind.color),
+        child: card,
+      );
+    }
+    card = AnimatedOpacity(
+      duration: const Duration(milliseconds: 180),
+      opacity: emphasis == NodeEmphasis.dimmed ? .3 : 1,
+      child: card,
+    );
+    return Semantics(
+      button: onTap != null,
+      label:
+          '${node.kind.label}: ${node.label}. '
+          '${node.detail.isEmpty ? '' : '${node.detail}. '}'
+          'Evidence: ${evidence.status.label}.',
+      child: onTap == null
+          ? card
+          : MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) => onHover?.call(true),
+              onExit: (_) => onHover?.call(false),
+              child: GestureDetector(onTap: onTap, child: card),
+            ),
+    );
+  }
+}
+
+class _DottedOutline extends CustomPainter {
+  _DottedOutline(this.radius, this.color);
+  final BorderRadius radius;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2
+      ..color = color.withValues(alpha: .45);
+    final path = Path()..addRRect(radius.toRRect(Offset.zero & size));
+    for (final metric in path.computeMetrics()) {
+      for (double d = 0; d < metric.length; d += 7) {
+        canvas.drawPath(metric.extractPath(d, d + 3), paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DottedOutline oldDelegate) =>
+      oldDelegate.radius != radius || oldDelegate.color != color;
 }
 
 class GraphEdges extends CustomPainter {
-  GraphEdges(this.graph, this.layout);
+  GraphEdges(this.graph, this.layout, [this.visible]);
   final SemanticGraph graph;
   final GraphLayout layout;
+
+  /// When set, only edges between these nodes keep full strength.
+  final Set<String>? visible;
 
   Offset _boundary(Rect rect, Offset toward) {
     final delta = toward - rect.center;
@@ -148,7 +351,22 @@ class GraphEdges extends CustomPainter {
       final path = Path();
       final radial =
           graph.topology == Topology.hub || graph.topology == Topology.loop;
-      if (feedback && !radial) {
+      if (feedback && !radial && layout.vertical) {
+        // Iteration climbs a rail on the left; skips use the right.
+        final rail =
+            layout.nodes.values.map((r) => r.left).reduce(math.min) -
+            40 -
+            index % 2 * 14;
+        path.moveTo(from.centerLeft.dx, from.centerLeft.dy);
+        path.cubicTo(
+          rail,
+          from.centerLeft.dy,
+          rail,
+          to.centerLeft.dy,
+          to.centerLeft.dx,
+          to.centerLeft.dy,
+        );
+      } else if (feedback && !radial) {
         final rail = size.height - 38 - index % 2 * 16;
         path.moveTo(from.bottomCenter.dx, from.bottomCenter.dy);
         path.cubicTo(
@@ -192,7 +410,7 @@ class GraphEdges extends CustomPainter {
         } else {
           path.lineTo(end.dx, end.dy);
         }
-      } else if (graph.topology == Topology.layers) {
+      } else if (layout.vertical) {
         if (to.center.dy - from.center.dy > 180) {
           final start = from.centerRight;
           final end = to.centerRight;
@@ -220,8 +438,12 @@ class GraphEdges extends CustomPainter {
           path.cubicTo(mid, start.dy, mid, end.dy, end.dx, end.dy);
         }
       }
+      final faded =
+          visible != null &&
+          !(visible!.contains(edge.from) && visible!.contains(edge.to));
+      final base = feedback ? accent : const Color(0xFFABB8B2);
       final paint = Paint()
-        ..color = feedback ? accent : const Color(0xFFABB8B2)
+        ..color = faded ? base.withValues(alpha: .25) : base
         ..strokeWidth = 1.6
         ..style = PaintingStyle.stroke;
       final metric = path.computeMetrics().first;
@@ -254,24 +476,60 @@ class GraphEdges extends CustomPainter {
         Paint()..color = paint.color,
       );
       if (edge.label.isNotEmpty) {
-        final at = metric.getTangentForOffset(metric.length * .5)!.position;
+        // Short vertical hops leave no room above the midpoint, so their
+        // labels sit beside a straight line. On a bending one, beside would
+        // read as belonging to a neighbour, so the label sits on the line,
+        // nearer its source and clear of markers on the target.
+        final hop =
+            layout.vertical &&
+            !feedback &&
+            !radial &&
+            to.center.dy - from.center.dy <= 180;
+        final straight = (to.center.dx - from.center.dx).abs() < 1;
+        final bend = hop && !straight;
+        final at = metric
+            .getTangentForOffset(metric.length * (bend ? .35 : .5))!
+            .position;
         final label = TextPainter(
           text: TextSpan(
             text: edge.label,
             style: TextStyle(
               fontSize: 10,
-              color: feedback ? accent : muted,
+              color: (feedback ? accent : muted).withValues(
+                alpha: faded ? .35 : 1,
+              ),
               backgroundColor: paper,
             ),
           ),
           textDirection: TextDirection.ltr,
         )..layout();
-        label.paint(canvas, at - Offset(label.width / 2, label.height + 4));
+        final origin = bend
+            ? at - Offset(label.width / 2, label.height / 2)
+            : hop
+            ? at + Offset(6, -label.height / 2)
+            : at - Offset(label.width / 2, label.height + 4);
+        if (bend) {
+          canvas.drawRRect(
+            RRect.fromRectAndRadius(
+              (origin & label.size).inflate(3),
+              const Radius.circular(4),
+            ),
+            Paint()..color = paper,
+          );
+        }
+        label.paint(canvas, origin);
       }
     }
   }
 
+  // Edges are decoration; taps fall through to whatever lies beneath.
+  @override
+  bool? hitTest(Offset position) => false;
+
   @override
   bool shouldRepaint(GraphEdges oldDelegate) =>
-      oldDelegate.graph != graph || oldDelegate.layout != layout;
+      oldDelegate.graph != graph ||
+      oldDelegate.layout != layout ||
+      oldDelegate.visible?.length != visible?.length ||
+      !(oldDelegate.visible?.containsAll(visible ?? const {}) ?? true);
 }

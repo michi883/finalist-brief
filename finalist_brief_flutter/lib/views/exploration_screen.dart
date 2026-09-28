@@ -6,25 +6,95 @@ import 'package:flutter/services.dart';
 import '../representation/project.dart';
 import '../visualization/graph_layout.dart';
 import '../visualization/graph_view.dart';
+import 'comparison_view.dart';
+import 'inspector.dart';
 
 class ExplorationScreen extends StatefulWidget {
-  const ExplorationScreen({super.key, this.projects});
-  final List<ProjectRepresentation>? projects;
+  const ExplorationScreen({
+    super.key,
+    this.competition,
+    this.navigation,
+    this.active = true,
+    this.scopeLabel,
+  });
+  final Competition? competition;
+
+  /// Hackathon and workspace controls, shown beside the brand.
+  final Widget? navigation;
+
+  /// Whether this screen is the visible one; it reclaims keyboard focus when
+  /// it becomes visible again, so Esc keeps working after a switch.
+  final bool active;
+
+  /// Replaces the default `CACHED STUDY / NN SUBMISSIONS` label.
+  final String? scopeLabel;
 
   @override
-  State<ExplorationScreen> createState() => _ExplorationScreenState();
+  State<ExplorationScreen> createState() => ExplorationScreenState();
 }
 
-class _ExplorationScreenState extends State<ExplorationScreen>
+const _counts = [
+  'Zero',
+  'One',
+  'Two',
+  'Three',
+  'Four',
+  'Five',
+  'Six',
+  'Seven',
+  'Eight',
+  'Nine',
+  'Ten',
+  'Eleven',
+  'Twelve',
+  'Thirteen',
+  'Fourteen',
+  'Fifteen',
+  'Sixteen',
+  'Seventeen',
+  'Eighteen',
+  'Nineteen',
+  'Twenty',
+];
+
+/// Below this window width, a screen with navigation shows only the icon.
+const brandBreakpoint = 1200.0;
+
+class BrandMark extends StatelessWidget {
+  const BrandMark({super.key, this.compact = false});
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Icon(Icons.bubble_chart_outlined, color: accent, size: 22),
+      if (!compact) ...[
+        const SizedBox(width: 9),
+        const Text(
+          'FINALIST BRIEF',
+          style: TextStyle(
+            fontSize: 12,
+            letterSpacing: 2,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    ],
+  );
+}
+
+/// `6` → `Six`; larger numbers stay numeric.
+String countWord(int n) => n < _counts.length ? _counts[n] : '$n';
+
+class ExplorationScreenState extends State<ExplorationScreen>
     with TickerProviderStateMixin {
-  List<ProjectRepresentation>? _projects;
+  Competition? _competition;
   String? _error;
   ProjectRepresentation? _selected;
-  CompetitionLens? _preset = CompetitionLens.standout;
-  Dimension _x = Dimension.structuralDistinctiveness;
-  Dimension _y = Dimension.evidenceInspectability;
-  SubmissionLens _lens = SubmissionLens.idea;
-  bool _custom = false;
+  CompetitionLens _mode = CompetitionLens.ideaIntegration;
+  SubmissionFocus _focus = SubmissionFocus.both;
+  final _comparison = GlobalKey<ComparisonViewState>();
   late final AnimationController _motion = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),
@@ -36,12 +106,15 @@ class _ExplorationScreenState extends State<ExplorationScreen>
   );
   Map<String, Offset> _from = {};
   Map<String, Offset> _to = {};
+  final _keyboard = FocusNode(debugLabel: 'exploration');
+
+  String get _sponsor => _competition?.sponsorTech ?? 'Sponsor tech';
 
   @override
   void initState() {
     super.initState();
-    if (widget.projects != null) {
-      _setProjects(widget.projects!);
+    if (widget.competition != null) {
+      _setCompetition(widget.competition!);
     } else {
       _load();
     }
@@ -49,10 +122,10 @@ class _ExplorationScreenState extends State<ExplorationScreen>
 
   Future<void> _load() async {
     try {
-      final projects = parseProjects(
+      final competition = parseCompetition(
         await rootBundle.loadString('assets/representations/humor_genome.json'),
       );
-      if (mounted) setState(() => _setProjects(projects));
+      if (mounted) setState(() => _setCompetition(competition));
     } catch (error) {
       if (mounted) {
         setState(
@@ -62,13 +135,43 @@ class _ExplorationScreenState extends State<ExplorationScreen>
     }
   }
 
-  void _setProjects(List<ProjectRepresentation> projects) {
-    _projects = projects;
-    _to = {
-      for (final p in projects)
-        p.id: projectPosition(p, _x, _y, const Rect.fromLTWH(0, 0, 1, 1)),
-    };
+  Map<String, Offset> _placements(CompetitionLens mode) => {
+    for (final p in _competition!.projects)
+      p.id: projectPosition(p, mode.x, mode.y, const Rect.fromLTWH(0, 0, 1, 1)),
+  };
+
+  void _setCompetition(Competition competition) {
+    _competition = competition;
+    _to = _placements(_mode);
     _from = {..._to};
+  }
+
+  @override
+  void didUpdateWidget(ExplorationScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final competition = widget.competition;
+    if (competition != null && competition != oldWidget.competition) {
+      // A new comparison set keeps the mode; a project that left the set
+      // closes without animation so the field is never left half-zoomed.
+      final ids = competition.projects.map((p) => p.id).toSet();
+      if (_selected != null && !ids.contains(_selected!.id)) {
+        _selected = null;
+        _zoom.value = 0;
+      } else if (_selected != null) {
+        _selected = competition.projects.singleWhere(
+          (p) => p.id == _selected!.id,
+        );
+      }
+      _motion.value = 1;
+      _setCompetition(competition);
+    }
+    if (widget.active && !oldWidget.active) _keyboard.requestFocus();
+  }
+
+  /// Zooms into [id] from the field, as if its dot had been selected.
+  void openProject(String id) {
+    final project = _competition?.projects.where((p) => p.id == id).firstOrNull;
+    if (project != null) _open(project);
   }
 
   Offset _position(String id) => Offset.lerp(
@@ -77,23 +180,18 @@ class _ExplorationScreenState extends State<ExplorationScreen>
     Curves.easeInOutCubic.transform(_motion.value),
   )!;
 
-  void _axes(Dimension x, Dimension y, CompetitionLens? preset) {
+  void _switchMode(CompetitionLens mode) {
     setState(() {
-      _from = {for (final p in _projects!) p.id: _position(p.id)};
-      _x = x;
-      _y = y;
-      _preset = preset;
-      _to = {
-        for (final p in _projects!)
-          p.id: projectPosition(p, x, y, const Rect.fromLTWH(0, 0, 1, 1)),
-      };
+      _from = {for (final p in _competition!.projects) p.id: _position(p.id)};
+      _mode = mode;
+      _to = _placements(mode);
       _motion.forward(from: 0);
     });
   }
 
   void _open(ProjectRepresentation project) {
-    // Freeze an in-flight preset at its destination before zooming; the field
-    // remains animated until then, so its return position is unambiguous.
+    // Freeze an in-flight mode switch at its destination before zooming; the
+    // field remains animated until then, so its return position is unambiguous.
     _motion.value = 1;
     setState(() => _selected = project);
     _zoom.forward();
@@ -109,12 +207,13 @@ class _ExplorationScreenState extends State<ExplorationScreen>
   void dispose() {
     _motion.dispose();
     _zoom.dispose();
+    _keyboard.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final projects = _projects;
+    final competition = _competition;
     return Shortcuts(
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.escape): DismissIntent(),
@@ -123,77 +222,89 @@ class _ExplorationScreenState extends State<ExplorationScreen>
         actions: {
           DismissIntent: CallbackAction<DismissIntent>(
             onInvoke: (_) {
-              _back();
+              // Close the inspector first; a second Esc leaves the project.
+              if (!(_comparison.currentState?.dismiss() ?? false)) _back();
               return null;
             },
           ),
         },
-        child: Scaffold(
-          backgroundColor: paper,
-          body: SafeArea(
-            child: projects == null
-                ? Center(
-                    child: _error == null
-                        ? const CircularProgressIndicator()
-                        : Text(_error!),
-                  )
-                : LayoutBuilder(
-                    builder: (context, constraints) {
-                      // Desktop is the target; smaller windows retain a usable scrollable canvas.
-                      final width = math.max(820.0, constraints.maxWidth);
-                      final height = math.max(800.0, constraints.maxHeight);
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: SizedBox(
-                          width: width,
-                          child: SingleChildScrollView(
-                            child: SizedBox(
-                              height: height,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  width > 1100 ? 48 : 24,
-                                  24,
-                                  width > 1100 ? 48 : 24,
-                                  16,
-                                ),
-                                child: AnimatedBuilder(
-                                  animation: Listenable.merge([_motion, _zoom]),
-                                  builder: (context, _) => _content(projects),
+        // Keeps keyboard focus inside the shortcuts, so Esc works even when
+        // the judge has only clicked non-focusable nodes.
+        child: Focus(
+          focusNode: _keyboard,
+          autofocus: widget.active,
+          child: Scaffold(
+            backgroundColor: paper,
+            body: SafeArea(
+              child: competition == null
+                  ? Center(
+                      child: _error == null
+                          ? const CircularProgressIndicator()
+                          : Text(_error!),
+                    )
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Desktop is the target; smaller windows retain a usable scrollable canvas.
+                        final width = math.max(960.0, constraints.maxWidth);
+                        final height = math.max(800.0, constraints.maxHeight);
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: SizedBox(
+                            width: width,
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height: height,
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    width > 1100 ? 48 : 24,
+                                    20,
+                                    width > 1100 ? 48 : 24,
+                                    14,
+                                  ),
+                                  child: AnimatedBuilder(
+                                    animation: Listenable.merge([
+                                      _motion,
+                                      _zoom,
+                                    ]),
+                                    builder: (context, _) =>
+                                        _content(competition, width),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _content(List<ProjectRepresentation> projects) {
+  Widget _content(Competition competition, double width) {
+    final projects = competition.projects;
     final selected = _selected;
     final t = Curves.easeInOutCubic.transform(_zoom.value);
+    // Every row keeps its height in both views, so the field never moves
+    // underneath the zoom.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 48,
+          height: 40,
           child: Row(
             children: [
-              const Icon(Icons.bubble_chart_outlined, color: accent, size: 22),
-              const SizedBox(width: 9),
-              const Text(
-                'FINALIST BRIEF',
-                style: TextStyle(
-                  fontSize: 12,
-                  letterSpacing: 2,
-                  fontWeight: FontWeight.w700,
-                ),
+              // Navigation takes the wordmark's room in narrower windows.
+              BrandMark(
+                compact: widget.navigation != null && width < brandBreakpoint,
               ),
               const SizedBox(width: 24),
+              if (widget.navigation != null) ...[
+                widget.navigation!,
+                const SizedBox(width: 20),
+              ],
               if (selected != null)
                 TextButton.icon(
                   key: const ValueKey('back-to-competition'),
@@ -202,25 +313,35 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                   label: const Text('Competition'),
                 )
               else
-                const Text(
-                  'Humor Genome / Build with Gemma',
-                  style: TextStyle(color: muted, fontSize: 12),
+                Flexible(
+                  child: Text(
+                    competition.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: muted, fontSize: 12),
+                  ),
                 ),
-              const Spacer(),
-              const Text(
-                'CACHED STUDY  /  06 SUBMISSIONS',
-                style: TextStyle(
-                  fontSize: 10,
-                  letterSpacing: 1.2,
-                  color: muted,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  widget.scopeLabel ??
+                      'CACHED STUDY  /  ${projects.length.toString().padLeft(2, '0')} SUBMISSIONS',
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    letterSpacing: 1.2,
+                    color: muted,
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 23),
+        const SizedBox(height: 10),
         SizedBox(
-          height: 86,
+          height: 80,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -233,23 +354,33 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          selected?.title ??
-                              'Six projects. Different ways to see them.',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 29,
-                            height: 1.15,
-                            letterSpacing: -.8,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                selected?.title ??
+                                    '${countWord(projects.length)} projects. What they claim, and what stands behind it.',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 27,
+                                  height: 1.15,
+                                  letterSpacing: -.8,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            if (selected?.generated ?? false) ...[
+                              const SizedBox(width: 14),
+                              const _GeneratedTag(),
+                            ],
+                          ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         Text(
                           selected == null
-                              ? 'Choose a lens. Follow what stands out. Move inside a submission.'
-                              : '${selected.creator}  ·  ${selected.graph(_lens).description}',
+                              ? 'Read the field, open a project, compare its idea with its build, and inspect why each part is there.'
+                              : '${selected.creator}  ·  ${selected.summary}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -270,106 +401,78 @@ class _ExplorationScreenState extends State<ExplorationScreen>
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         SizedBox(
-          height: 44,
+          height: 40,
           child: selected == null
               ? Row(
                   children: [
-                    for (final preset in CompetitionLens.values) ...[
+                    for (final mode in CompetitionLens.values) ...[
                       ChoiceChip(
-                        label: Text(preset.label),
+                        key: ValueKey('mode-${mode.name}'),
+                        label: Text(
+                          mode == CompetitionLens.sponsorTech
+                              ? '${mode.label} · $_sponsor'
+                              : mode.label,
+                        ),
                         labelStyle: const TextStyle(fontSize: 12),
-                        selected: _preset == preset,
+                        selected: _mode == mode,
                         showCheckmark: false,
-                        onSelected: (_) {
-                          _custom = false;
-                          _axes(preset.x, preset.y, preset);
-                        },
+                        onSelected: (_) => _switchMode(mode),
                       ),
                       const SizedBox(width: 8),
                     ],
-                    const Spacer(),
-                    TextButton.icon(
-                      onPressed: () => setState(() => _custom = !_custom),
-                      icon: const Icon(Icons.tune, size: 16),
-                      label: const Text('Custom axes'),
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 12),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        _mode.question(_sponsor),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: muted, fontSize: 12.5),
                       ),
                     ),
                   ],
                 )
               : Row(
                   children: [
-                    const Text(
-                      'SUBMISSION LENS',
-                      style: TextStyle(
-                        fontSize: 10,
-                        letterSpacing: 1.1,
-                        color: muted,
-                      ),
-                    ),
-                    const SizedBox(width: 18),
-                    for (final lens in SubmissionLens.values) ...[
+                    for (final (focus, label) in [
+                      (SubmissionFocus.both, 'Side by side'),
+                      (SubmissionFocus.idea, 'Idea'),
+                      (SubmissionFocus.integration, 'Integration'),
+                    ]) ...[
                       ChoiceChip(
-                        key: ValueKey('lens-${lens.name}'),
-                        label: Text(
-                          lens == SubmissionLens.idea ? 'Idea' : 'Integration',
-                        ),
-                        selected: _lens == lens,
+                        key: ValueKey('focus-${focus.name}'),
+                        label: Text(label),
+                        labelStyle: const TextStyle(fontSize: 12),
+                        selected: _focus == focus,
                         showCheckmark: false,
-                        onSelected: (_) => setState(() => _lens = lens),
+                        onSelected: (_) => setState(() => _focus = focus),
                       ),
                       const SizedBox(width: 8),
                     ],
-                    const Spacer(),
-                    const Text(
-                      'Same project, another structure',
-                      style: TextStyle(color: muted, fontSize: 12),
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: EvidenceLegend(),
+                        ),
+                      ),
                     ),
                   ],
                 ),
         ),
-        SizedBox(
-          height: 62,
-          child: _custom && selected == null
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: [
-                      _axisControl('X', _x, (d) => _axes(d, _y, null)),
-                      const SizedBox(width: 18),
-                      _axisControl('Y', _y, (d) => _axes(_x, d, null)),
-                    ],
-                  ),
-                )
-              : Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    selected == null
-                        ? '${_x.description}  /  ${_y.description}'
-                        : selected.summary,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: muted,
-                      fontSize: 12,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-        ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         Expanded(
           child: ClipRect(
             child: LayoutBuilder(
               builder: (context, box) {
                 final field = Rect.fromLTRB(
                   85,
-                  45,
+                  38,
                   box.maxWidth - 115,
-                  box.maxHeight - 64,
+                  box.maxHeight - 56,
                 );
                 Offset point(String id) {
                   final p = _position(id);
@@ -386,6 +489,10 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                 );
                 final aperture = Offset.lerp(origin, center, travel)!;
                 final labels = _labelPositions(projects, point, box.biggest);
+                const corner = TextStyle(
+                  fontSize: 10.5,
+                  color: Color(0xFF93A29D),
+                );
                 return Stack(
                   children: [
                     Positioned.fill(
@@ -393,12 +500,15 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                     ),
                     Positioned(
                       left: 12,
-                      top: 7,
+                      top: 6,
                       child: Opacity(
                         opacity: 1 - t,
-                        child: Text(
-                          '↑  ${_y.label}',
-                          style: const TextStyle(fontSize: 12, color: muted),
+                        child: Tooltip(
+                          message: _mode.y.description(_sponsor),
+                          child: Text(
+                            '↑  ${_mode.y.label(_sponsor)}',
+                            style: const TextStyle(fontSize: 12, color: muted),
+                          ),
                         ),
                       ),
                     ),
@@ -407,12 +517,31 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                       bottom: 8,
                       child: Opacity(
                         opacity: 1 - t,
-                        child: Text(
-                          '${_x.label}  →',
-                          style: const TextStyle(fontSize: 12, color: muted),
+                        child: Tooltip(
+                          message: _mode.x.description(_sponsor),
+                          child: Text(
+                            '${_mode.x.label(_sponsor)}  →',
+                            style: const TextStyle(fontSize: 12, color: muted),
+                          ),
                         ),
                       ),
                     ),
+                    // Corners name combinations; none of them is a winner's corner.
+                    for (final (i, text) in _mode.corners.indexed)
+                      Positioned(
+                        left: i.isEven ? field.left + 12 : null,
+                        right: i.isOdd ? box.maxWidth - field.right + 12 : null,
+                        top: i < 2 ? field.top + 2 : null,
+                        bottom: i >= 2
+                            ? box.maxHeight - field.bottom + 8
+                            : null,
+                        child: IgnorePointer(
+                          child: Opacity(
+                            opacity: 1 - t,
+                            child: Text(text, style: corner),
+                          ),
+                        ),
+                      ),
                     for (final p in projects) ...[
                       Positioned(
                         left:
@@ -426,7 +555,10 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                           child: Opacity(
                             opacity: 1 - t,
                             child: Tooltip(
-                              message: p.summary,
+                              message:
+                                  '${p.title}\n'
+                                  '↑ ${_mode.y.label(_sponsor)}: ${p.dimensionNotes[_mode.y]}\n'
+                                  '→ ${_mode.x.label(_sponsor)}: ${p.dimensionNotes[_mode.x]}',
                               child: Semantics(
                                 button: true,
                                 label: 'Explore ${p.title}',
@@ -518,14 +650,10 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                               offset: (origin - center) * (1 - travel),
                               child: Transform.scale(
                                 scale: .025 + .975 * t,
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 420),
-                                  child: GraphView(
-                                    key: ValueKey(
-                                      '${selected.id}-${_lens.name}',
-                                    ),
-                                    graph: selected.graph(_lens),
-                                  ),
+                                child: ComparisonView(
+                                  key: _comparison,
+                                  project: selected,
+                                  focus: _focus,
                                 ),
                               ),
                             ),
@@ -540,62 +668,34 @@ class _ExplorationScreenState extends State<ExplorationScreen>
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 70,
+          height: 40,
           child: selected != null
-              ? Column(
-                  children: [
-                    Row(
-                      children: [
-                        for (final kind
-                            in selected
-                                .graph(_lens)
-                                .nodes
-                                .map((n) => n.kind)
-                                .toSet()) ...[
-                          Icon(kind.icon, size: 13, color: kind.color),
-                          const SizedBox(width: 5),
-                          Text(
-                            kind.label.toLowerCase(),
-                            style: const TextStyle(fontSize: 10, color: muted),
-                          ),
-                          const SizedBox(width: 17),
-                        ],
-                        const Spacer(),
-                        const Text(
-                          'Dashed arrows = iteration',
-                          style: TextStyle(fontSize: 10, color: muted),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _projectStrip(projects, selected),
-                  ],
-                )
+              ? _projectStrip(projects, selected)
               : const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'A field of relationships. Change the lens to see a different arrangement.',
+                    'Hover a project to see why it sits there. Select it to compare its idea with its build.',
                     style: TextStyle(fontSize: 12, color: muted),
                   ),
                 ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         const Divider(height: 1, color: Color(0xFFDCE3DA)),
-        const SizedBox(height: 13),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               child: Text(
                 selected == null
-                    ? 'Descriptive dimensions, not judge scores. Top-right means more of these two traits.'
-                    : 'Manually mapped from cached submission descriptions and analyses.',
+                    ? 'Descriptive placements from inspected materials, not judge scores. Corners describe combinations, not rankings.'
+                    : 'Statuses record what Finalist Brief could inspect. Questions point at gaps; judges decide.',
                 style: const TextStyle(fontSize: 11, color: muted),
               ),
             ),
             Text(
               selected == null
                   ? 'Select a dot to explore ↗'
-                  : 'Esc to return to the field',
+                  : 'Click any node for evidence  ·  Esc closes, then returns',
               style: const TextStyle(fontSize: 11, color: muted),
             ),
           ],
@@ -604,54 +704,24 @@ class _ExplorationScreenState extends State<ExplorationScreen>
     );
   }
 
-  Widget _axisControl(
-    String label,
-    Dimension value,
-    ValueChanged<Dimension> change,
-  ) => Expanded(
-    child: DropdownButtonFormField<Dimension>(
-      key: ValueKey('$label-${value.name}'),
-      initialValue: value,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: '$label axis',
-        isDense: true,
-        border: const OutlineInputBorder(),
-      ),
-      items: [
-        for (final d in Dimension.values)
-          DropdownMenuItem(
-            value: d,
-            child: Tooltip(
-              message: d.description,
-              child: Text(d.label, style: const TextStyle(fontSize: 12)),
-            ),
-          ),
-      ],
-      onChanged: (d) {
-        if (d != null) change(d);
-      },
-    ),
-  );
-
   Widget _minimap(
     List<ProjectRepresentation> projects,
     ProjectRepresentation selected,
   ) => SizedBox(
     width: 158,
-    height: 83,
+    height: 76,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${_preset?.label ?? 'Custom'} · competition',
+          '${_mode.label} · competition',
           style: const TextStyle(fontSize: 10, color: muted),
         ),
         const SizedBox(height: 4),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFD4DED5)),
+              border: Border.all(color: rule),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Stack(
@@ -659,7 +729,7 @@ class _ExplorationScreenState extends State<ExplorationScreen>
                 for (final p in projects)
                   Positioned(
                     left: 8 + _position(p.id).dx * 112,
-                    top: 2 + _position(p.id).dy * 32,
+                    top: 1 + _position(p.id).dy * 32,
                     child: Tooltip(
                       message: p.title,
                       child: Semantics(
@@ -698,21 +768,20 @@ class _ExplorationScreenState extends State<ExplorationScreen>
   Widget _projectStrip(
     List<ProjectRepresentation> projects,
     ProjectRepresentation selected,
-  ) => SizedBox(
-    height: 38,
-    child: ListView(
-      scrollDirection: Axis.horizontal,
-      children: [
-        const Center(
-          child: Text(
-            'EXPLORE NEXT',
-            style: TextStyle(fontSize: 9, letterSpacing: 1.2, color: muted),
-          ),
+  ) => ListView(
+    scrollDirection: Axis.horizontal,
+    children: [
+      const Center(
+        child: Text(
+          'EXPLORE NEXT',
+          style: TextStyle(fontSize: 9, letterSpacing: 1.2, color: muted),
         ),
-        const SizedBox(width: 16),
-        for (final p in projects)
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
+      ),
+      const SizedBox(width: 16),
+      for (final p in projects)
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: Center(
             child: TextButton(
               key: ValueKey('jump-${p.id}'),
               onPressed: () => _open(p),
@@ -726,8 +795,8 @@ class _ExplorationScreenState extends State<ExplorationScreen>
               child: Text(p.title),
             ),
           ),
-      ],
-    ),
+        ),
+    ],
   );
 }
 
@@ -796,4 +865,30 @@ class _FieldPainter extends CustomPainter {
   @override
   bool shouldRepaint(_FieldPainter oldDelegate) =>
       oldDelegate.field != field || oldDelegate.opacity != opacity;
+}
+
+/// Marks a deep review the pipeline generated, so it never passes for one a
+/// person wrote and checked.
+class _GeneratedTag extends StatelessWidget {
+  const _GeneratedTag();
+
+  @override
+  Widget build(BuildContext context) => const Tooltip(
+    message:
+        'Generated automatically from the writeup, repository and demo. '
+        'Every status was checked against its cited source, but no person '
+        'reviewed this deep review.',
+    child: DecoratedBox(
+      decoration: ShapeDecoration(
+        shape: StadiumBorder(side: BorderSide(color: muted, width: .8)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        child: Text(
+          'Generated automatically',
+          style: TextStyle(fontSize: 11.5, color: muted, letterSpacing: .2),
+        ),
+      ),
+    ),
+  );
 }
