@@ -4,6 +4,7 @@ import 'package:finalist_brief_flutter/hackathon/hackathon.dart';
 import 'package:finalist_brief_flutter/representation/project.dart';
 import 'package:finalist_brief_flutter/triage/review_lens.dart';
 import 'package:finalist_brief_flutter/triage/triage.dart';
+import 'package:finalist_brief_flutter/views/exploration_screen.dart';
 import 'package:finalist_brief_flutter/views/hackathon_shell.dart';
 import 'package:finalist_brief_flutter/visualization/graph_view.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +44,8 @@ void main() {
   late Hackathon humor;
   late Hackathon serverpod;
   setUp(() {
-    humor = load(hackathonSources[0]);
-    serverpod = load(hackathonSources[1]);
+    humor = load(hackathonSources.singleWhere((s) => s.id == 'humor-genome'));
+    serverpod = load(hackathonSources.singleWhere((s) => s.id == 'serverpod'));
   });
 
   Future<void> mount(
@@ -87,63 +88,139 @@ void main() {
       (w.key! as ValueKey<String>).value.substring(4),
   ];
 
-  testWidgets('Humor Genome opens first, unchanged, with the switcher', (
+  testWidgets('Hackathons list is the entry, with status for each', (
     tester,
   ) async {
     await mount(tester);
-    expect(key('hackathon-humor-genome'), findsOneWidget);
+    expect(find.text('Hackathons'), findsOneWidget);
     expect(
-      find.text('Six projects. What they claim, and what stands behind it.'),
+      find.text('Build your Flutter Butler with Serverpod'),
       findsOneWidget,
     );
-    expect(find.text('Sponsor Tech · Gemma'), findsOneWidget);
-    expect(key('dot-killjoy'), findsOneWidget);
-    expect(key('row-social-fabric'), findsNothing);
+    expect(find.text('Humor Genome'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: key('hackathon-serverpod'),
+        matching: find.text('117 submissions'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: key('hackathon-serverpod'),
+        matching: find.text('31 deep reviews'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Acquired and indexed'), findsOneWidget);
+    // No dataset switcher anywhere, and no workspace built yet.
+    expect(key('back-to-hackathons'), findsNothing);
+    expect(key('row-butler-xlrjsp'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Switching hackathons keeps each one’s state', (tester) async {
+  testWidgets('Serverpod opens on its status, then the overview', (
+    tester,
+  ) async {
     await mount(tester);
-    await tap(tester, key('mode-sponsorTech'));
-    await tap(tester, key('dot-killjoy'));
-    expect(
-      tester.widget<GraphView>(key('graph-integration')).graph,
-      humor.competition.projects
-          .singleWhere((p) => p.id == 'killjoy')
-          .integration,
-    );
-
     await tap(tester, key('hackathon-serverpod'));
-    expect(key('row-butler-xlrjsp'), findsOneWidget);
+    expect(
+      find.textContaining('117 of 117', findRichText: true),
+      findsNWidgets(2),
+    );
+    expect(find.textContaining('45'), findsWidgets);
+    expect(
+      find.textContaining('31 of 117', findRichText: true),
+      findsOneWidget,
+    );
+    expect(key('row-butler-xlrjsp'), findsNothing);
+    await tap(tester, key('open-overview'));
+    expect(find.text('117 submissions'), findsOneWidget);
+    expect(key('workspace-triage'), findsOneWidget);
+    expect(key('hackathon-serverpod'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Humor Genome follows the same workflow as Serverpod', (
+    tester,
+  ) async {
+    await mount(tester);
+    await tap(tester, key('hackathon-humor-genome'));
+    // Acquisition first, with truthful cached-study facts.
+    expect(find.text('Humor Genome'), findsWidgets);
+    expect(find.textContaining('Cached study'), findsWidgets);
+    expect(find.textContaining('6 of 6', findRichText: true), findsWidgets);
+    expect(key('open-overview'), findsOneWidget);
     expect(key('dot-killjoy'), findsNothing);
+    await tap(tester, key('open-overview'));
+
+    // A plain Overview: no lanes, just the six submissions.
+    expect(find.text('6 submissions'), findsOneWidget);
+    for (final id in humor.competition.projects.map((p) => p.id)) {
+      expect(key('row-$id'), findsOneWidget, reason: id);
+    }
+    expect(find.text('Written by hand'), findsNWidgets(6));
+    expect(key('view-in-competition'), findsNothing);
+    await tap(tester, key('select-killjoy'));
+    await tap(tester, key('select-laughlensai'));
+    await tap(tester, key('view-in-competition'));
+    expect(
+      find.text('Two projects. What they claim, and what stands behind it.'),
+      findsOneWidget,
+    );
+    expect(key('dot-killjoy'), findsOneWidget);
+    expect(key('dot-why-they-laugh'), findsNothing);
+
+    await tap(tester, key('dot-killjoy'));
+    expect(find.text('IDEA'), findsOneWidget);
+    await tap(tester, key('open-project'));
+    expect(key('back-to-competition'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('A card always opens Acquisition, whatever was visited', (
+    tester,
+  ) async {
+    await mount(tester, initial: 'serverpod');
+    expect(find.text('117 submissions'), findsOneWidget);
     await tap(tester, key('lens-all'));
     await tester.enterText(key('triage-search'), 'butler');
     await tester.pumpAndSettle();
-    await tap(tester, key('sort-project'));
-    final visible = find.byWidgetPredicate(
-      (w) =>
-          w.key is ValueKey<String> &&
-          (w.key! as ValueKey<String>).value.startsWith('row-'),
-    );
-    final beforeSwitch = tester.widgetList(visible).map((w) => w.key).toList();
+    await tap(tester, key('back-to-hackathons'));
+    expect(find.text('Choose a hackathon to review.'), findsOneWidget);
 
-    await tap(tester, key('hackathon-humor-genome'));
-    // The open project and the mode survive the round trip.
-    expect(find.byType(GraphView), findsNWidgets(2));
-    await tap(tester, key('back-to-competition'));
-    expect(
-      tester.widget<ChoiceChip>(key('mode-sponsorTech')).selected,
-      isTrue,
-    );
+    // Same click, same result: Acquisition, then Overview with state kept.
+    for (var visit = 0; visit < 2; visit++) {
+      await tap(tester, key('hackathon-serverpod'));
+      expect(key('open-overview'), findsOneWidget, reason: 'visit $visit');
+      expect(key('row-butler-xlrjsp'), findsNothing);
+      await tap(tester, key('open-overview'));
+      expect(find.text('butler'), findsOneWidget);
+      await tap(tester, key('back-to-hackathons'));
+    }
 
+    // Leaving from the Competition and coming back lands on the Overview.
     await tap(tester, key('hackathon-serverpod'));
-    expect(find.text('butler'), findsOneWidget);
-    expect(beforeSwitch, hasLength(16));
-    expect(
-      tester.widgetList(visible).map((w) => w.key).toList(),
-      beforeSwitch,
-    );
+    await tap(tester, key('open-overview'));
+    await tap(tester, key('workspace-competition'));
+    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, key('hackathon-serverpod'));
+    expect(key('open-overview'), findsOneWidget);
+    await tap(tester, key('open-overview'));
+    expect(find.text('117 submissions'), findsOneWidget);
     expect(find.text('WHY LOOK'), findsOneWidget);
+
+    // Humor Genome likewise, with its own selection preserved.
+    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, key('hackathon-humor-genome'));
+    await tap(tester, key('open-overview'));
+    await tap(tester, key('select-killjoy'));
+    await tap(tester, key('view-in-competition'));
+    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, key('hackathon-humor-genome'));
+    expect(key('open-overview'), findsOneWidget);
+    await tap(tester, key('open-overview'));
+    expect(find.text('View 1 in Competition'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -473,7 +550,11 @@ void main() {
 
       await tap(tester, key('workspace-competition'));
       final projects = serverpod.competition.projects;
-      await tap(tester, key('dot-${projects.first.id}'));
+      // Dots overlap in a dense field, so open the first review directly.
+      tester
+          .state<ExplorationScreenState>(find.byType(ExplorationScreen))
+          .openProject(projects.first.id);
+      await tester.pumpAndSettle();
       for (final p in projects) {
         await tap(tester, key('jump-${p.id}'));
         // A generated review never passes for one a person wrote.

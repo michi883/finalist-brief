@@ -4,6 +4,7 @@ import 'package:finalist_brief_flutter/representation/project.dart';
 import 'package:finalist_brief_flutter/views/exploration_screen.dart';
 import 'package:finalist_brief_flutter/visualization/graph_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -33,6 +34,8 @@ void main() {
 
   Future<void> open(WidgetTester tester, String id) async {
     await tester.tap(key('dot-$id'));
+    await tester.pumpAndSettle();
+    await tester.tap(key('open-project'));
     await tester.pumpAndSettle();
   }
 
@@ -69,6 +72,9 @@ void main() {
       final dot = key('dot-why-they-laugh');
       final start = tester.getCenter(dot);
       await tester.tap(dot);
+      await tester.pumpAndSettle();
+      expect(tester.getCenter(dot), start, reason: 'Previewing moves nothing');
+      await tester.tap(key('open-project'));
       await tester.pump();
       expect(
         tester.getCenter(dot),
@@ -241,4 +247,86 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('Hover only highlights; a click previews and stays', (
+    tester,
+  ) async {
+    await mount(tester);
+    final killjoy = project('killjoy');
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(tester.getCenter(key('dot-killjoy')));
+    await tester.pumpAndSettle();
+    // No popup and no facts on hover.
+    expect(find.text('Open project'), findsNothing);
+    expect(find.text('IDEA'), findsNothing);
+
+    await tester.tap(key('dot-killjoy'));
+    await tester.pumpAndSettle();
+    expect(find.text('IDEA'), findsOneWidget);
+    expect(find.text('INTEGRATION'), findsOneWidget);
+    expect(
+      find.text(killjoy.dimensionNotes[Dimension.ideaDistinctiveness]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(killjoy.dimensionNotes[Dimension.integrationDepth]!),
+      findsOneWidget,
+    );
+    // The panel persists when the pointer leaves, and follows another dot.
+    await mouse.moveTo(const Offset(5, 5));
+    await tester.pumpAndSettle();
+    expect(find.text('IDEA'), findsOneWidget);
+    await tester.tap(key('dot-why-they-laugh'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        project(
+          'why-they-laugh',
+        ).dimensionNotes[Dimension.ideaDistinctiveness]!,
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(killjoy.dimensionNotes[Dimension.ideaDistinctiveness]!),
+      findsNothing,
+    );
+
+    // Esc clears it; the field is unchanged.
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.text('IDEA'), findsNothing);
+    expect(key('open-project'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Open project enters the Submission View; back keeps preview', (
+    tester,
+  ) async {
+    await mount(tester);
+    await tester.tap(key('label-killjoy'));
+    await tester.pumpAndSettle();
+    await tester.tap(key('open-project'));
+    await tester.pumpAndSettle();
+    expect(key('back-to-competition'), findsOneWidget);
+    await tester.tap(key('back-to-competition'));
+    await tester.pumpAndSettle();
+    expect(find.text('IDEA'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('The preview follows the axes of the mode', (tester) async {
+    await mount(tester);
+    await tester.tap(key('mode-sponsorTech'));
+    await tester.pumpAndSettle();
+    await tester.tap(key('dot-killjoy'));
+    await tester.pumpAndSettle();
+    expect(find.text('CENTRALITY'), findsOneWidget);
+    expect(find.text('EVIDENCE'), findsOneWidget);
+    await tester.tap(key('close-preview'));
+    await tester.pumpAndSettle();
+    expect(find.text('CENTRALITY'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }

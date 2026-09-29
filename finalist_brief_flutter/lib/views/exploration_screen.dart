@@ -108,6 +108,18 @@ class ExplorationScreenState extends State<ExplorationScreen>
   Map<String, Offset> _to = {};
   final _keyboard = FocusNode(debugLabel: 'exploration');
 
+  /// The dot under the pointer: only highlighted, never a source of facts.
+  String? _hover;
+
+  /// The project whose placement the preview panel explains. It stays until
+  /// another is chosen or the judge dismisses it.
+  ProjectRepresentation? _preview;
+
+  void _setHover(String? id) => setState(() => _hover = id);
+
+  void _select(ProjectRepresentation project) =>
+      setState(() => _preview = project);
+
   String get _sponsor => _competition?.sponsorTech ?? 'Sponsor tech';
 
   @override
@@ -162,6 +174,7 @@ class ExplorationScreenState extends State<ExplorationScreen>
           (p) => p.id == _selected!.id,
         );
       }
+      if (_preview != null && !ids.contains(_preview!.id)) _preview = null;
       _motion.value = 1;
       _setCompetition(competition);
     }
@@ -193,7 +206,11 @@ class ExplorationScreenState extends State<ExplorationScreen>
     // Freeze an in-flight mode switch at its destination before zooming; the
     // field remains animated until then, so its return position is unambiguous.
     _motion.value = 1;
-    setState(() => _selected = project);
+    setState(() {
+      _selected = project;
+      _preview = project;
+      _hover = null;
+    });
     _zoom.forward();
   }
 
@@ -223,7 +240,12 @@ class ExplorationScreenState extends State<ExplorationScreen>
           DismissIntent: CallbackAction<DismissIntent>(
             onInvoke: (_) {
               // Close the inspector first; a second Esc leaves the project.
-              if (!(_comparison.currentState?.dismiss() ?? false)) _back();
+              if (_comparison.currentState?.dismiss() ?? false) return null;
+              if (_selected != null) {
+                _back();
+              } else if (_preview != null) {
+                setState(() => _preview = null);
+              }
               return null;
             },
           ),
@@ -464,208 +486,7 @@ class ExplorationScreenState extends State<ExplorationScreen>
                 ),
         ),
         const SizedBox(height: 8),
-        Expanded(
-          child: ClipRect(
-            child: LayoutBuilder(
-              builder: (context, box) {
-                final field = Rect.fromLTRB(
-                  85,
-                  38,
-                  box.maxWidth - 115,
-                  box.maxHeight - 56,
-                );
-                Offset point(String id) {
-                  final p = _position(id);
-                  return Offset(
-                    field.left + p.dx * field.width,
-                    field.top + p.dy * field.height,
-                  );
-                }
-
-                final center = Offset(box.maxWidth / 2, box.maxHeight / 2);
-                final origin = selected == null ? center : point(selected.id);
-                final travel = Curves.easeInOut.transform(
-                  ((t - .12) / .88).clamp(0, 1),
-                );
-                final aperture = Offset.lerp(origin, center, travel)!;
-                final labels = _labelPositions(projects, point, box.biggest);
-                const corner = TextStyle(
-                  fontSize: 10.5,
-                  color: Color(0xFF93A29D),
-                );
-                return Stack(
-                  children: [
-                    Positioned.fill(
-                      child: CustomPaint(painter: _FieldPainter(field, 1 - t)),
-                    ),
-                    Positioned(
-                      left: 12,
-                      top: 6,
-                      child: Opacity(
-                        opacity: 1 - t,
-                        child: Tooltip(
-                          message: _mode.y.description(_sponsor),
-                          child: Text(
-                            '↑  ${_mode.y.label(_sponsor)}',
-                            style: const TextStyle(fontSize: 12, color: muted),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 14,
-                      bottom: 8,
-                      child: Opacity(
-                        opacity: 1 - t,
-                        child: Tooltip(
-                          message: _mode.x.description(_sponsor),
-                          child: Text(
-                            '${_mode.x.label(_sponsor)}  →',
-                            style: const TextStyle(fontSize: 12, color: muted),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Corners name combinations; none of them is a winner's corner.
-                    for (final (i, text) in _mode.corners.indexed)
-                      Positioned(
-                        left: i.isEven ? field.left + 12 : null,
-                        right: i.isOdd ? box.maxWidth - field.right + 12 : null,
-                        top: i < 2 ? field.top + 2 : null,
-                        bottom: i >= 2
-                            ? box.maxHeight - field.bottom + 8
-                            : null,
-                        child: IgnorePointer(
-                          child: Opacity(
-                            opacity: 1 - t,
-                            child: Text(text, style: corner),
-                          ),
-                        ),
-                      ),
-                    for (final p in projects) ...[
-                      Positioned(
-                        left:
-                            (point(p.id) + (point(p.id) - origin) * t * .5).dx -
-                            18,
-                        top:
-                            (point(p.id) + (point(p.id) - origin) * t * .5).dy -
-                            18,
-                        child: IgnorePointer(
-                          ignoring: selected != null || _motion.isAnimating,
-                          child: Opacity(
-                            opacity: 1 - t,
-                            child: Tooltip(
-                              message:
-                                  '${p.title}\n'
-                                  '↑ ${_mode.y.label(_sponsor)}: ${p.dimensionNotes[_mode.y]}\n'
-                                  '→ ${_mode.x.label(_sponsor)}: ${p.dimensionNotes[_mode.x]}',
-                              child: Semantics(
-                                button: true,
-                                label: 'Explore ${p.title}',
-                                child: InkResponse(
-                                  key: ValueKey('dot-${p.id}'),
-                                  onTap: () => _open(p),
-                                  radius: 24,
-                                  child: SizedBox(
-                                    width: 36,
-                                    height: 36,
-                                    child: Center(
-                                      child: Container(
-                                        width: 15,
-                                        height: 15,
-                                        decoration: BoxDecoration(
-                                          color: accent,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 2,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned.fromRect(
-                        rect: labels[p.id]!,
-                        child: IgnorePointer(
-                          ignoring: selected != null || _motion.isAnimating,
-                          child: Opacity(
-                            opacity: (1 - t * 2).clamp(0, 1),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                ),
-                                foregroundColor: ink,
-                                textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              onPressed: () => _open(p),
-                              child: Text(p.title, maxLines: 1),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                    if (selected != null && t > 0 && t < 1)
-                      Positioned(
-                        left: aperture.dx - (8 + t * box.maxWidth * .6),
-                        top: aperture.dy - (8 + t * box.maxWidth * .6),
-                        child: IgnorePointer(
-                          child: Opacity(
-                            opacity: (1 - t).clamp(0, 1),
-                            child: Container(
-                              width: 16 + t * box.maxWidth * 1.2,
-                              height: 16 + t * box.maxWidth * 1.2,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color.lerp(
-                                  accent,
-                                  const Color(0xFFE3EDE6),
-                                  (t * 3).clamp(0, 1),
-                                ),
-                                border: Border.all(
-                                  color: accent.withValues(alpha: .2),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (selected != null)
-                      Positioned.fill(
-                        child: IgnorePointer(
-                          ignoring: t < 1,
-                          child: Opacity(
-                            opacity: ((t - .25) / .65).clamp(0, 1),
-                            child: Transform.translate(
-                              offset: (origin - center) * (1 - travel),
-                              child: Transform.scale(
-                                scale: .025 + .975 * t,
-                                child: ComparisonView(
-                                  key: _comparison,
-                                  project: selected,
-                                  focus: _focus,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
+        Expanded(child: _plot(projects, selected, t)),
         const SizedBox(height: 8),
         SizedBox(
           height: 40,
@@ -674,8 +495,8 @@ class ExplorationScreenState extends State<ExplorationScreen>
               : const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Hover a project to see why it sits there. Select it to compare its idea with its build.',
-                    style: TextStyle(fontSize: 12, color: muted),
+                    'Hover to highlight a project. Select it to read why it sits there, then open it to compare its idea with its build.',
+                    style: TextStyle(fontSize: 13, color: muted),
                   ),
                 ),
         ),
@@ -689,18 +510,242 @@ class ExplorationScreenState extends State<ExplorationScreen>
                 selected == null
                     ? 'Descriptive placements from inspected materials, not judge scores. Corners describe combinations, not rankings.'
                     : 'Statuses record what Finalist Brief could inspect. Questions point at gaps; judges decide.',
-                style: const TextStyle(fontSize: 11, color: muted),
+                style: const TextStyle(fontSize: 12, color: muted),
               ),
             ),
             Text(
               selected == null
-                  ? 'Select a dot to explore ↗'
+                  ? 'Select a dot to preview  ·  Esc clears'
                   : 'Click any node for evidence  ·  Esc closes, then returns',
-              style: const TextStyle(fontSize: 11, color: muted),
+              style: const TextStyle(fontSize: 12, color: muted),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _plot(
+    List<ProjectRepresentation> projects,
+    ProjectRepresentation? selected,
+    double t,
+  ) {
+    return ClipRect(
+      child: LayoutBuilder(
+        builder: (context, box) {
+          // The preview panel takes the right edge while the field shows.
+          final panel = (_PreviewPanel.width + 16) * (1 - t);
+          final field = Rect.fromLTRB(
+            85,
+            38,
+            box.maxWidth - 115 - panel,
+            box.maxHeight - 56,
+          );
+          Offset point(String id) {
+            final p = _position(id);
+            return Offset(
+              field.left + p.dx * field.width,
+              field.top + p.dy * field.height,
+            );
+          }
+
+          final center = Offset(box.maxWidth / 2, box.maxHeight / 2);
+          final origin = selected == null ? center : point(selected.id);
+          final travel = Curves.easeInOut.transform(
+            ((t - .12) / .88).clamp(0, 1),
+          );
+          final aperture = Offset.lerp(origin, center, travel)!;
+          final labels = _labelPositions(projects, point, box.biggest);
+          bool emphasized(ProjectRepresentation p) =>
+              p.id == _hover || p.id == _preview?.id;
+          final others = projects.where((p) => !emphasized(p)).toList();
+          final emphasis = projects.where(emphasized).toList();
+          Widget dotOf(ProjectRepresentation p) => Positioned(
+            key: ValueKey('dot-at-${p.id}'),
+            left: (point(p.id) + (point(p.id) - origin) * t * .5).dx - 18,
+            top: (point(p.id) + (point(p.id) - origin) * t * .5).dy - 18,
+            child: IgnorePointer(
+              ignoring: selected != null || _motion.isAnimating,
+              child: Opacity(
+                opacity: 1 - t,
+                child: Semantics(
+                  button: true,
+                  selected: _preview?.id == p.id,
+                  label: 'Preview ${p.title}',
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => _setHover(p.id),
+                    onExit: (_) {
+                      if (_hover == p.id) _setHover(null);
+                    },
+                    child: GestureDetector(
+                      key: ValueKey('dot-${p.id}'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _select(p),
+                      child: SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: Center(
+                          child: _Dot(
+                            hovered: _hover == p.id,
+                            selected: _preview?.id == p.id,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          Widget labelOf(ProjectRepresentation p) => Positioned.fromRect(
+            key: ValueKey('label-at-${p.id}'),
+            rect: labels[p.id]!,
+            child: IgnorePointer(
+              ignoring: selected != null || _motion.isAnimating,
+              child: Opacity(
+                opacity: (1 - t * 2).clamp(0, 1),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) => _setHover(p.id),
+                  onExit: (_) {
+                    if (_hover == p.id) _setHover(null);
+                  },
+                  child: GestureDetector(
+                    key: ValueKey('label-${p.id}'),
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _select(p),
+                    child: _FieldLabel(
+                      p.title,
+                      hovered: _hover == p.id,
+                      selected: _preview?.id == p.id,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          const corner = TextStyle(fontSize: 12, color: muted);
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(painter: _FieldPainter(field, 1 - t)),
+              ),
+              Positioned(
+                left: 12,
+                top: 6,
+                child: Opacity(
+                  opacity: 1 - t,
+                  child: Tooltip(
+                    message: _mode.y.description(_sponsor),
+                    child: Text(
+                      '↑  ${_mode.y.label(_sponsor)}',
+                      style: const TextStyle(fontSize: 12, color: muted),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 14,
+                bottom: 8,
+                child: Opacity(
+                  opacity: 1 - t,
+                  child: Tooltip(
+                    message: _mode.x.description(_sponsor),
+                    child: Text(
+                      '${_mode.x.label(_sponsor)}  →',
+                      style: const TextStyle(fontSize: 12, color: muted),
+                    ),
+                  ),
+                ),
+              ),
+              // Corners name combinations; none of them is a winner's corner.
+              for (final (i, text) in _mode.corners.indexed)
+                Positioned(
+                  left: i.isEven ? field.left + 12 : null,
+                  right: i.isOdd ? box.maxWidth - field.right + 12 : null,
+                  top: i < 2 ? field.top + 2 : null,
+                  bottom: i >= 2 ? box.maxHeight - field.bottom + 8 : null,
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: 1 - t,
+                      child: Text(text, style: corner),
+                    ),
+                  ),
+                ),
+              // Labels sit under every dot, and the emphasized project is
+              // drawn last, so nothing covers a dot or the chosen name.
+              for (final p in others) labelOf(p),
+              for (final p in others) dotOf(p),
+              for (final p in emphasis) ...[labelOf(p), dotOf(p)],
+              Positioned(
+                right: 0,
+                top: 0,
+                width: _PreviewPanel.width,
+                child: IgnorePointer(
+                  ignoring: selected != null,
+                  child: Opacity(
+                    opacity: 1 - t,
+                    child: _PreviewPanel(
+                      project: _preview,
+                      mode: _mode,
+                      sponsor: _sponsor,
+                      onOpen: _preview == null ? null : () => _open(_preview!),
+                      onDismiss: () => setState(() => _preview = null),
+                    ),
+                  ),
+                ),
+              ),
+              if (selected != null && t > 0 && t < 1)
+                Positioned(
+                  left: aperture.dx - (8 + t * box.maxWidth * .6),
+                  top: aperture.dy - (8 + t * box.maxWidth * .6),
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: (1 - t).clamp(0, 1),
+                      child: Container(
+                        width: 16 + t * box.maxWidth * 1.2,
+                        height: 16 + t * box.maxWidth * 1.2,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.lerp(
+                            accent,
+                            const Color(0xFFE3EDE6),
+                            (t * 3).clamp(0, 1),
+                          ),
+                          border: Border.all(
+                            color: accent.withValues(alpha: .2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (selected != null)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    ignoring: t < 1,
+                    child: Opacity(
+                      opacity: ((t - .25) / .65).clamp(0, 1),
+                      child: Transform.translate(
+                        offset: (origin - center) * (1 - travel),
+                        child: Transform.scale(
+                          scale: .025 + .975 * t,
+                          child: ComparisonView(
+                            key: _comparison,
+                            project: selected,
+                            focus: _focus,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -805,39 +850,71 @@ Map<String, Rect> _labelPositions(
   Offset Function(String) point,
   Size size,
 ) {
-  final labels = <String, Rect>{};
-  final dots = projects
-      .map((p) => Rect.fromCircle(center: point(p.id), radius: 18))
-      .toList();
-  for (final p in projects) {
+  const height = 26.0;
+  final dots = {
+    for (final p in projects)
+      p.id: Rect.fromCircle(center: point(p.id), radius: 11),
+  };
+  double overlap(Rect a, Rect b) {
+    final i = a.intersect(b);
+    return i.isEmpty ? 0 : i.width * i.height;
+  }
+
+  Rect place(ProjectRepresentation p, Iterable<Rect> labels) {
     final at = point(p.id);
-    final width = math.min(184.0, p.title.length * 7.0 + 16);
+    final width = math.min(200.0, p.title.length * 7.6 + 20);
+    // Nearest first: right, then beside-and-diagonal, then above and below.
     final candidates = [
-      Offset(18, -17),
-      Offset(18, 8),
-      Offset(-width - 18, -17),
-      Offset(-width / 2, -47),
-      Offset(-width / 2, 19),
+      Offset(15, -height / 2),
+      Offset(12, -height - 2),
+      Offset(12, 2),
+      Offset(-width - 15, -height / 2),
+      Offset(-width - 12, -height - 2),
+      Offset(-width - 12, 2),
+      Offset(-width / 2, -height - 14),
+      Offset(-width / 2, 14),
     ];
     Rect? best;
     var least = double.infinity;
-    for (final delta in candidates) {
+    for (final (i, delta) in candidates.indexed) {
       final rect = Rect.fromLTWH(
-        (at.dx + delta.dx).clamp(4, size.width - width - 4),
-        (at.dy + delta.dy).clamp(28, size.height - 50),
+        (at.dx + delta.dx).clamp(4, size.width - width - 4).toDouble(),
+        (at.dy + delta.dy).clamp(28, size.height - 50).toDouble(),
         width,
-        34,
+        height,
       );
-      final penalty = [...labels.values, ...dots].fold(0.0, (sum, obstacle) {
-        final overlap = rect.intersect(obstacle);
-        return sum + (overlap.isEmpty ? 0 : overlap.width * overlap.height);
-      });
+      var penalty = i * 30.0;
+      for (final e in dots.entries) {
+        penalty += overlap(rect, e.value) * 4;
+      }
+      for (final label in labels) {
+        penalty += overlap(rect, label) * 2;
+      }
       if (penalty < least) {
         least = penalty;
         best = rect;
       }
     }
-    labels[p.id] = best!;
+    return best!;
+  }
+
+  // Crowded dots choose first, then every label is re-placed against the rest.
+  int neighbours(ProjectRepresentation p) => projects
+      .where((q) => q != p && (point(q.id) - point(p.id)).distance < 70)
+      .length;
+  final order = [...projects]
+    ..sort((a, b) => neighbours(b).compareTo(neighbours(a)));
+  final labels = <String, Rect>{};
+  for (final p in order) {
+    labels[p.id] = place(p, labels.values);
+  }
+  for (var pass = 0; pass < 2; pass++) {
+    for (final p in order) {
+      labels[p.id] = place(p, [
+        for (final e in labels.entries)
+          if (e.key != p.id) e.value,
+      ]);
+    }
   }
   return labels;
 }
@@ -891,4 +968,189 @@ class _GeneratedTag extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// A project's dot. Hovering grows it with a soft halo; the previewed project
+/// keeps a ringed, darker dot until another is chosen.
+class _Dot extends StatelessWidget {
+  const _Dot({required this.hovered, required this.selected});
+  final bool hovered;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = selected ? 22.0 : (hovered ? 19.0 : 15.0);
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 120),
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: selected ? ink : accent,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: [
+          if (selected)
+            const BoxShadow(color: accent, spreadRadius: 3.5)
+          else if (hovered)
+            BoxShadow(color: accent.withValues(alpha: .28), spreadRadius: 5),
+        ],
+      ),
+    );
+  }
+}
+
+/// A project's name on the plot, readable over the grid and never bare text.
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(
+    this.title, {
+    required this.hovered,
+    required this.selected,
+  });
+  final String title;
+  final bool hovered;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final strong = hovered || selected;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+        decoration: BoxDecoration(
+          color: selected
+              ? ink
+              : hovered
+              ? const Color(0xFFE3EDE6)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: strong ? FontWeight.w600 : FontWeight.w500,
+            color: selected ? Colors.white : ink,
+            shadows: strong
+                ? null
+                : const [
+                    Shadow(color: paper, blurRadius: 2),
+                    Shadow(color: paper, blurRadius: 4),
+                  ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Why the chosen project sits where it does, on the axes now showing.
+/// Persistent, so nothing important depends on where the pointer is.
+class _PreviewPanel extends StatelessWidget {
+  const _PreviewPanel({
+    required this.project,
+    required this.mode,
+    required this.sponsor,
+    required this.onOpen,
+    required this.onDismiss,
+  });
+  final ProjectRepresentation? project;
+  final CompetitionLens mode;
+  final String sponsor;
+  final VoidCallback? onOpen;
+  final VoidCallback onDismiss;
+
+  static const width = 320.0;
+
+  static String _axis(Dimension d) => switch (d) {
+    Dimension.ideaDistinctiveness => 'IDEA',
+    Dimension.integrationDepth => 'INTEGRATION',
+    Dimension.sponsorCentrality => 'CENTRALITY',
+    Dimension.sponsorEvidence => 'EVIDENCE',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final project = this.project;
+    return Container(
+      key: const ValueKey('project-preview'),
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: rule),
+      ),
+      child: project == null
+          ? const Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Select a project to read why it sits where it does.',
+                style: TextStyle(fontSize: 14, height: 1.4, color: muted),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          project.title,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            height: 1.2,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -.3,
+                            color: ink,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        key: const ValueKey('close-preview'),
+                        tooltip: 'Dismiss',
+                        iconSize: 16,
+                        visualDensity: VisualDensity.compact,
+                        onPressed: onDismiss,
+                        icon: const Icon(Icons.close, color: muted),
+                      ),
+                    ],
+                  ),
+                  // Vertical axis first, as it reads on the plot.
+                  for (final d in [mode.y, mode.x]) ...[
+                    const SizedBox(height: 14),
+                    Text(
+                      _axis(d),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 1.3,
+                        fontWeight: FontWeight.w600,
+                        color: accent,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      project.dimensionNotes[d] ?? '',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        height: 1.45,
+                        color: ink,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 18),
+                  FilledButton(
+                    key: const ValueKey('open-project'),
+                    onPressed: onOpen,
+                    child: const Text('Open project'),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
 }

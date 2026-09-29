@@ -27,16 +27,16 @@ class HackathonSource {
 
 const hackathonSources = [
   HackathonSource(
-    id: 'humor-genome',
-    name: 'Humor Genome',
-    representations: 'assets/representations/humor_genome.json',
-  ),
-  HackathonSource(
     id: 'serverpod',
     name: 'Serverpod',
     representations: 'assets/representations/serverpod.json',
     triage: 'assets/triage/serverpod.json',
     writeups: 'assets/triage/serverpod_writeups.json',
+  ),
+  HackathonSource(
+    id: 'humor-genome',
+    name: 'Humor Genome',
+    representations: 'assets/representations/humor_genome.json',
   ),
 ];
 

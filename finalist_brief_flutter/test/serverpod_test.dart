@@ -553,7 +553,10 @@ void main() {
       ],
     ];
     expect(assets.toSet().length, assets.length);
-    expect(hackathonSources.first.triage, isNull);
+    expect(
+      hackathonSources.singleWhere((s) => s.id == 'humor-genome').triage,
+      isNull,
+    );
   });
 
   test('Writeup lines load separately and match the row counts', () {

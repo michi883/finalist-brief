@@ -4,11 +4,18 @@ import '../hackathon/hackathon.dart';
 import '../representation/project.dart';
 import '../triage/triage_query.dart';
 import '../visualization/graph_view.dart';
+import 'cached_workspace.dart';
 import 'exploration_screen.dart';
+import 'hackathons_screen.dart';
 import 'triage_view.dart';
 
-/// Top level of the demo: one workspace per hackathon, all kept alive so
-/// switching is instant and each keeps its own selection, mode and filters.
+/// Where the judge is: choosing a hackathon, reading a hackathon's status, or
+/// inside its workspace.
+enum _Stage { list, status, workspace }
+
+/// Top level of the demo: a Hackathons list, then one workspace per hackathon.
+/// Opened workspaces stay alive, so leaving and returning keeps each one's
+/// selection, mode and filters.
 class HackathonShell extends StatefulWidget {
   const HackathonShell({
     super.key,
@@ -18,7 +25,8 @@ class HackathonShell extends StatefulWidget {
   });
   final List<HackathonSource> sources;
 
-  /// Hackathon ID to open first, e.g. from `?hackathon=serverpod`.
+  /// Hackathon ID to open straight into, e.g. from `?hackathon=serverpod`.
+  /// Without one, the Hackathons list shows first.
   final String? initial;
 
   /// Already-loaded hackathons by ID; tests use this to skip asset loading.
@@ -29,48 +37,91 @@ class HackathonShell extends StatefulWidget {
 }
 
 class _HackathonShellState extends State<HackathonShell> {
-  late int _active = widget.sources
-      .indexWhere((s) => s.id == widget.initial)
-      .clamp(0, widget.sources.length - 1);
-  final _loads = <String, Future<Hackathon>>{};
+  late int _active = widget.sources.indexWhere((s) => s.id == widget.initial);
+  late _Stage _stage = _active < 0 ? _Stage.list : _Stage.workspace;
+  late final Set<String> _opened = {
+    if (_active >= 0) widget.sources[_active].id,
+  };
+  late final Map<String, Future<Hackathon>> _loads = {
+    for (final s in widget.sources)
+      s.id: widget.preloaded.containsKey(s.id)
+          ? Future.value(widget.preloaded[s.id])
+          : loadHackathon(s),
+  };
 
-  Future<Hackathon> _load(HackathonSource source) => _loads.putIfAbsent(
-    source.id,
-    () => widget.preloaded.containsKey(source.id)
-        ? Future.value(widget.preloaded[source.id])
-        : loadHackathon(source),
-  );
+  final _workspaceKeys = <String, GlobalKey>{};
 
-  void _switch(int index) => setState(() => _active = index);
+  /// Every card opens its hackathon's Acquisition screen, whether or not a
+  /// workspace already exists; what the judge did there is kept, not resumed.
+  void _open(int index) => setState(() {
+    _active = index;
+    _stage = _Stage.status;
+  });
+
+  /// Open overview always lands on the Overview, with any selection intact.
+  void _openOverview() {
+    final id = widget.sources[_active].id;
+    final first = _opened.add(id);
+    setState(() => _stage = _Stage.workspace);
+    if (!first) {
+      (_workspaceKeys[id]?.currentState as OverviewWorkspace?)?.showOverview();
+    }
+  }
+
+  void _home() => setState(() => _stage = _Stage.list);
+
+  Widget _homeLayer() {
+    if (_stage == _Stage.status) {
+      return _Loaded(
+        key: ValueKey('status-${widget.sources[_active].id}'),
+        future: _loads[widget.sources[_active].id]!,
+        builder: (hackathon) => HackathonStatusScreen(
+          hackathon: hackathon,
+          onOpenOverview: _openOverview,
+          onBack: _home,
+        ),
+      );
+    }
+    return HackathonsScreen(
+      sources: widget.sources,
+      loads: _loads,
+      onOpen: _open,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final inWorkspace = _stage == _Stage.workspace;
     return IndexedStack(
-      index: _active,
+      index: inWorkspace ? 1 + _active : 0,
       sizing: StackFit.expand,
       children: [
+        _homeLayer(),
         for (final (i, source) in widget.sources.indexed)
-          // A hackathon loads the first time it is opened, then stays.
-          if (i == _active || _loads.containsKey(source.id))
+          // A workspace builds the first time it is opened, then stays.
+          if (_opened.contains(source.id))
             _Loaded(
               key: ValueKey('workspace-${source.id}'),
-              future: _load(source),
+              future: _loads[source.id]!,
               builder: (hackathon) {
-                final switcher = HackathonSwitcher(
-                  sources: widget.sources,
-                  active: _active,
-                  onSelect: _switch,
+                final home = BackToHackathons(onTap: _home);
+                final visible = inWorkspace && i == _active;
+                final key = _workspaceKeys.putIfAbsent(
+                  source.id,
+                  () => GlobalKey(),
                 );
                 return hackathon.triage == null
-                    ? ExplorationScreen(
-                        competition: hackathon.competition,
-                        navigation: switcher,
-                        active: i == _active,
+                    ? CachedWorkspace(
+                        key: key,
+                        hackathon: hackathon,
+                        home: home,
+                        active: visible,
                       )
                     : TriageWorkspace(
+                        key: key,
                         hackathon: hackathon,
-                        switcher: switcher,
-                        active: i == _active,
+                        home: home,
+                        active: visible,
                       );
               },
             )
@@ -103,91 +154,6 @@ class _Loaded extends StatelessWidget {
   );
 }
 
-/// A compact segmented control naming each hackathon.
-class HackathonSwitcher extends StatelessWidget {
-  const HackathonSwitcher({
-    super.key,
-    required this.sources,
-    required this.active,
-    required this.onSelect,
-  });
-  final List<HackathonSource> sources;
-  final int active;
-  final ValueChanged<int> onSelect;
-
-  @override
-  Widget build(BuildContext context) => _Segments(
-    labels: [for (final s in sources) s.name],
-    keys: [for (final s in sources) 'hackathon-${s.id}'],
-    active: active,
-    onSelect: onSelect,
-  );
-}
-
-class _Segments extends StatelessWidget {
-  const _Segments({
-    required this.labels,
-    required this.keys,
-    required this.active,
-    required this.onSelect,
-    this.quiet = false,
-  });
-  final List<String> labels;
-  final List<String> keys;
-  final int active;
-  final ValueChanged<int> onSelect;
-
-  /// Secondary navigation: no outline, lighter selection.
-  final bool quiet;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    height: 30,
-    padding: const EdgeInsets.all(2),
-    decoration: BoxDecoration(
-      color: quiet ? Colors.transparent : Colors.white,
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: quiet ? Colors.transparent : rule),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final (i, label) in labels.indexed)
-          Semantics(
-            selected: i == active,
-            button: true,
-            child: InkWell(
-              key: ValueKey(keys[i]),
-              borderRadius: BorderRadius.circular(6),
-              onTap: i == active ? null : () => onSelect(i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 160),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: i == active
-                      ? (quiet ? const Color(0xFFE3EDE6) : accent)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: i == active ? FontWeight.w600 : FontWeight.w400,
-                    color: i == active
-                        ? (quiet ? accent : Colors.white)
-                        : muted,
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-    ),
-  );
-}
-
 enum WorkspaceView { triage, competition }
 
 /// A hackathon with a triage table in front of its Competition View. The
@@ -196,18 +162,21 @@ class TriageWorkspace extends StatefulWidget {
   const TriageWorkspace({
     super.key,
     required this.hackathon,
-    required this.switcher,
+    required this.home,
     this.active = true,
   });
   final Hackathon hackathon;
-  final Widget switcher;
+
+  /// Quiet way back to the Hackathons list.
+  final Widget home;
   final bool active;
 
   @override
-  State<TriageWorkspace> createState() => _TriageWorkspaceState();
+  State<TriageWorkspace> createState() => TriageWorkspaceState();
 }
 
-class _TriageWorkspaceState extends State<TriageWorkspace> {
+class TriageWorkspaceState extends State<TriageWorkspace>
+    implements OverviewWorkspace {
   WorkspaceView _view = WorkspaceView.triage;
   final Set<String> _selected = {};
   final Map<String, ReviewStatus> _reviews = {};
@@ -233,6 +202,9 @@ class _TriageWorkspaceState extends State<TriageWorkspace> {
 
   void _show(WorkspaceView view) => setState(() => _view = view);
 
+  @override
+  void showOverview() => _show(WorkspaceView.triage);
+
   void _openDeepReview(String id) {
     setState(() {
       if (_selected.isNotEmpty && !_selected.contains(id)) _selected.add(id);
@@ -251,14 +223,13 @@ class _TriageWorkspaceState extends State<TriageWorkspace> {
     final navigation = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        widget.switcher,
-        const SizedBox(width: 12),
-        _Segments(
-          labels: ['Triage', 'Competition · ${_comparison.projects.length}'],
+        widget.home,
+        const SizedBox(width: 8),
+        WorkspaceTabs(
+          labels: ['Overview', 'Competition · ${_comparison.projects.length}'],
           keys: const ['workspace-triage', 'workspace-competition'],
           active: _view.index,
           onSelect: (i) => _show(WorkspaceView.values[i]),
-          quiet: true,
         ),
       ],
     );
