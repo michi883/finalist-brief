@@ -323,10 +323,59 @@ void main() {
     await tester.tap(key('dot-killjoy'));
     await tester.pumpAndSettle();
     expect(find.text('CENTRALITY'), findsOneWidget);
-    expect(find.text('EVIDENCE'), findsOneWidget);
+    expect(find.text('VERIFIABILITY'), findsOneWidget);
+    expect(find.text('IDEA'), findsNothing);
     await tester.tap(key('close-preview'));
     await tester.pumpAndSettle();
     expect(find.text('CENTRALITY'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('A selection spotlights one project and briefs it', (
+    tester,
+  ) async {
+    await mount(tester);
+    final killjoy = project('killjoy');
+    double opacityOf(String id) => tester
+        .widget<AnimatedOpacity>(
+          find
+              .descendant(
+                of: key('dot-at-$id'),
+                matching: find.byType(AnimatedOpacity),
+              )
+              .first,
+        )
+        .opacity;
+    expect(opacityOf('killjoy'), 1);
+    expect(opacityOf('why-they-laugh'), 1);
+
+    await tester.tap(key('dot-killjoy'));
+    await tester.pumpAndSettle();
+    // The rest recede but stay drawn; the chosen dot keeps full strength.
+    expect(opacityOf('killjoy'), 1);
+    expect(opacityOf('why-they-laugh'), lessThan(1));
+    expect(opacityOf('why-they-laugh'), greaterThan(.5));
+
+    // The briefing: summary, both placements, evidence, one question, one CTA.
+    expect(find.text(killjoy.summary), findsOneWidget);
+    expect(find.text('IDEA'), findsOneWidget);
+    expect(find.text('INTEGRATION'), findsOneWidget);
+    expect(find.text('EVIDENCE'), findsOneWidget);
+    expect(find.text('WHAT TO ASK'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: key('preview-question'),
+        matching: find.text(killjoy.questions.first.question),
+      ),
+      findsOneWidget,
+    );
+    expect(key('open-project'), findsOneWidget);
+
+    // Esc returns every dot to full strength and empties the rail.
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(opacityOf('why-they-laugh'), 1);
+    expect(find.text('WHAT TO ASK'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

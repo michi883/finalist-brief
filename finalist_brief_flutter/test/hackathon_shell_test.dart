@@ -6,6 +6,8 @@ import 'package:finalist_brief_flutter/triage/review_lens.dart';
 import 'package:finalist_brief_flutter/triage/triage.dart';
 import 'package:finalist_brief_flutter/views/exploration_screen.dart';
 import 'package:finalist_brief_flutter/views/hackathon_shell.dart';
+import 'package:finalist_brief_flutter/views/hackathon_workspace.dart';
+import 'package:finalist_brief_flutter/views/workspace_frame.dart';
 import 'package:finalist_brief_flutter/visualization/graph_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,6 +53,8 @@ void main() {
   Future<void> mount(
     WidgetTester tester, {
     String? initial,
+    WorkspaceTab tab = WorkspaceTab.submissions,
+    String? project,
     Size size = const Size(1440, 960),
   }) async {
     tester.view.physicalSize = size;
@@ -60,7 +64,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: HackathonShell(
-          initial: initial,
+          initial: initial == null
+              ? null
+              : WorkspaceLocation(initial, tab, project),
           preloaded: {humor.id: humor, serverpod.id: serverpod},
         ),
       ),
@@ -119,51 +125,108 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Serverpod opens on its status, then the overview', (
+  Finder tab(String name) => key('workspace-$name');
+
+  /// The tab that is drawn as active carries the accent fill.
+  bool isActive(WidgetTester tester, String name) {
+    final box = tester.widget<AnimatedContainer>(
+      find.descendant(
+        of: tab(name),
+        matching: find.byType(AnimatedContainer),
+      ),
+    );
+    return (box.decoration! as BoxDecoration).color == accent;
+  }
+
+  /// The breadcrumb, as the words a judge would read.
+  String crumbs(WidgetTester tester) => [
+    for (final id in [
+      'crumb-home',
+      'crumb-hackathon',
+      'crumb-workspace',
+      'crumb-project',
+    ])
+      if (key(id).evaluate().isNotEmpty)
+        (tester.widget(key(id)) is Text
+                ? tester.widget<Text>(key(id))
+                : tester.widget<Text>(
+                    find.descendant(of: key(id), matching: find.byType(Text)),
+                  ))
+            .data!,
+  ].join(' / ');
+
+  testWidgets('A hackathon opens on its Overview inside a persistent header', (
     tester,
   ) async {
     await mount(tester);
     await tap(tester, key('hackathon-serverpod'));
     expect(
-      find.textContaining('117 of 117', findRichText: true),
-      findsNWidgets(2),
-    );
-    expect(find.textContaining('45'), findsWidgets);
-    expect(
-      find.textContaining('31 of 117', findRichText: true),
+      find.text('Build your Flutter Butler with Serverpod'),
       findsOneWidget,
     );
+    expect(crumbs(tester), 'Hackathons / Serverpod / Overview');
+    expect(isActive(tester, 'overview'), isTrue);
+    expect(isActive(tester, 'submissions'), isFalse);
+    expect(
+      find.descendant(of: tab('submissions'), matching: find.text('117')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: tab('competition'), matching: find.text('31')),
+      findsOneWidget,
+    );
+    // What was acquired, counted from the data.
+    for (final (label, value) in [
+      ('submissions', '117'),
+      ('writeups', '117'),
+      ('repositories', '45'),
+      ('demo-videos', '104'),
+      ('deep-reviews', '31'),
+    ]) {
+      expect(
+        find.descendant(of: key('overview-$label'), matching: find.text(value)),
+        findsOneWidget,
+        reason: label,
+      );
+    }
+    // The table is not built until Submissions is opened.
     expect(key('row-butler-xlrjsp'), findsNothing);
-    await tap(tester, key('open-overview'));
-    expect(find.text('117 submissions'), findsOneWidget);
-    expect(key('workspace-triage'), findsOneWidget);
-    expect(key('hackathon-serverpod'), findsNothing);
+    // No dataset switcher anywhere inside the workspace.
+    expect(find.text('Humor Genome'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Humor Genome follows the same workflow as Serverpod', (
+  testWidgets('Humor Genome shares the same shell and hierarchy', (
     tester,
   ) async {
     await mount(tester);
     await tap(tester, key('hackathon-humor-genome'));
-    // Acquisition first, with truthful cached-study facts.
+    expect(crumbs(tester), 'Hackathons / Humor Genome / Overview');
     expect(find.text('Humor Genome'), findsWidgets);
-    expect(find.textContaining('Cached study'), findsWidgets);
-    expect(find.textContaining('6 of 6', findRichText: true), findsWidgets);
-    expect(key('open-overview'), findsOneWidget);
+    for (final name in ['overview', 'submissions', 'competition']) {
+      expect(tab(name), findsOneWidget, reason: name);
+    }
+    expect(
+      find.descendant(of: tab('submissions'), matching: find.text('6')),
+      findsOneWidget,
+    );
+    expect(key('overview-browse'), findsOneWidget);
     expect(key('dot-killjoy'), findsNothing);
-    await tap(tester, key('open-overview'));
 
-    // A plain Overview: no lanes, just the six submissions.
-    expect(find.text('6 submissions'), findsOneWidget);
+    // A plain Submissions table: no lanes, no filters, just the six.
+    await tap(tester, key('overview-browse'));
+    expect(crumbs(tester), 'Hackathons / Humor Genome / Submissions');
+    expect(isActive(tester, 'submissions'), isTrue);
     for (final id in humor.competition.projects.map((p) => p.id)) {
       expect(key('row-$id'), findsOneWidget, reason: id);
     }
     expect(find.text('Written by hand'), findsNWidgets(6));
+    expect(key('lens-all'), findsNothing);
     expect(key('view-in-competition'), findsNothing);
     await tap(tester, key('select-killjoy'));
     await tap(tester, key('select-laughlensai'));
     await tap(tester, key('view-in-competition'));
+    expect(crumbs(tester), 'Hackathons / Humor Genome / Competition');
     expect(
       find.text('Two projects. What they claim, and what stands behind it.'),
       findsOneWidget,
@@ -171,56 +234,158 @@ void main() {
     expect(key('dot-killjoy'), findsOneWidget);
     expect(key('dot-why-they-laugh'), findsNothing);
 
+    // A project is the one level below, and back returns to the field.
     await tap(tester, key('dot-killjoy'));
     expect(find.text('IDEA'), findsOneWidget);
     await tap(tester, key('open-project'));
-    expect(key('back-to-competition'), findsOneWidget);
+    expect(
+      crumbs(tester),
+      'Hackathons / Humor Genome / Competition / Killjoy',
+    );
+    expect(isActive(tester, 'competition'), isTrue);
+    expect(find.text('Back to Competition'), findsOneWidget);
+    await tap(tester, key('back-to-competition'));
+    expect(crumbs(tester), 'Hackathons / Humor Genome / Competition');
+    expect(key('back-to-competition'), findsNothing);
+    expect(key('dot-killjoy'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('A card always opens Acquisition, whatever was visited', (
+  testWidgets('A card always opens the Overview, whatever was visited', (
     tester,
   ) async {
     await mount(tester, initial: 'serverpod');
-    expect(find.text('117 submissions'), findsOneWidget);
     await tap(tester, key('lens-all'));
     await tester.enterText(key('triage-search'), 'butler');
     await tester.pumpAndSettle();
-    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, key('crumb-home'));
     expect(find.text('Choose a hackathon to review.'), findsOneWidget);
 
-    // Same click, same result: Acquisition, then Overview with state kept.
+    // Same click, same result: the Overview, with the table kept underneath.
     for (var visit = 0; visit < 2; visit++) {
       await tap(tester, key('hackathon-serverpod'));
-      expect(key('open-overview'), findsOneWidget, reason: 'visit $visit');
-      expect(key('row-butler-xlrjsp'), findsNothing);
-      await tap(tester, key('open-overview'));
+      expect(isActive(tester, 'overview'), isTrue, reason: 'visit $visit');
+      expect(key('overview-browse'), findsOneWidget);
+      await tap(tester, key('workspace-submissions'));
       expect(find.text('butler'), findsOneWidget);
-      await tap(tester, key('back-to-hackathons'));
+      await tap(tester, key('crumb-home'));
     }
 
     // Leaving from the Competition and coming back lands on the Overview.
     await tap(tester, key('hackathon-serverpod'));
-    await tap(tester, key('open-overview'));
-    await tap(tester, key('workspace-competition'));
-    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, tab('competition'));
+    await tap(tester, key('crumb-home'));
     await tap(tester, key('hackathon-serverpod'));
-    expect(key('open-overview'), findsOneWidget);
-    await tap(tester, key('open-overview'));
-    expect(find.text('117 submissions'), findsOneWidget);
+    expect(isActive(tester, 'overview'), isTrue);
+    await tap(tester, tab('submissions'));
     expect(find.text('WHY LOOK'), findsOneWidget);
 
     // Humor Genome likewise, with its own selection preserved.
-    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, key('crumb-home'));
     await tap(tester, key('hackathon-humor-genome'));
-    await tap(tester, key('open-overview'));
+    await tap(tester, tab('submissions'));
     await tap(tester, key('select-killjoy'));
     await tap(tester, key('view-in-competition'));
-    await tap(tester, key('back-to-hackathons'));
+    await tap(tester, key('crumb-home'));
     await tap(tester, key('hackathon-humor-genome'));
-    expect(key('open-overview'), findsOneWidget);
-    await tap(tester, key('open-overview'));
+    expect(isActive(tester, 'overview'), isTrue);
+    await tap(tester, tab('submissions'));
     expect(find.text('View 1 in Competition'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('The fresh-state walk keeps every level legible', (
+    tester,
+  ) async {
+    await mount(tester);
+    await tap(tester, key('hackathon-serverpod'));
+    await tap(tester, key('overview-browse'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Submissions');
+
+    // A filter is view state: the breadcrumb and the tab do not move.
+    await tap(tester, key('lens-verify'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Submissions');
+    expect(isActive(tester, 'submissions'), isTrue);
+
+    Future<void> select(String id, String search) async {
+      await tester.enterText(key('triage-search'), search);
+      await tester.pumpAndSettle();
+      await tap(tester, key('select-$id'));
+    }
+
+    // Neither project is in this filter; widen it, pick, and narrow again.
+    await tap(tester, key('lens-all'));
+    await select('naggy', 'Naggy');
+    await select('symptomscribe', 'SymptomScribe');
+    await tap(tester, key('lens-verify'));
+    await tester.enterText(key('triage-search'), '');
+    await tester.pumpAndSettle();
+    await tap(tester, key('view-in-competition'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Competition');
+    expect(
+      find.descendant(of: tab('competition'), matching: find.text('2')),
+      findsOneWidget,
+    );
+
+    // A mode is view state too, and survives the drill-down.
+    await tap(tester, key('mode-sponsorTech'));
+    expect(find.text('Serverpod centrality  →'), findsOneWidget);
+    await tap(tester, key('mode-ideaIntegration'));
+    await tap(tester, key('mode-sponsorTech'));
+    await tap(tester, key('dot-naggy'));
+    await tap(tester, key('open-project'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Competition / Naggy');
+    await tap(tester, key('back-to-competition'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Competition');
+    expect(find.text('Serverpod centrality  →'), findsOneWidget);
+
+    // Back to Submissions: the same filter, search and selection.
+    await tap(tester, tab('submissions'));
+    expect(find.text('CLAIM'), findsOneWidget);
+    expect(find.text('View 2 in Competition'), findsOneWidget);
+    await tap(tester, key('lens-underTold'));
+    await tester.enterText(key('triage-search'), 'Naggy');
+    await tester.pumpAndSettle();
+    await tap(tester, key('row-naggy'));
+    await tap(tester, key('open-deep-review'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Submissions / Naggy');
+    expect(isActive(tester, 'submissions'), isTrue);
+    expect(find.text('Back to Submissions'), findsOneWidget);
+    await tap(tester, key('back-to-submissions'));
+    expect(crumbs(tester), 'Hackathons / Serverpod / Submissions');
+    expect(find.text('CODE SUBSTANCE'), findsOneWidget);
+    expect(key('detail-naggy'), findsOneWidget);
+    expect(
+      tester.widget<TextField>(key('triage-search')).controller!.text,
+      'Naggy',
+    );
+    // The Competition view was left at the field, in the mode it was in.
+    await tap(tester, tab('competition'));
+    expect(find.text('Serverpod centrality  →'), findsOneWidget);
+    expect(key('back-to-submissions'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Locations round-trip through paths', (tester) async {
+    for (final path in [
+      '/hackathons/serverpod',
+      '/hackathons/serverpod/submissions',
+      '/hackathons/serverpod/competition',
+      '/hackathons/serverpod/competition/naggy',
+      '/hackathons/serverpod/submissions/naggy',
+    ]) {
+      expect(WorkspaceLocation.parse(path)!.path, path);
+    }
+    expect(WorkspaceLocation.parse('/'), isNull);
+    expect(WorkspaceLocation.parse('/hackathons'), isNull);
+    // A project opened from a path lands on that origin.
+    await mount(
+      tester,
+      initial: 'serverpod',
+      tab: WorkspaceTab.submissions,
+      project: 'naggy',
+    );
+    expect(crumbs(tester), 'Hackathons / Serverpod / Submissions / Naggy');
     expect(tester.takeException(), isNull);
   });
 
@@ -228,8 +393,6 @@ void main() {
     tester,
   ) async {
     await mount(tester, initial: 'serverpod');
-    expect(find.text('117 submissions'), findsOneWidget);
-    expect(find.text('full field'), findsOneWidget);
     expect(
       find.text('Every submission, and the reason it may deserve a look.'),
       findsOneWidget,
@@ -444,18 +607,21 @@ void main() {
     expect(key('question-no-model'), findsOneWidget);
     expect(find.text('IDEA / INTEGRATION MISMATCH'), findsOneWidget);
 
-    // Esc closes the question, then returns to the Serverpod field.
+    // Esc closes the question, then returns to where the review was opened.
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
+    expect(crumbs(tester), 'Hackathons / Serverpod / Submissions');
+    expect(find.text('Back to Submissions'), findsNothing);
+    await tap(tester, tab('competition'));
     expect(find.byType(GraphView), findsNothing);
     expect(find.text('Sponsor Tech · Serverpod'), findsOneWidget);
     await tap(tester, key('mode-sponsorTech'));
     expect(find.text('Serverpod centrality  →'), findsOneWidget);
 
     // The table is exactly as it was left.
-    await tap(tester, key('workspace-triage'));
+    await tap(tester, tab('submissions'));
     expect(key('detail-doby-rna2yf'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -464,7 +630,10 @@ void main() {
     tester,
   ) async {
     await mount(tester, initial: 'serverpod');
-    expect(find.text('Competition · 31'), findsOneWidget);
+    expect(
+      find.descendant(of: tab('competition'), matching: find.text('31')),
+      findsOneWidget,
+    );
     // The hand-off appears only once something is selected.
     expect(key('view-in-competition'), findsNothing);
     expect(find.textContaining('Compare'), findsNothing);
@@ -482,7 +651,10 @@ void main() {
     expect(find.text('View 1 in Competition'), findsOneWidget);
     await select('elderly-j462fy', 'Elderly');
     expect(find.text('View 2 in Competition'), findsOneWidget);
-    expect(find.text('Competition · 2'), findsOneWidget);
+    expect(
+      find.descendant(of: tab('competition'), matching: find.text('2')),
+      findsOneWidget,
+    );
     await tap(tester, key('view-in-competition'));
     expect(key('dot-social-fabric'), findsOneWidget);
     expect(key('dot-elderly-j462fy'), findsOneWidget);
@@ -492,7 +664,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('DEEP REVIEW  /  02 OF 117 SUBMISSIONS'),
+      find.textContaining('02 OF 117 SUBMISSIONS'),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);

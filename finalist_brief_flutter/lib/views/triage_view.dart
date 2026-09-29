@@ -10,7 +10,6 @@ import '../triage/review_lens.dart';
 import '../triage/triage.dart';
 import '../triage/triage_query.dart';
 import '../visualization/graph_view.dart';
-import 'exploration_screen.dart' show BrandMark, brandBreakpoint;
 
 extension LaneAppearance on Lane {
   Color get color => switch (this) {
@@ -95,7 +94,6 @@ class TriageView extends StatefulWidget {
   const TriageView({
     super.key,
     required this.hackathon,
-    required this.navigation,
     required this.selected,
     required this.reviews,
     required this.onSelect,
@@ -105,7 +103,6 @@ class TriageView extends StatefulWidget {
     this.active = true,
   });
   final Hackathon hackathon;
-  final Widget navigation;
 
   /// Submissions chosen for the Competition View.
   final Set<String> selected;
@@ -188,31 +185,23 @@ class _TriageViewState extends State<TriageView> {
         child: Focus(
           focusNode: _focus,
           autofocus: widget.active,
-          child: Scaffold(
-            backgroundColor: paper,
-            body: SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = math.max(960.0, constraints.maxWidth);
-                  final height = math.max(760.0, constraints.maxHeight);
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = math.max(880.0, constraints.maxWidth);
+              final height = math.max(560.0, constraints.maxHeight);
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: width,
+                  child: SingleChildScrollView(
                     child: SizedBox(
-                      width: width,
-                      child: SingleChildScrollView(
-                        child: SizedBox(
-                          height: height,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
-                            child: _content(all, rows, detail, width),
-                          ),
-                        ),
-                      ),
+                      height: height,
+                      child: _content(all, rows, detail, width),
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -235,68 +224,7 @@ class _TriageViewState extends State<TriageView> {
           height: 40,
           child: Row(
             children: [
-              BrandMark(compact: width < brandBreakpoint),
-              const SizedBox(width: 24),
-              widget.navigation,
-              const SizedBox(width: 20),
-              Flexible(
-                child: Text(
-                  _triage.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: muted, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Text(
-              '${all.length} submissions',
-              style: const TextStyle(
-                fontSize: 26,
-                height: 1.15,
-                letterSpacing: -.7,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                _triage.submissions.length == _triage.fieldSize
-                    ? 'full field'
-                    : 'pilot sample of ${_triage.fieldSize}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12.5, color: muted),
-              ),
-            ),
-            TextButton(
-              key: const ValueKey('lane-rules'),
-              style: TextButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                foregroundColor: muted,
-              ),
-              onPressed: () => showDialog<void>(
-                context: context,
-                builder: (_) => _RulesDialog(_triage),
-              ),
-              child: const Text(
-                'How this works',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 40,
-          child: Row(
-            children: [
+              const _FilterLabel(),
               Expanded(child: _lensBar(all)),
               const SizedBox(width: 16),
               SizedBox(width: 230, child: _searchField()),
@@ -332,14 +260,14 @@ class _TriageViewState extends State<TriageView> {
     );
   }
 
-  /// One tab per review question, each with the rows it would show now.
+  /// One filter chip per review question, each with the rows it would show
+  /// now. These change the table, never the workspace.
   Widget _lensBar(List<TriageRow> all) => SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final lens in ReviewLens.values)
-          _LensTab(
+          _LensChip(
             key: ValueKey('lens-${lens.name}'),
             label: lens.label(_sponsor),
             count: all.where(_query.withLens(lens).matches).length,
@@ -399,8 +327,21 @@ class _TriageViewState extends State<TriageView> {
           style: const TextStyle(fontSize: 12.5, color: muted),
         ),
       ),
+      const SizedBox(width: 8),
+      TextButton(
+        key: const ValueKey('lane-rules'),
+        style: TextButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          foregroundColor: muted,
+        ),
+        onPressed: () => showDialog<void>(
+          context: context,
+          builder: (_) => _RulesDialog(_triage),
+        ),
+        child: const Text('How this works', style: TextStyle(fontSize: 12)),
+      ),
       if (comparable > 0) ...[
-        const SizedBox(width: 16),
+        const SizedBox(width: 8),
         FilledButton.icon(
           key: const ValueKey('view-in-competition'),
           style: _compact,
@@ -709,9 +650,24 @@ class _TriageViewState extends State<TriageView> {
   }
 }
 
-/// A review question as an underlined tab, with how many rows it holds.
-class _LensTab extends StatelessWidget {
-  const _LensTab({
+/// The caption in front of the filter chips.
+class _FilterLabel extends StatelessWidget {
+  const _FilterLabel();
+
+  @override
+  Widget build(BuildContext context) => const Padding(
+    padding: EdgeInsets.only(right: 12),
+    child: Text(
+      'FILTER',
+      style: TextStyle(fontSize: 10, letterSpacing: 1.2, color: muted),
+    ),
+  );
+}
+
+/// A review question as a small filter chip, with how many rows it holds.
+/// Deliberately lighter than the workspace tabs above it.
+class _LensChip extends StatelessWidget {
+  const _LensChip({
     super.key,
     required this.label,
     required this.count,
@@ -732,40 +688,41 @@ class _LensTab extends StatelessWidget {
     child: Tooltip(
       message: tooltip,
       waitDuration: const Duration(milliseconds: 500),
-      child: InkWell(
-        onTap: selected ? null : onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          margin: const EdgeInsets.only(right: 4),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: selected ? accent : Colors.transparent,
-                width: 2,
-              ),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 6),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: selected ? null : onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            height: 28,
+            padding: const EdgeInsets.symmetric(horizontal: 11),
+            decoration: BoxDecoration(
+              color: selected ? const Color(0xFFE3EDE6) : Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: selected ? accent : rule),
             ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  color: selected ? accent : ink,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                    color: selected ? accent : ink,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                '$count',
-                style: TextStyle(
-                  fontSize: 11.5,
-                  color: selected ? accent : muted,
+                const SizedBox(width: 5),
+                Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    color: selected ? accent : muted,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

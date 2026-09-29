@@ -9,18 +9,39 @@ import '../visualization/graph_view.dart';
 import 'comparison_view.dart';
 import 'inspector.dart';
 
+/// Selection, dimming and the inspector's entrance all take this long.
+const _focusTime = Duration(milliseconds: 200);
+
+/// Space between the field and the inspector rail.
+const _railGap = 20.0;
+
 class ExplorationScreen extends StatefulWidget {
   const ExplorationScreen({
     super.key,
     this.competition,
-    this.navigation,
+    this.embedded = false,
     this.active = true,
     this.scopeLabel,
+    this.onProject,
+    this.onBackRequested,
+    this.projectBack,
   });
   final Competition? competition;
 
-  /// Hackathon and workspace controls, shown beside the brand.
-  final Widget? navigation;
+  /// Shown inside a hackathon workspace, whose header already carries the
+  /// brand, hackathon and location; this screen then draws only its content.
+  final bool embedded;
+
+  /// Told when a project opens (with it) and when it closes (with null).
+  final ValueChanged<ProjectRepresentation?>? onProject;
+
+  /// When set, Esc and the project's back action ask the workspace instead of
+  /// closing the project themselves, so it can choose where to return to.
+  final VoidCallback? onBackRequested;
+
+  /// The workspace's contextual "Back to …" action, shown while a project is
+  /// open.
+  final Widget? projectBack;
 
   /// Whether this screen is the visible one; it reclaims keyboard focus when
   /// it becomes visible again, so Esc keeps working after a switch.
@@ -57,7 +78,7 @@ const _counts = [
   'Twenty',
 ];
 
-/// Below this window width, a screen with navigation shows only the icon.
+/// Below this window width, the wordmark shrinks to just the icon.
 const brandBreakpoint = 1200.0;
 
 class BrandMark extends StatelessWidget {
@@ -97,13 +118,26 @@ class ExplorationScreenState extends State<ExplorationScreen>
   final _comparison = GlobalKey<ComparisonViewState>();
   late final AnimationController _motion = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 900),
+    duration: const Duration(milliseconds: 520),
     value: 1,
   );
   late final AnimationController _zoom = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1000),
+    duration: const Duration(milliseconds: 800),
   );
+
+  /// Presence of the spotlight guides, and their hand-over between dots.
+  late final AnimationController _spot = AnimationController(
+    vsync: this,
+    duration: _focusTime,
+  );
+  late final AnimationController _shift = AnimationController(
+    vsync: this,
+    duration: _focusTime,
+    value: 1,
+  );
+  String? _spotFrom;
+  String? _spotId;
   Map<String, Offset> _from = {};
   Map<String, Offset> _to = {};
   final _keyboard = FocusNode(debugLabel: 'exploration');
@@ -118,7 +152,27 @@ class ExplorationScreenState extends State<ExplorationScreen>
   void _setHover(String? id) => setState(() => _hover = id);
 
   void _select(ProjectRepresentation project) =>
-      setState(() => _preview = project);
+      setState(() => _setPreview(project));
+
+  /// The one way the spotlight changes: guides slide to the new dot, or fade
+  /// out when the preview clears. Call inside `setState`.
+  void _setPreview(ProjectRepresentation? project) {
+    final old = _preview;
+    if (project == null) {
+      _spot.reverse();
+    } else {
+      if (old != null && old.id != project.id) {
+        _spotFrom = old.id;
+        _shift.forward(from: 0);
+      } else {
+        _spotFrom = null;
+        _shift.value = 1;
+      }
+      _spotId = project.id;
+      _spot.forward();
+    }
+    _preview = project;
+  }
 
   String get _sponsor => _competition?.sponsorTech ?? 'Sponsor tech';
 
@@ -169,12 +223,15 @@ class ExplorationScreenState extends State<ExplorationScreen>
       if (_selected != null && !ids.contains(_selected!.id)) {
         _selected = null;
         _zoom.value = 0;
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => widget.onProject?.call(null),
+        );
       } else if (_selected != null) {
         _selected = competition.projects.singleWhere(
           (p) => p.id == _selected!.id,
         );
       }
-      if (_preview != null && !ids.contains(_preview!.id)) _preview = null;
+      if (_preview != null && !ids.contains(_preview!.id)) _setPreview(null);
       _motion.value = 1;
       _setCompetition(competition);
     }
@@ -208,14 +265,34 @@ class ExplorationScreenState extends State<ExplorationScreen>
     _motion.value = 1;
     setState(() {
       _selected = project;
-      _preview = project;
+      _setPreview(project);
       _hover = null;
     });
     _zoom.forward();
+    widget.onProject?.call(project);
   }
 
-  Future<void> _back() async {
+  /// Leaves the open project: the workspace decides where that returns to
+  /// when it is listening, otherwise the field is simply shown again.
+  void _requestBack() {
+    final ask = widget.onBackRequested;
+    if (ask != null) {
+      ask();
+    } else {
+      closeProject();
+    }
+  }
+
+  /// Returns to the field. Without [animate] the zoom snaps shut, which is
+  /// what a workspace needs when it is about to hide this screen.
+  Future<void> closeProject({bool animate = true}) async {
     if (_selected == null) return;
+    widget.onProject?.call(null);
+    if (!animate) {
+      _zoom.value = 0;
+      setState(() => _selected = null);
+      return;
+    }
     await _zoom.reverse();
     if (mounted && _zoom.isDismissed) setState(() => _selected = null);
   }
@@ -224,6 +301,8 @@ class ExplorationScreenState extends State<ExplorationScreen>
   void dispose() {
     _motion.dispose();
     _zoom.dispose();
+    _spot.dispose();
+    _shift.dispose();
     _keyboard.dispose();
     super.dispose();
   }
@@ -242,9 +321,9 @@ class ExplorationScreenState extends State<ExplorationScreen>
               // Close the inspector first; a second Esc leaves the project.
               if (_comparison.currentState?.dismiss() ?? false) return null;
               if (_selected != null) {
-                _back();
+                _requestBack();
               } else if (_preview != null) {
-                setState(() => _preview = null);
+                setState(() => _setPreview(null));
               }
               return null;
             },
@@ -267,8 +346,15 @@ class ExplorationScreenState extends State<ExplorationScreen>
                   : LayoutBuilder(
                       builder: (context, constraints) {
                         // Desktop is the target; smaller windows retain a usable scrollable canvas.
-                        final width = math.max(960.0, constraints.maxWidth);
-                        final height = math.max(800.0, constraints.maxHeight);
+                        final embedded = widget.embedded;
+                        final width = math.max(
+                          embedded ? 880.0 : 960.0,
+                          constraints.maxWidth,
+                        );
+                        final height = math.max(
+                          embedded ? 600.0 : 680.0,
+                          constraints.maxHeight,
+                        );
                         return SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: SizedBox(
@@ -277,16 +363,23 @@ class ExplorationScreenState extends State<ExplorationScreen>
                               child: SizedBox(
                                 height: height,
                                 child: Padding(
-                                  padding: EdgeInsets.fromLTRB(
-                                    width > 1100 ? 48 : 24,
-                                    20,
-                                    width > 1100 ? 48 : 24,
-                                    14,
-                                  ),
+                                  padding: embedded
+                                      ? const EdgeInsets.only(
+                                          top: 4,
+                                          bottom: 12,
+                                        )
+                                      : EdgeInsets.fromLTRB(
+                                          width > 1100 ? 48 : 24,
+                                          20,
+                                          width > 1100 ? 48 : 24,
+                                          14,
+                                        ),
                                   child: AnimatedBuilder(
                                     animation: Listenable.merge([
                                       _motion,
                                       _zoom,
+                                      _spot,
+                                      _shift,
                                     ]),
                                     builder: (context, _) =>
                                         _content(competition, width),
@@ -309,219 +402,325 @@ class ExplorationScreenState extends State<ExplorationScreen>
     final projects = competition.projects;
     final selected = _selected;
     final t = Curves.easeInOutCubic.transform(_zoom.value);
+    final reserve = (_PreviewPanel.width + _railGap) * (1 - t);
     // Every row keeps its height in both views, so the field never moves
     // underneath the zoom.
-    return Column(
+    final page = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 40,
-          child: Row(
-            children: [
-              // Navigation takes the wordmark's room in narrower windows.
-              BrandMark(
-                compact: widget.navigation != null && width < brandBreakpoint,
-              ),
-              const SizedBox(width: 24),
-              if (widget.navigation != null) ...[
-                widget.navigation!,
-                const SizedBox(width: 20),
-              ],
-              if (selected != null)
-                TextButton.icon(
-                  key: const ValueKey('back-to-competition'),
-                  onPressed: _back,
-                  icon: const Icon(Icons.arrow_back, size: 16),
-                  label: const Text('Competition'),
-                )
-              else
-                Flexible(
+        if (!widget.embedded) ...[
+          SizedBox(
+            height: 40,
+            child: Row(
+              children: [
+                const BrandMark(),
+                const SizedBox(width: 24),
+                if (selected != null)
+                  TextButton.icon(
+                    key: const ValueKey('back-to-competition'),
+                    onPressed: _requestBack,
+                    icon: const Icon(Icons.arrow_back, size: 16),
+                    label: const Text('Competition'),
+                  )
+                else
+                  Flexible(
+                    child: Text(
+                      competition.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: muted, fontSize: 12),
+                    ),
+                  ),
+                const SizedBox(width: 16),
+                Expanded(
                   child: Text(
-                    competition.title,
+                    widget.scopeLabel ??
+                        'CACHED STUDY  /  ${projects.length.toString().padLeft(2, '0')} SUBMISSIONS',
                     maxLines: 1,
+                    textAlign: TextAlign.right,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: muted, fontSize: 12),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      letterSpacing: 1.2,
+                      color: muted,
+                    ),
                   ),
                 ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  widget.scopeLabel ??
-                      'CACHED STUDY  /  ${projects.length.toString().padLeft(2, '0')} SUBMISSIONS',
-                  maxLines: 1,
-                  textAlign: TextAlign.right,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    letterSpacing: 1.2,
-                    color: muted,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 80,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: Align(
-                    key: ValueKey(selected?.id),
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+          const SizedBox(height: 6),
+        ],
+        Expanded(
+          // The rail overlays the right edge; every row but the plot leaves
+          // room for it, and the plot keeps one width through a zoom.
+          child: Padding(
+            padding: EdgeInsets.only(right: reserve),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 78,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Align(
+                            key: ValueKey(selected?.id),
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        selected?.title ??
+                                            '${countWord(projects.length)} projects. What they claim, and what stands behind it.',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 27,
+                                          height: 1.15,
+                                          letterSpacing: -.8,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    if (selected?.generated ?? false) ...[
+                                      const SizedBox(width: 14),
+                                      const _GeneratedTag(),
+                                    ],
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  selected == null
+                                      ? 'Read the field, open a project, compare its idea with its build, and inspect why each part is there.'
+                                      : '${selected.creator}  ·  ${selected.summary}',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: muted,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (selected != null) ...[
+                        const SizedBox(width: 28),
+                        _minimap(projects, selected),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 40,
+                  child: selected == null
+                      ? Row(
                           children: [
-                            Flexible(
+                            const _ControlLabel('MODE'),
+                            for (final mode in CompetitionLens.values) ...[
+                              ChoiceChip(
+                                key: ValueKey('mode-${mode.name}'),
+                                label: Text(
+                                  mode == CompetitionLens.sponsorTech
+                                      ? '${mode.label} · $_sponsor'
+                                      : mode.label,
+                                ),
+                                labelStyle: const TextStyle(fontSize: 12),
+                                selected: _mode == mode,
+                                showCheckmark: false,
+                                onSelected: (_) => _switchMode(mode),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            const SizedBox(width: 10),
+                            Expanded(
                               child: Text(
-                                selected?.title ??
-                                    '${countWord(projects.length)} projects. What they claim, and what stands behind it.',
+                                _mode.question(_sponsor),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  fontSize: 27,
-                                  height: 1.15,
-                                  letterSpacing: -.8,
-                                  fontWeight: FontWeight.w500,
+                                  color: muted,
+                                  fontSize: 12.5,
                                 ),
                               ),
                             ),
-                            if (selected?.generated ?? false) ...[
-                              const SizedBox(width: 14),
-                              const _GeneratedTag(),
-                            ],
                           ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          selected == null
-                              ? 'Read the field, open a project, compare its idea with its build, and inspect why each part is there.'
-                              : '${selected.creator}  ·  ${selected.summary}',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: muted,
-                            height: 1.4,
+                        )
+                      : LayoutBuilder(
+                          builder: (context, box) => Row(
+                            children: [
+                              // While the field zooms this row is briefly
+                              // narrow; its controls shrink rather than clip.
+                              Flexible(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Row(
+                                    children: [
+                                      if (widget.projectBack != null) ...[
+                                        widget.projectBack!,
+                                        const SizedBox(width: 18),
+                                      ],
+                                      const _ControlLabel('SHOW'),
+                                      for (final (focus, label) in [
+                                        (SubmissionFocus.both, 'Side by side'),
+                                        (SubmissionFocus.idea, 'Idea'),
+                                        (
+                                          SubmissionFocus.integration,
+                                          'Integration',
+                                        ),
+                                      ]) ...[
+                                        ChoiceChip(
+                                          key: ValueKey('focus-${focus.name}'),
+                                          label: Text(label),
+                                          labelStyle: const TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                          selected: _focus == focus,
+                                          showCheckmark: false,
+                                          onSelected: (_) =>
+                                              setState(() => _focus = focus),
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if (box.maxWidth > 820) ...[
+                                const SizedBox(width: 16),
+                                const Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: EvidenceLegend(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
-                      ],
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, box) => OverflowBox(
+                      alignment: Alignment.topLeft,
+                      minWidth: box.maxWidth + reserve,
+                      maxWidth: box.maxWidth + reserve,
+                      child: SizedBox(
+                        width: box.maxWidth + reserve,
+                        height: box.maxHeight,
+                        child: _plot(projects, selected, t),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (selected != null) ...[
-                const SizedBox(width: 28),
-                _minimap(projects, selected),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 40,
+                  child: selected != null
+                      ? _projectStrip(projects, selected)
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _preview == null
+                                ? 'Hover to highlight a project. Select it to read why it sits there, then open it to compare its idea with its build.'
+                                : 'Select another dot to move focus, or open this project to compare its idea with its build.',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: muted,
+                            ),
+                          ),
+                        ),
+                ),
+                const SizedBox(height: 8),
+                const Divider(height: 1, color: Color(0xFFDCE3DA)),
+                const SizedBox(height: 10),
+                // One fixed line, so the field never moves when the words do.
+                SizedBox(
+                  height: 18,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          selected == null
+                              ? 'Placements describe inspected materials; they are not judge scores or rankings.'
+                              : 'Statuses record what Finalist Brief could inspect. Questions point at gaps; judges decide.',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: muted,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        selected == null
+                            ? '${widget.embedded && widget.scopeLabel != null ? '${widget.scopeLabel}  ·  ' : ''}Esc clears'
+                            : 'Esc closes, then returns',
+                        maxLines: 1,
+                        style: const TextStyle(fontSize: 12, color: muted),
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            ],
+            ),
           ),
         ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 40,
-          child: selected == null
-              ? Row(
-                  children: [
-                    for (final mode in CompetitionLens.values) ...[
-                      ChoiceChip(
-                        key: ValueKey('mode-${mode.name}'),
-                        label: Text(
-                          mode == CompetitionLens.sponsorTech
-                              ? '${mode.label} · $_sponsor'
-                              : mode.label,
-                        ),
-                        labelStyle: const TextStyle(fontSize: 12),
-                        selected: _mode == mode,
-                        showCheckmark: false,
-                        onSelected: (_) => _switchMode(mode),
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        _mode.question(_sponsor),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: muted, fontSize: 12.5),
-                      ),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    for (final (focus, label) in [
-                      (SubmissionFocus.both, 'Side by side'),
-                      (SubmissionFocus.idea, 'Idea'),
-                      (SubmissionFocus.integration, 'Integration'),
-                    ]) ...[
-                      ChoiceChip(
-                        key: ValueKey('focus-${focus.name}'),
-                        label: Text(label),
-                        labelStyle: const TextStyle(fontSize: 12),
-                        selected: _focus == focus,
-                        showCheckmark: false,
-                        onSelected: (_) => setState(() => _focus = focus),
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                    const SizedBox(width: 16),
-                    const Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: EvidenceLegend(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-        const SizedBox(height: 8),
-        Expanded(child: _plot(projects, selected, t)),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 40,
-          child: selected != null
-              ? _projectStrip(projects, selected)
-              : const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Hover to highlight a project. Select it to read why it sits there, then open it to compare its idea with its build.',
-                    style: TextStyle(fontSize: 13, color: muted),
-                  ),
-                ),
-        ),
-        const SizedBox(height: 8),
-        const Divider(height: 1, color: Color(0xFFDCE3DA)),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                selected == null
-                    ? 'Descriptive placements from inspected materials, not judge scores. Corners describe combinations, not rankings.'
-                    : 'Statuses record what Finalist Brief could inspect. Questions point at gaps; judges decide.',
-                style: const TextStyle(fontSize: 12, color: muted),
-              ),
-            ),
-            Text(
-              selected == null
-                  ? 'Select a dot to preview  ·  Esc clears'
-                  : 'Click any node for evidence  ·  Esc closes, then returns',
-              style: const TextStyle(fontSize: 12, color: muted),
-            ),
-          ],
+      ],
+    );
+    return Stack(
+      children: [
+        page,
+        Positioned(
+          top: widget.embedded ? 0 : 46,
+          right: 0,
+          bottom: 0,
+          width: _PreviewPanel.width,
+          child: _rail(t, selected != null),
         ),
       ],
+    );
+  }
+
+  /// The inspector rail, beside the title and above the footer. It fades
+  /// out as the field zooms and leaves the tree once the zoom is complete, so
+  /// its words never compete with the project's own.
+  Widget _rail(double t, bool zoomed) {
+    if (zoomed && t >= 1) return const SizedBox.shrink();
+    return LayoutBuilder(
+      builder: (context, box) => Align(
+        alignment: Alignment.topRight,
+        child: IgnorePointer(
+          ignoring: zoomed,
+          child: Opacity(
+            opacity: 1 - t,
+            child: _PreviewPanel(
+              maxHeight: box.maxHeight - 8,
+              project: _preview,
+              mode: _mode,
+              sponsor: _sponsor,
+              onOpen: _preview == null ? null : () => _open(_preview!),
+              onDismiss: () => setState(() => _setPreview(null)),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -533,13 +732,19 @@ class ExplorationScreenState extends State<ExplorationScreen>
     return ClipRect(
       child: LayoutBuilder(
         builder: (context, box) {
-          // The preview panel takes the right edge while the field shows.
-          final panel = (_PreviewPanel.width + 16) * (1 - t);
+          // The card is the field's surface; dots sit in an inset area of it, so
+          // their labels stay inside the card.
+          final surface = Rect.fromLTRB(
+            0,
+            30,
+            box.maxWidth - (_PreviewPanel.width + _railGap) * (1 - t),
+            box.maxHeight - 32,
+          );
           final field = Rect.fromLTRB(
-            85,
-            38,
-            box.maxWidth - 115 - panel,
-            box.maxHeight - 56,
+            surface.left + 70,
+            surface.top + 46,
+            surface.right - 70,
+            surface.bottom - 46,
           );
           Offset point(String id) {
             final p = _position(id);
@@ -549,15 +754,33 @@ class ExplorationScreenState extends State<ExplorationScreen>
             );
           }
 
+          // Guide lines from the spotlit dot to both axes; they travel from
+          // the previous dot when focus moves.
+          Offset? guide() {
+            final id = _spotId;
+            if (id == null || !projects.any((p) => p.id == id)) return null;
+            final to = point(id);
+            final from = _spotFrom;
+            if (from == null || !projects.any((p) => p.id == from)) return to;
+            return Offset.lerp(
+              point(from),
+              to,
+              Curves.easeOut.transform(_shift.value),
+            );
+          }
+
           final center = Offset(box.maxWidth / 2, box.maxHeight / 2);
           final origin = selected == null ? center : point(selected.id);
           final travel = Curves.easeInOut.transform(
             ((t - .12) / .88).clamp(0, 1),
           );
           final aperture = Offset.lerp(origin, center, travel)!;
-          final labels = _labelPositions(projects, point, box.biggest);
+          final labels = _labelPositions(projects, point, surface.deflate(6));
           bool emphasized(ProjectRepresentation p) =>
               p.id == _hover || p.id == _preview?.id;
+          // While a project is spotlit, the rest recede but stay legible.
+          bool dimmed(ProjectRepresentation p) =>
+              _preview != null && !emphasized(p);
           final others = projects.where((p) => !emphasized(p)).toList();
           final emphasis = projects.where(emphasized).toList();
           Widget dotOf(ProjectRepresentation p) => Positioned(
@@ -568,27 +791,30 @@ class ExplorationScreenState extends State<ExplorationScreen>
               ignoring: selected != null || _motion.isAnimating,
               child: Opacity(
                 opacity: 1 - t,
-                child: Semantics(
-                  button: true,
-                  selected: _preview?.id == p.id,
-                  label: 'Preview ${p.title}',
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    onEnter: (_) => _setHover(p.id),
-                    onExit: (_) {
-                      if (_hover == p.id) _setHover(null);
-                    },
-                    child: GestureDetector(
-                      key: ValueKey('dot-${p.id}'),
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => _select(p),
-                      child: SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: Center(
-                          child: _Dot(
-                            hovered: _hover == p.id,
-                            selected: _preview?.id == p.id,
+                child: _Dim(
+                  dimmed: dimmed(p),
+                  child: Semantics(
+                    button: true,
+                    selected: _preview?.id == p.id,
+                    label: 'Preview ${p.title}',
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onEnter: (_) => _setHover(p.id),
+                      onExit: (_) {
+                        if (_hover == p.id) _setHover(null);
+                      },
+                      child: GestureDetector(
+                        key: ValueKey('dot-${p.id}'),
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => _select(p),
+                        child: SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Center(
+                            child: _Dot(
+                              hovered: _hover == p.id,
+                              selected: _preview?.id == p.id,
+                            ),
                           ),
                         ),
                       ),
@@ -605,20 +831,23 @@ class ExplorationScreenState extends State<ExplorationScreen>
               ignoring: selected != null || _motion.isAnimating,
               child: Opacity(
                 opacity: (1 - t * 2).clamp(0, 1),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  onEnter: (_) => _setHover(p.id),
-                  onExit: (_) {
-                    if (_hover == p.id) _setHover(null);
-                  },
-                  child: GestureDetector(
-                    key: ValueKey('label-${p.id}'),
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => _select(p),
-                    child: _FieldLabel(
-                      p.title,
-                      hovered: _hover == p.id,
-                      selected: _preview?.id == p.id,
+                child: _Dim(
+                  dimmed: dimmed(p),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => _setHover(p.id),
+                    onExit: (_) {
+                      if (_hover == p.id) _setHover(null);
+                    },
+                    child: GestureDetector(
+                      key: ValueKey('label-${p.id}'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _select(p),
+                      child: _FieldLabel(
+                        p.title,
+                        hovered: _hover == p.id,
+                        selected: _preview?.id == p.id,
+                      ),
                     ),
                   ),
                 ),
@@ -626,36 +855,51 @@ class ExplorationScreenState extends State<ExplorationScreen>
             ),
           );
 
-          const corner = TextStyle(fontSize: 12, color: muted);
+          Widget swap(Object key, Widget child) => AnimatedSwitcher(
+            duration: _focusTime,
+            layoutBuilder: (current, previous) => Stack(
+              alignment: Alignment.topLeft,
+              children: [...previous, ?current],
+            ),
+            child: KeyedSubtree(key: ValueKey(key), child: child),
+          );
           return Stack(
             children: [
               Positioned.fill(
-                child: CustomPaint(painter: _FieldPainter(field, 1 - t)),
+                child: CustomPaint(
+                  painter: _FieldPainter(
+                    surface,
+                    field,
+                    1 - t,
+                    guide: guide(),
+                    guideOpacity: _spot.value,
+                  ),
+                ),
               ),
               Positioned(
-                left: 12,
-                top: 6,
+                left: 4,
+                top: 7,
                 child: Opacity(
                   opacity: 1 - t,
                   child: Tooltip(
                     message: _mode.y.description(_sponsor),
-                    child: Text(
-                      '↑  ${_mode.y.label(_sponsor)}',
-                      style: const TextStyle(fontSize: 12, color: muted),
+                    child: swap(
+                      _mode,
+                      Text('↑  ${_mode.y.label(_sponsor)}', style: _axisStyle),
                     ),
                   ),
                 ),
               ),
               Positioned(
-                right: 14,
-                bottom: 8,
+                right: box.maxWidth - surface.right + 4,
+                bottom: 7,
                 child: Opacity(
                   opacity: 1 - t,
                   child: Tooltip(
                     message: _mode.x.description(_sponsor),
-                    child: Text(
-                      '${_mode.x.label(_sponsor)}  →',
-                      style: const TextStyle(fontSize: 12, color: muted),
+                    child: swap(
+                      _mode,
+                      Text('${_mode.x.label(_sponsor)}  →', style: _axisStyle),
                     ),
                   ),
                 ),
@@ -663,14 +907,14 @@ class ExplorationScreenState extends State<ExplorationScreen>
               // Corners name combinations; none of them is a winner's corner.
               for (final (i, text) in _mode.corners.indexed)
                 Positioned(
-                  left: i.isEven ? field.left + 12 : null,
-                  right: i.isOdd ? box.maxWidth - field.right + 12 : null,
-                  top: i < 2 ? field.top + 2 : null,
-                  bottom: i >= 2 ? box.maxHeight - field.bottom + 8 : null,
+                  left: i.isEven ? surface.left + 16 : null,
+                  right: i.isOdd ? box.maxWidth - surface.right + 16 : null,
+                  top: i < 2 ? surface.top + 12 : null,
+                  bottom: i >= 2 ? box.maxHeight - surface.bottom + 12 : null,
                   child: IgnorePointer(
                     child: Opacity(
                       opacity: 1 - t,
-                      child: Text(text, style: corner),
+                      child: swap(text, Text(text, style: _cornerStyle)),
                     ),
                   ),
                 ),
@@ -679,24 +923,6 @@ class ExplorationScreenState extends State<ExplorationScreen>
               for (final p in others) labelOf(p),
               for (final p in others) dotOf(p),
               for (final p in emphasis) ...[labelOf(p), dotOf(p)],
-              Positioned(
-                right: 0,
-                top: 0,
-                width: _PreviewPanel.width,
-                child: IgnorePointer(
-                  ignoring: selected != null,
-                  child: Opacity(
-                    opacity: 1 - t,
-                    child: _PreviewPanel(
-                      project: _preview,
-                      mode: _mode,
-                      sponsor: _sponsor,
-                      onOpen: _preview == null ? null : () => _open(_preview!),
-                      onDismiss: () => setState(() => _preview = null),
-                    ),
-                  ),
-                ),
-              ),
               if (selected != null && t > 0 && t < 1)
                 Positioned(
                   left: aperture.dx - (8 + t * box.maxWidth * .6),
@@ -848,7 +1074,7 @@ class ExplorationScreenState extends State<ExplorationScreen>
 Map<String, Rect> _labelPositions(
   List<ProjectRepresentation> projects,
   Offset Function(String) point,
-  Size size,
+  Rect bounds,
 ) {
   const height = 26.0;
   final dots = {
@@ -862,7 +1088,7 @@ Map<String, Rect> _labelPositions(
 
   Rect place(ProjectRepresentation p, Iterable<Rect> labels) {
     final at = point(p.id);
-    final width = math.min(200.0, p.title.length * 7.6 + 20);
+    final width = math.min(190.0, p.title.length * 7.4 + 22);
     // Nearest first: right, then beside-and-diagonal, then above and below.
     final candidates = [
       Offset(15, -height / 2),
@@ -873,13 +1099,22 @@ Map<String, Rect> _labelPositions(
       Offset(-width - 12, 2),
       Offset(-width / 2, -height - 14),
       Offset(-width / 2, 14),
+      // Farther slots, for crowded clusters.
+      Offset(18, -height - 16),
+      Offset(18, 16),
+      Offset(-width - 18, -height - 16),
+      Offset(-width - 18, 16),
     ];
     Rect? best;
     var least = double.infinity;
     for (final (i, delta) in candidates.indexed) {
       final rect = Rect.fromLTWH(
-        (at.dx + delta.dx).clamp(4, size.width - width - 4).toDouble(),
-        (at.dy + delta.dy).clamp(28, size.height - 50).toDouble(),
+        (at.dx + delta.dx)
+            .clamp(bounds.left, math.max(bounds.left, bounds.right - width))
+            .toDouble(),
+        (at.dy + delta.dy)
+            .clamp(bounds.top, math.max(bounds.top, bounds.bottom - height))
+            .toDouble(),
         width,
         height,
       );
@@ -919,29 +1154,140 @@ Map<String, Rect> _labelPositions(
   return labels;
 }
 
+const _axisStyle = TextStyle(
+  fontSize: 12,
+  fontWeight: FontWeight.w600,
+  color: Color(0xFF4A5E5C),
+  letterSpacing: .1,
+);
+const _cornerStyle = TextStyle(
+  fontSize: 11.5,
+  fontWeight: FontWeight.w500,
+  color: Color(0xFF5F716E),
+  letterSpacing: .2,
+);
+
+/// The field's surface: a quiet card, a dotted grid, faint midlines, and, for
+/// the spotlit dot, guides to the axes.
+const _fieldFill = Color(0xFFFBFCF9);
+
+/// The small caption in front of a row of view controls, so filters and
+/// modes read as controls rather than as navigation.
+class _ControlLabel extends StatelessWidget {
+  const _ControlLabel(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(right: 10),
+    child: Text(
+      text,
+      style: const TextStyle(fontSize: 10, letterSpacing: 1.2, color: muted),
+    ),
+  );
+}
+
 class _FieldPainter extends CustomPainter {
-  _FieldPainter(this.field, this.opacity);
+  _FieldPainter(
+    this.surface,
+    this.field,
+    this.opacity, {
+    this.guide,
+    this.guideOpacity = 0,
+  });
+  final Rect surface;
   final Rect field;
   final double opacity;
+  final Offset? guide;
+  final double guideOpacity;
+
+  static void _dashed(Canvas canvas, Offset a, Offset b, Paint paint) {
+    const dash = 4.0, gap = 5.0;
+    final length = (b - a).distance;
+    if (length == 0) return;
+    final step = (b - a) / length;
+    for (double d = 0; d < length; d += dash + gap) {
+      canvas.drawLine(
+        a + step * d,
+        a + step * math.min(d + dash, length),
+        paint,
+      );
+    }
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
+    final card = RRect.fromRectAndRadius(surface, const Radius.circular(12));
+    canvas.drawRRect(
+      card,
+      Paint()..color = _fieldFill.withValues(alpha: opacity),
+    );
+    canvas.drawRRect(
+      card,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..color = rule.withValues(alpha: opacity),
+    );
     final grid = Paint()
       ..color = const Color(0xFFC5D1C8).withValues(alpha: .5 * opacity);
-    for (double x = field.left; x <= field.right; x += 28) {
-      for (double y = field.top; y <= field.bottom; y += 28) {
+    for (double x = surface.left + 14; x <= surface.right - 8; x += 28) {
+      for (double y = surface.top + 14; y <= surface.bottom - 8; y += 28) {
         canvas.drawCircle(Offset(x, y), .8, grid);
       }
     }
-    final line = Paint()
-      ..color = const Color(0xFFC5D1C8).withValues(alpha: opacity)
+    final mid = Paint()
+      ..color = const Color(0xFFB9C7BE).withValues(alpha: .7 * opacity)
       ..strokeWidth = 1;
-    canvas.drawLine(field.topLeft, field.bottomLeft, line);
-    canvas.drawLine(field.bottomLeft, field.bottomRight, line);
+    _dashed(
+      canvas,
+      Offset(field.center.dx, surface.top + 6),
+      Offset(field.center.dx, surface.bottom - 6),
+      mid,
+    );
+    _dashed(
+      canvas,
+      Offset(surface.left + 6, field.center.dy),
+      Offset(surface.right - 6, field.center.dy),
+      mid,
+    );
+    final at = guide;
+    if (at != null && guideOpacity > 0) {
+      final alpha = guideOpacity * opacity;
+      final line = Paint()
+        ..color = accent.withValues(alpha: .5 * alpha)
+        ..strokeWidth = 1.2;
+      final foot = Offset(at.dx, surface.bottom);
+      final side = Offset(surface.left, at.dy);
+      _dashed(canvas, at, foot, line);
+      _dashed(canvas, at, side, line);
+      final mark = Paint()..color = accent.withValues(alpha: .85 * alpha);
+      canvas.drawCircle(foot, 3, mark);
+      canvas.drawCircle(side, 3, mark);
+    }
   }
 
   @override
   bool shouldRepaint(_FieldPainter oldDelegate) =>
-      oldDelegate.field != field || oldDelegate.opacity != opacity;
+      oldDelegate.surface != surface ||
+      oldDelegate.field != field ||
+      oldDelegate.opacity != opacity ||
+      oldDelegate.guide != guide ||
+      oldDelegate.guideOpacity != guideOpacity;
+}
+
+/// Lets a dot or label recede while another project holds the spotlight.
+class _Dim extends StatelessWidget {
+  const _Dim({required this.dimmed, required this.child});
+  final bool dimmed;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => AnimatedOpacity(
+    duration: _focusTime,
+    curve: Curves.easeOut,
+    opacity: dimmed ? .6 : 1,
+    child: child,
+  );
 }
 
 /// Marks a deep review the pipeline generated, so it never passes for one a
@@ -970,8 +1316,8 @@ class _GeneratedTag extends StatelessWidget {
   );
 }
 
-/// A project's dot. Hovering grows it with a soft halo; the previewed project
-/// keeps a ringed, darker dot until another is chosen.
+/// A project's dot. Hovering grows it with a soft halo; the spotlit project
+/// keeps a larger, darker dot with a ring until another is chosen.
 class _Dot extends StatelessWidget {
   const _Dot({required this.hovered, required this.selected});
   final bool hovered;
@@ -981,7 +1327,8 @@ class _Dot extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = selected ? 22.0 : (hovered ? 19.0 : 15.0);
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 120),
+      duration: _focusTime,
+      curve: Curves.easeOut,
       width: size,
       height: size,
       decoration: BoxDecoration(
@@ -989,9 +1336,10 @@ class _Dot extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: [
-          if (selected)
-            const BoxShadow(color: accent, spreadRadius: 3.5)
-          else if (hovered)
+          if (selected) ...[
+            BoxShadow(color: accent.withValues(alpha: .16), spreadRadius: 10),
+            const BoxShadow(color: accent, spreadRadius: 3),
+          ] else if (hovered)
             BoxShadow(color: accent.withValues(alpha: .28), spreadRadius: 5),
         ],
       ),
@@ -999,7 +1347,8 @@ class _Dot extends StatelessWidget {
   }
 }
 
-/// A project's name on the plot, readable over the grid and never bare text.
+/// A project's name on the plot: quiet at rest, stronger when hovered, and a
+/// solid chip when it holds the spotlight.
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel(
     this.title, {
@@ -1016,8 +1365,9 @@ class _FieldLabel extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+        duration: _focusTime,
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: selected
               ? ink
@@ -1026,29 +1376,40 @@ class _FieldLabel extends StatelessWidget {
               : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Text(
-          title,
+        child: AnimatedDefaultTextStyle(
+          duration: _focusTime,
+          curve: Curves.easeOut,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            fontSize: 13,
-            fontWeight: strong ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? Colors.white : ink,
+            fontSize: selected ? 13.5 : 12.5,
+            fontWeight: selected
+                ? FontWeight.w700
+                : hovered
+                ? FontWeight.w600
+                : FontWeight.w500,
+            color: selected
+                ? Colors.white
+                : strong
+                ? ink
+                : const Color(0xFF3F5354),
             shadows: strong
                 ? null
                 : const [
-                    Shadow(color: paper, blurRadius: 2),
-                    Shadow(color: paper, blurRadius: 4),
+                    Shadow(color: _fieldFill, blurRadius: 2),
+                    Shadow(color: _fieldFill, blurRadius: 4),
                   ],
           ),
+          child: Text(title),
         ),
       ),
     );
   }
 }
 
-/// Why the chosen project sits where it does, on the axes now showing.
-/// Persistent, so nothing important depends on where the pointer is.
+/// The executive briefing for the spotlit project: what it claims, where it
+/// sits and why, what stands behind it, and what to ask. Persistent, so
+/// nothing important depends on where the pointer is.
 class _PreviewPanel extends StatelessWidget {
   const _PreviewPanel({
     required this.project,
@@ -1056,101 +1417,306 @@ class _PreviewPanel extends StatelessWidget {
     required this.sponsor,
     required this.onOpen,
     required this.onDismiss,
+    required this.maxHeight,
   });
   final ProjectRepresentation? project;
   final CompetitionLens mode;
   final String sponsor;
   final VoidCallback? onOpen;
   final VoidCallback onDismiss;
+  final double maxHeight;
 
-  static const width = 320.0;
+  static const width = 348.0;
 
   static String _axis(Dimension d) => switch (d) {
     Dimension.ideaDistinctiveness => 'IDEA',
     Dimension.integrationDepth => 'INTEGRATION',
     Dimension.sponsorCentrality => 'CENTRALITY',
-    Dimension.sponsorEvidence => 'EVIDENCE',
+    Dimension.sponsorEvidence => 'VERIFIABILITY',
   };
 
   @override
   Widget build(BuildContext context) {
     final project = this.project;
-    return Container(
+    return AnimatedContainer(
       key: const ValueKey('project-preview'),
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      duration: _focusTime,
+      curve: Curves.easeOut,
+      constraints: BoxConstraints(
+        minWidth: width,
+        maxWidth: width,
+        maxHeight: maxHeight,
+      ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: project == null ? Colors.transparent : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: rule),
+        boxShadow: [
+          if (project != null)
+            BoxShadow(
+              color: ink.withValues(alpha: .07),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+        ],
       ),
-      child: project == null
-          ? const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Select a project to read why it sits where it does.',
-                style: TextStyle(fontSize: 14, height: 1.4, color: muted),
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          project.title,
-                          style: const TextStyle(
-                            fontSize: 19,
-                            height: 1.2,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: -.3,
-                            color: ink,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        key: const ValueKey('close-preview'),
-                        tooltip: 'Dismiss',
-                        iconSize: 16,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: onDismiss,
-                        icon: const Icon(Icons.close, color: muted),
-                      ),
-                    ],
+      child: AnimatedSwitcher(
+        duration: _focusTime,
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
+        layoutBuilder: (current, previous) => Stack(
+          alignment: Alignment.topLeft,
+          children: [...previous, ?current],
+        ),
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween(
+              begin: const Offset(.05, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        ),
+        child: KeyedSubtree(
+          key: ValueKey(project?.id),
+          child: project == null
+              ? const Padding(
+                  padding: EdgeInsets.all(18),
+                  child: Text(
+                    'Select a project to see where it sits and why.',
+                    style: TextStyle(fontSize: 13.5, height: 1.4, color: muted),
                   ),
-                  // Vertical axis first, as it reads on the plot.
-                  for (final d in [mode.y, mode.x]) ...[
-                    const SizedBox(height: 14),
-                    Text(
-                      _axis(d),
+                )
+              : _briefing(project),
+        ),
+      ),
+    );
+  }
+
+  Widget _briefing(ProjectRepresentation project) {
+    final counts = {for (final s in EvidenceStatus.values) s: 0};
+    for (final graph in [project.idea, project.integration]) {
+      for (final node in graph.nodes) {
+        final status = node.evidence?.status;
+        if (status != null) counts[status] = counts[status]! + 1;
+      }
+    }
+    final question = project.questions.firstOrNull;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(18, 14, 12, 16),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Text(
+                      project.title,
                       style: const TextStyle(
-                        fontSize: 11,
-                        letterSpacing: 1.3,
+                        fontSize: 21,
+                        height: 1.15,
                         fontWeight: FontWeight.w600,
-                        color: accent,
+                        letterSpacing: -.4,
+                        color: ink,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                  ),
+                ),
+                IconButton(
+                  key: const ValueKey('close-preview'),
+                  tooltip: 'Dismiss',
+                  iconSize: 16,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onDismiss,
+                  icon: const Icon(Icons.close, color: muted),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              project.summary,
+              style: const TextStyle(fontSize: 13, height: 1.4, color: muted),
+            ),
+            const SizedBox(height: 12),
+            const Divider(height: 1, color: rule),
+            // Vertical axis first, as it reads on the plot.
+            for (final d in [mode.y, mode.x]) ...[
+              const SizedBox(height: 11),
+              _Eyebrow(_axis(d)),
+              const SizedBox(height: 3),
+              Text(
+                project.dimensionNotes[d] ?? '',
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 13, height: 1.4, color: ink),
+              ),
+            ],
+            const SizedBox(height: 12),
+            const Divider(height: 1, color: rule),
+            const SizedBox(height: 11),
+            const _Eyebrow('EVIDENCE'),
+            const SizedBox(height: 7),
+            _EvidenceBar(counts),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 12,
+              runSpacing: 4,
+              children: [
+                for (final e in counts.entries)
+                  if (e.value > 0)
+                    Tooltip(
+                      message: e.key.meaning,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          EvidenceGlyph(e.key, size: 11),
+                          const SizedBox(width: 5),
+                          Text(
+                            '${e.value} ${e.key.label}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF4A5E5C),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              ],
+            ),
+            if (question != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                key: const ValueKey('preview-question'),
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 11),
+                decoration: BoxDecoration(
+                  color: questionColor.withValues(alpha: .07),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: questionColor.withValues(alpha: .25),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        QuestionMark(size: 15, filled: true),
+                        SizedBox(width: 7),
+                        Text(
+                          'WHAT TO ASK',
+                          style: TextStyle(
+                            fontSize: 11,
+                            letterSpacing: 1.2,
+                            fontWeight: FontWeight.w700,
+                            color: questionColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
                     Text(
-                      project.dimensionNotes[d] ?? '',
+                      question.question,
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.45,
+                        fontSize: 13,
+                        height: 1.4,
                         color: ink,
                       ),
                     ),
                   ],
-                  const SizedBox(height: 18),
-                  FilledButton(
-                    key: const ValueKey('open-project'),
-                    onPressed: onOpen,
-                    child: const Text('Open project'),
+                ),
+              ),
+            ],
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                key: const ValueKey('open-project'),
+                onPressed: onOpen,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(42),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Open project'),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_forward, size: 16),
+                  ],
+                ),
               ),
             ),
+          ],
+        ),
+      ),
     );
   }
+}
+
+class _Eyebrow extends StatelessWidget {
+  const _Eyebrow(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    text,
+    style: const TextStyle(
+      fontSize: 11,
+      letterSpacing: 1.3,
+      fontWeight: FontWeight.w700,
+      color: accent,
+    ),
+  );
+}
+
+/// Evidence tiers as one proportional bar, solid for seen-working down to
+/// pale for inferred, matching the glyph grammar.
+class _EvidenceBar extends StatelessWidget {
+  const _EvidenceBar(this.counts);
+  final Map<EvidenceStatus, int> counts;
+
+  static Color _tone(EvidenceStatus s) => switch (s) {
+    EvidenceStatus.demonstrated => accent,
+    EvidenceStatus.foundInCode => accent.withValues(alpha: .62),
+    EvidenceStatus.described => accent.withValues(alpha: .3),
+    EvidenceStatus.inferred => const Color(0xFFD3DCD6),
+  };
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(3),
+    child: SizedBox(
+      height: 6,
+      child: Row(
+        children: [
+          for (final e in counts.entries)
+            if (e.value > 0) ...[
+              Expanded(
+                flex: e.value,
+                child: ColoredBox(
+                  color: _tone(e.key),
+                  child: const SizedBox.expand(),
+                ),
+              ),
+              const SizedBox(width: 1.5),
+            ],
+        ],
+      ),
+    ),
+  );
 }

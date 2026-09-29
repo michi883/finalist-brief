@@ -63,7 +63,7 @@ The design test is whether judges perceive meaningful differences across project
 
 ## Current prototype
 
-The desktop-oriented Flutter app includes a Hackathons entry and per-hackathon Acquisition and Overview screens, two competition modes, animated movement, reversible zoom, side-by-side Idea and Integration diagrams with cross-highlighting, node evidence cards, and judge questions.
+The desktop-oriented Flutter app includes a Hackathons entry and, per hackathon, a persistent workspace (Overview, Submissions, Competition), two competition modes, animated movement, reversible zoom, side-by-side Idea and Integration diagrams with cross-highlighting, node evidence cards, and judge questions.
 
 The six contestants are **Crowdwork Copilot**, **Humor Genome Studio**, **Killjoy**, **LaughLensAI**, **Room Sense Text**, and **Why'd They Laugh?**. The additional `laughlens-platform` entry in the historical dataset is excluded from the visual experience.
 
@@ -75,19 +75,27 @@ The Serverpod backend, cached analyses, and earlier video-generation infrastruct
 
 ## Two hackathons, one grammar
 
-Every hackathon follows one workflow: **Hackathons → Acquisition → Overview → Competition → Submission**. The Hackathons screen lists each hackathon with its status. Choosing one always opens its Acquisition screen, which counts what was acquired (submissions, writeups, repositories, demo videos, deep reviews) and offers **Open overview**. The Overview is a table of submissions to select from; **View N in Competition** compares the selection. A quiet *Hackathons* link beside the wordmark leads back. Entering through Hackathons always starts at Acquisition; what a judge did in a workspace (selection, search, open project) is kept and shown again on returning to it. Direct links skip the list: `?hackathon=serverpod` and `?hackathon=humor-genome` open that workspace straight away.
+Every hackathon follows one hierarchy: **Hackathons → Hackathon → Overview | Submissions | Competition → Project**. Anything else is view state, not another level of navigation.
+
+- **Persistent header.** Inside a hackathon, a header stays on every screen: a breadcrumb (`Hackathons / Serverpod / Submissions`), the hackathon's title, and three tabs with counts (**Overview**, **Submissions 117**, **Competition 31**). The active tab is filled. *Hackathons* returns to the list; there is no hackathon switch inside a workspace. Serverpod and Humor Genome use the same shell.
+- **Overview** says what was acquired, counted from the data: submissions, writeups, repositories inspected, demo videos available and deep reviews. It offers **Browse submissions** and **Explore competition**. Choosing a hackathon from the list always opens its Overview.
+- **Submissions** is the table of every submission. Its filters (for Serverpod the six review questions, below), search, sort and row selection are controls inside the tab, drawn as small chips and never added to the breadcrumb. **View N in Competition** compares the selection.
+- **Competition** is the field. Its modes (*Idea × Integration*, *Sponsor Tech*) are chips inside the tab, and the selected-project spotlight sits beside the plot.
+- **Project** is the only level below Submissions and Competition. Opening one adds it to the breadcrumb (`… / Competition / Naggy` or `… / Submissions / Naggy`, according to where it was opened from), keeps that origin tab highlighted, and shows **← Back to Competition** or **← Back to Submissions**. Back, Esc and the breadcrumb return to the exact view left behind: filters, search, selection, mode and the open detail panel.
+
+Opened workspaces stay alive, so state survives switching tabs or hackathons. The address follows the hierarchy: `#/hackathons/serverpod`, `.../submissions`, `.../competition`, and `.../competition/naggy` or `.../submissions/naggy` for a project. These links open directly, and `?hackathon=serverpod` and `?hackathon=humor-genome` still work. The address is replaced rather than pushed, so the browser's Back button leaves the app.
 
 Each hackathon is a self-contained unit (`lib/hackathon/hackathon.dart`): its sponsor technology, its deep-review representations for the Competition and Submission views, and optionally a triage dataset. Their assets never mix. A workspace is built the first time it is opened and then kept alive.
 
-Humor Genome is a cached study of six submissions. Its Overview is a plain table (project, sources, deep-review status) with no lanes; the Competition View, Submission View, evidence and judge questions are as before.
+Humor Genome is a cached study of six submissions. Its Submissions tab is a plain table (project, sources, deep-review status) with no lanes or filters; the Competition View, Submission View, evidence and judge questions are as before.
 
 ## Serverpod triage
 
-A hundred and seventeen submissions are too many to compare as dots. The Serverpod workspace therefore puts a **Triage Table** (its Overview) in front of the Competition View. Its purpose is not to rank. It tests whether messy submissions can be cheaply turned into signals judges can trust when deciding what deserves a deeper look.
+A hundred and seventeen submissions are too many to compare as dots. The Serverpod workspace therefore puts a **Triage Table** (its Submissions tab) in front of the Competition View. Its purpose is not to rank. It tests whether messy submissions can be cheaply turned into signals judges can trust when deciding what deserves a deeper look.
 
 **Coverage.** All 117 gallery entries are in triage, including those with no repository, a 404, a private or missing demo, or a placeholder writeup; missing evidence is named in the *Unresolved* lane and in judge questions instead of dropping the row. Entries are ordered by SHA-1 of their slug, which fixed the order in which the sample grew (15 → 64 → 117) and in which deep reviews were batched. Prizes, likes, comments and gallery order are never read.
 
-**A question first.** The page is a heading, six review questions (`lib/triage/review_lens.dart`), a search box and the table. The questions are *All*, *Substantial builds*, *Distinctive ideas*, *Under-told*, *Needs verification* and *Sponsor tech*. Each one chooses its rows, two or three columns that answer it, and a stated order, and is explained in one sentence. For example, *Needs verification* shows Claim · What we found · Judge question, most fundamental gap first. *All* shows Project, Why look and Evidence. *Sponsor tech*'s *Why it matters* column shows one Serverpod fact taken from the lanes and questions: what blocks checking the server, then Serverpod features described but not found, then what the writeup leaves out. Questions are views over the lanes and open questions below; they add no signal and no score. There are no other filters to configure.
+**A question first.** The tab is six review questions shown as filter chips (`lib/triage/review_lens.dart`), a search box and the table. The questions are *All*, *Substantial builds*, *Distinctive ideas*, *Under-told*, *Needs verification* and *Sponsor tech*. Each one chooses its rows, two or three columns that answer it, and a stated order, and is explained in one sentence. For example, *Needs verification* shows Claim · What we found · Judge question, most fundamental gap first. *All* shows Project, Why look and Evidence. *Sponsor tech*'s *Why it matters* column shows one Serverpod fact taken from the lanes and questions: what blocks checking the server, then Serverpod features described but not found, then what the writeup leaves out. Questions are views over the lanes and open questions below; they add no signal and no score. There are no other filters to configure.
 
 **Detail on request.** Clicking a row opens a drawer. It first shows why the project is here, what Finalist Brief verified (code, demo, Serverpod role), one judge question and, where one exists, **Open deep review**. One quiet toggle, *More evidence and technical details*, reveals the other questions, links, repository details (scaffold delta, endpoints, models, tables, tests), Jev's extraction, all claims and commit history. Selecting rows that have a deep review shows **View N in Competition**. Triage finds projects worth examining, the Competition View compares the selected set, and the Submission View inspects one project. Search covers titles, teams, tech and reasons. Rows render lazily with a fixed height, and writeup lines load only when requested, so the same table can hold 117 or 1,000+ rows.
 
@@ -263,14 +271,18 @@ From the repository root:
 serverpod start
 ```
 
-Open **http://localhost:9998/?demo=1**. The root URL also opens the cached visual experience. Choose a mode, select a dot, click nodes, mapping chips and **?** hints. Use **Competition** or **Esc** to return to the field. Switch to **Serverpod** at the top, or open **http://localhost:9998/?hackathon=serverpod**, for the triage table. Choose a question, open a row for its evidence, or select deep reviews and choose **View N in Competition**.
+Open **http://localhost:9998/**. The Hackathons list opens first. Choose a hackathon to see its Overview, then use the tabs: **Submissions** to filter, search and select, **Competition** to pick a mode and a dot, **Open project** to inspect a submission. Click nodes, mapping chips and **?** hints; use **← Back**, the breadcrumb or **Esc** to return. **http://localhost:9998/?hackathon=serverpod** (or `humor-genome`) opens a hackathon directly.
 
 The Flutter launch configuration pins port 9998. An existing session started before that setting may use the port printed in its launch output.
 
 ## Development
 
-The app uses Flutter and Serverpod. Representations live in [`finalist_brief_flutter/assets/representations/`](finalist_brief_flutter/assets/representations/), one file per hackathon, and the Serverpod triage data in `assets/triage/`. Semantic types are in `lib/representation/`, hackathon loading in `lib/hackathon/`, triage signals, lane rules and queries in `lib/triage/`, shared rendering in `lib/visualization/`. The shell, triage table, exploration screen, side-by-side comparison and inspector cards are in `lib/views/`.
+The app uses Flutter and Serverpod. Representations live in [`finalist_brief_flutter/assets/representations/`](finalist_brief_flutter/assets/representations/), one file per hackathon, and the Serverpod triage data in `assets/triage/`. Semantic types are in `lib/representation/`, hackathon loading in `lib/hackathon/`, triage signals, lane rules and queries in `lib/triage/`, shared rendering in `lib/visualization/`. The workspace shell and header, Overview, triage table, exploration screen, side-by-side comparison and inspector cards are in `lib/views/`.
 
 Tests cover representation integrity, the evidence rules, question anchoring, wide and compact layouts, animation continuity, mode switching, cross-highlighting, the inspector and question flows, and competition-context restoration. For the Serverpod triage they also cover: the absence of outcome, popularity and score fields; separation of Jev and repository signals; lane reasons; each review question's rows, columns and order; sorting and search; the sponsor finding; layered row detail; the Competition hand-off; deep-review integrity; data isolation between hackathons; state preserved across switches; and triage-to-deep-review navigation without overflow. Run `dart analyze` from the root, `flutter test` in `finalist_brief_flutter`, and `dart test` in `finalist_brief_server`. Server tests use embedded PostgreSQL without Docker.
 
 See [PLAN.md](PLAN.md) for the current build contract and archived video plan, and [AGENTS.md](AGENTS.md) for the development workflow. [INSTRUCTIONS.md](INSTRUCTIONS.md) preserves the original project brief.
+
+## Deployment
+
+The production app runs on Serverpod Cloud at **https://michi-test1.serverpod.space** (project `michi-test1`, configured in `finalist_brief_server/scloud.yaml`). The Flutter web app is built into the server's `web/app` by a pre-deploy script (`serverpod run flutter_build`) and served by the same server. From `finalist_brief_server`, run `scloud deploy`. The visual experience is fully bundled and makes no live analysis requests, so a deploy needs no data pipeline or API keys.
