@@ -24,14 +24,14 @@ The current iteration helps a judge answer five questions:
 
 ### Competition View
 
-Six submissions appear as dots in a two-dimensional field. Switching modes animates the dots into a new arrangement.
+The deep-reviewed submissions appear as dots (six for Humor Genome, 31 for Serverpod) in a two-dimensional field. Switching modes animates the dots into a new arrangement.
 
 | Mode | Horizontal | Vertical | Question it answers |
 |---|---|---|---|
 | Idea × Integration | Integration depth | Idea distinctiveness | How unusual is the concept, and how much implementation stands behind it? |
 | Sponsor Tech (Gemma) | Gemma centrality | Gemma evidence | How important is Gemma to the project, and how clearly can that use be verified? |
 
-Hovering a dot shows why it sits there. Corner captions name combinations, such as "Central · hard to verify", without ranking them. Positions are descriptive interpretations, **not judge scores or rankings**. The earlier preset lenses and custom axes are removed for now.
+Hovering a dot only highlights it and its label. Selecting a dot (or its label) fills a persistent **Project Preview** beside the plot: one plain sentence each on why it sits where it does along the two axes (Idea and Integration, or Centrality and Evidence), and an **Open project** button. The preview stays until another project is chosen or Esc clears it, and nothing depends on where the pointer is. Corner captions name combinations, such as "Central · hard to verify", without ranking them. Positions are descriptive interpretations, **not judge scores or rankings**. The earlier preset lenses and custom axes are removed for now.
 
 ### Submission View
 
@@ -63,25 +63,27 @@ The design test is whether judges perceive meaningful differences across project
 
 ## Current prototype
 
-The desktop-oriented Flutter app includes two competition modes, animated movement, reversible zoom, side-by-side Idea and Integration diagrams with cross-highlighting, node evidence cards, and judge questions.
+The desktop-oriented Flutter app includes a Hackathons entry and per-hackathon Acquisition and Overview screens, two competition modes, animated movement, reversible zoom, side-by-side Idea and Integration diagrams with cross-highlighting, node evidence cards, and judge questions.
 
 The six contestants are **Crowdwork Copilot**, **Humor Genome Studio**, **Killjoy**, **LaughLensAI**, **Room Sense Text**, and **Why'd They Laugh?**. The additional `laughlens-platform` entry in the historical dataset is excluded from the visual experience.
 
 The demo is deterministic. Placements, graphs, evidence and questions were authored by hand from each contestant's writeup, public repository and demo recording, checked on 2026-09-24. Demo frames in `assets/evidence/` were extracted at the cited timestamps. LaughLensAI's frames come from the recording in its repository (`submission/laughlens.mov`). Room Sense Text has no repository or recording, so its structure is marked described or inferred. These are explanatory interpretations, not automatically extracted architecture or calibrated measurements. The visual experience loads bundled data and makes no live analysis requests.
 
-Live model analysis in the app, automatic topology extraction, triage of all 117 Serverpod submissions, automated judging, finalist ranking, and production mobile support are outside the current scope.
+Live model analysis in the app, automatic topology extraction in the app, automated judging, finalist ranking, and production mobile support are outside the current scope.
 
 The Serverpod backend, cached analyses, and earlier video-generation infrastructure remain available for future work. The visual exploration experience is now the product centerpiece.
 
 ## Two hackathons, one grammar
 
-A compact switcher next to the wordmark changes the active hackathon (**Humor Genome** / **Serverpod**) without reloading. Each hackathon is a self-contained unit (`lib/hackathon/hackathon.dart`): its sponsor technology, its deep-review representations for the Competition and Submission views, and optionally a triage dataset. Their assets never mix. Each workspace is loaded the first time it is opened and then kept alive, so switching is instant and keeps its own state: the open submission, the competition mode, the comparison set, the chosen triage question with its search and sort, the open detail panel and review statuses.
+Every hackathon follows one workflow: **Hackathons → Acquisition → Overview → Competition → Submission**. The Hackathons screen lists each hackathon with its status. Choosing one always opens its Acquisition screen, which counts what was acquired (submissions, writeups, repositories, demo videos, deep reviews) and offers **Open overview**. The Overview is a table of submissions to select from; **View N in Competition** compares the selection. A quiet *Hackathons* link beside the wordmark leads back. Entering through Hackathons always starts at Acquisition; what a judge did in a workspace (selection, search, open project) is kept and shown again on returning to it. Direct links skip the list: `?hackathon=serverpod` and `?hackathon=humor-genome` open that workspace straight away.
 
-Humor Genome is unchanged: six submissions, the same Competition View, Submission View, evidence and judge questions.
+Each hackathon is a self-contained unit (`lib/hackathon/hackathon.dart`): its sponsor technology, its deep-review representations for the Competition and Submission views, and optionally a triage dataset. Their assets never mix. A workspace is built the first time it is opened and then kept alive.
+
+Humor Genome is a cached study of six submissions. Its Overview is a plain table (project, sources, deep-review status) with no lanes; the Competition View, Submission View, evidence and judge questions are as before.
 
 ## Serverpod triage
 
-A hundred and seventeen submissions are too many to compare as dots. The Serverpod workspace therefore opens on a **Triage Table** in front of the Competition View. Its purpose is not to rank. It tests whether messy submissions can be cheaply turned into signals judges can trust when deciding what deserves a deeper look.
+A hundred and seventeen submissions are too many to compare as dots. The Serverpod workspace therefore puts a **Triage Table** (its Overview) in front of the Competition View. Its purpose is not to rank. It tests whether messy submissions can be cheaply turned into signals judges can trust when deciding what deserves a deeper look.
 
 **Coverage.** All 117 gallery entries are in triage, including those with no repository, a 404, a private or missing demo, or a placeholder writeup; missing evidence is named in the *Unresolved* lane and in judge questions instead of dropping the row. Entries are ordered by SHA-1 of their slug, which fixed the order in which the sample grew (15 → 64 → 117) and in which deep reviews were batched. Prizes, likes, comments and gallery order are never read.
 
@@ -97,7 +99,7 @@ A hundred and seventeen submissions are too many to compare as dots. The Serverp
 
 **Lanes, not scores.** Four explainable lanes: *Substantial build*, *Distinctive idea*, *Under-told*, *Unresolved*. Each has a visible rule and names the fact that triggered it, such as "16 endpoint methods used by the app · 9 tables · +5.3k lines" or "Central AI claim; no model call in code". A submission can sit in several lanes or in none, and no composite exists. A writeup that states no capability, implementation or outcome ("WIP", an empty template) gives Jev nothing to place, so it never counts toward *Distinctive idea* or the area counts; it raises its own judge question instead. Line counts are *repository* lines beyond the template: code a team copied in (a vendored package) counts too, so a count can overstate what the team wrote. Crewboard is the known case (about 148k of +211k lines are a copied image editor); its lanes do not depend on it. Questions for the team come from specific gaps, including cross-checks between what Jev found in the writeup and what code found in the repository.
 
-**Into the deeper views.** Twenty-four submissions have full Idea + Integration representations. Four are written by hand like Humor Genome's: Bitcoin Butler (Distinctive idea), Elderly (Substantial build), Social Fabric (Under-told and Unresolved) and DOBY (Unresolved). Each shows only the essential structure: five or six nodes per diagram, short titles, at most four Idea → Integration observations, and a summary in plain, literal language rather than the team's pitch. Social Fabric is the reference case. The other twenty, starting with **Contextual LifeFlow Butler**, were generated automatically from their writeup, repository and demo by [`tool/deep_review/`](tool/deep_review/README.md) and not edited by hand. Their evidence statuses are checked against the cited sources and by an independent verifier, and the Submission View labels each **Generated automatically**. "Open deep review" on a row zooms straight into its Submission View. Selecting rows narrows the Competition View to those submissions. Repository evidence links pin the deadline commit. DOBY's demo video is private, so none of its nodes claim more than "found in code".
+**Into the deeper views.** Thirty-one submissions have full Idea + Integration representations. Four are written by hand like Humor Genome's: Bitcoin Butler (Distinctive idea), Elderly (Substantial build), Social Fabric (Under-told and Unresolved) and DOBY (Unresolved). Each shows only the essential structure: five or six nodes per diagram, short titles, at most four Idea → Integration observations, and a summary in plain, literal language rather than the team's pitch. Social Fabric is the reference case. The other twenty-seven, starting with **Contextual LifeFlow Butler**, were generated automatically from their writeup, repository and demo by [`tool/deep_review/`](tool/deep_review/README.md) and not edited by hand. Their evidence statuses are checked against the cited sources and by an independent verifier, and the Submission View labels each **Generated automatically**. "Open deep review" on a row zooms straight into its Submission View. Selecting rows narrows the Competition View to those submissions. Repository evidence links pin the deadline commit. DOBY's demo video is private, so none of its nodes claim more than "found in code".
 
 The pipeline that produced this data, with its caches and limits, is in [`tool/serverpod_pilot/`](tool/serverpod_pilot/README.md).
 

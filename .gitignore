@@ -31,3 +31,7 @@ credentials/
 *.pfx
 *.key
 service-account*.json
+
+# Python bytecode
+__pycache__/
+*.pyc
