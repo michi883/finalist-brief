@@ -1,0 +1,93 @@
+[
+  {
+    "slug": "crowdwork-copilot",
+    "title": "Crowdwork Copilot",
+    "creator": "Cary Chan",
+    "summary": "A text-based audience simulator that returns structured reactions from three audience personas so comedians can test and revise stand-up material.",
+    "gemmaUse": "Instruction-tuned Gemma 2B with few-shot prompting produces persona-specific reactions and feedback in a Gradio notebook.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784121414897",
+    "repoUrl": "https://github.com/alphago-master/Crowdwork-Copilot",
+    "demoUrl": "https://kaggle.com/code/srchancary/crowdwork-copilot",
+    "hasDemoVideo": false,
+    "coverAsset": "crowdwork-copilot.jpg",
+    "sortOrder": 1
+  },
+  {
+    "slug": "humor-genome-studio",
+    "title": "Humor Genome Studio",
+    "creator": "Aryan Yadav",
+    "summary": "A modular browser workbench for creating, explaining, adapting, analyzing and performing humor through six dedicated tools.",
+    "gemmaUse": "Task-specific structured prompts call Gemma through Google AI Studio; a shared pipeline validates, retries, repairs and can critique outputs across modules.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/humor-genome-studio",
+    "repoUrl": "https://github.com/yadav-aryan18/humor-genome-nyc-kaggle",
+    "demoUrl": "https://www.youtube.com/watch?v=Lt3YAZ7956k",
+    "hasDemoVideo": true,
+    "coverAsset": "humor-genome-studio.jpg",
+    "sortOrder": 2
+  },
+  {
+    "slug": "killjoy",
+    "title": "Killjoy: the AI that explains why it's funny",
+    "creator": "Musliadi",
+    "summary": "An interactive meme explainer that identifies a joke's mechanism, cultural reference, likely audience and the cost of explaining it.",
+    "gemmaUse": "Sends the image to Gemma 4 in one multimodal call and requests five structured fields, including a self-aware \"funniness lost\" score.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/killjoy-the-ai-that-explains-why-its-funny",
+    "repoUrl": "https://github.com/Mussliadii/Killjoy",
+    "demoUrl": "https://www.youtube.com/watch?v=zOM_J-YPhJk",
+    "hasDemoVideo": true,
+    "coverAsset": "killjoy.jpg",
+    "sortOrder": 3
+  },
+  {
+    "slug": "laughlens-platform",
+    "title": "LaughLens AI: Gemma Powered Humor Intelligence Platform",
+    "creator": "Warrior",
+    "summary": "A humor-intelligence research concept centered on generating jokes, evaluating humor quality and examining patterns such as setup, surprise, context, timing and audience perception.",
+    "gemmaUse": "The writeup presents Gemma as powering the platform but does not document the model integration.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784731757734",
+    "repoUrl": null,
+    "demoUrl": null,
+    "hasDemoVideo": false,
+    "coverAsset": "laughlens-platform.jpg",
+    "sortOrder": 4
+  },
+  {
+    "slug": "laughlensai",
+    "title": "LaughLensAI",
+    "creator": "Abhishek Gaduputi",
+    "summary": "A text-joke analysis tool that visualizes structural dimensions as a humor genome and compares Gemma's hypothesis with anonymous human ratings.",
+    "gemmaUse": "Gemma 4 through the Google Gen AI SDK returns schema-validated analysis across nine humor dimensions; results are framed as hypotheses and compared with human feedback.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/laughlensai",
+    "repoUrl": "https://github.com/sairam782/laughlens",
+    "demoUrl": "https://abhigaduputi.vercel.app/",
+    "hasDemoVideo": false,
+    "coverAsset": "laughlensai.jpg",
+    "sortOrder": 5
+  },
+  {
+    "slug": "room-sense-text",
+    "title": "Room Sense Text: Same Joke, Four Gemma Audiences",
+    "creator": "samuel tan",
+    "summary": "A clonable Kaggle notebook that shows how one joke is received by four simulated audience personas and rewrites it for a colder room.",
+    "gemmaUse": "Runs Gemma 4 through llama.cpp to produce four audience reactions, explain the joke's structure and risks, and rewrite it for a selected colder audience.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784903515323",
+    "repoUrl": null,
+    "demoUrl": "https://www.kaggle.com/code/simingtan/room-sense-text-gemma4",
+    "hasDemoVideo": false,
+    "coverAsset": "room-sense-text.jpg",
+    "sortOrder": 6
+  },
+  {
+    "slug": "why-they-laugh",
+    "title": "Why'd They Laugh? An Audience-Focused Feedback System",
+    "creator": "okkotsu_senpai",
+    "summary": "A performance-feedback prototype that analyzes recordings or text, compares detected audience laughter with Gemma's predicted beats and returns structured, timestamped notes.",
+    "gemmaUse": "Gemma performs structured joke decomposition, audience simulation, frame-aware clip reasoning and targeted rewriting; audio signal processing supplies the measured laugh regions.",
+    "kaggleUrl": "https://www.kaggle.com/competitions/humor-genome-nyc/writeups/new-writeup-1784949428310",
+    "repoUrl": "https://github.com/venvennnn/humor_genome_kaggle",
+    "demoUrl": "https://www.youtube.com/watch?v=acdk3T5B_uw",
+    "hasDemoVideo": true,
+    "coverAsset": "why-they-laugh.jpg",
+    "sortOrder": 7
+  }
+]

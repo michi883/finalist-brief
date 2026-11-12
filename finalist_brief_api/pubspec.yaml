@@ -1,0 +1,20 @@
+name: finalist_brief_api
+description: REST API for Finalist Brief, served from Cloud Run and backed by Firestore.
+publish_to: none
+
+environment:
+  sdk: '^3.12.2'
+
+resolution: workspace
+
+dependencies:
+  crypto: ^3.0.8
+  finalist_brief_shared:
+    path: ../finalist_brief_shared
+  google_cloud_firestore: ^0.5.5
+  shelf: ^1.4.3
+  shelf_router: ^1.1.5
+
+dev_dependencies:
+  lints: '>=3.0.0 <7.0.0'
+  test: ^1.25.5

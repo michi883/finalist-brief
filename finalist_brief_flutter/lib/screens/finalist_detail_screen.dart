@@ -1,4 +1,4 @@
-import 'package:finalist_brief_client/finalist_brief_client.dart';
+import 'package:finalist_brief_shared/finalist_brief_shared.dart';
 import 'package:flutter/material.dart';
 
 import '../links.dart';

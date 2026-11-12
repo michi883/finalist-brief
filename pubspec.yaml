@@ -8,4 +8,6 @@ workspace:
   - finalist_brief_client
   - finalist_brief_server
   - finalist_brief_flutter
+  - finalist_brief_shared
+  - finalist_brief_api
 

@@ -71,7 +71,7 @@ The demo is deterministic. Placements, graphs, evidence and questions were autho
 
 Live model analysis in the app, automatic topology extraction in the app, automated judging, finalist ranking, and production mobile support are outside the current scope.
 
-The Serverpod backend, cached analyses, and earlier video-generation infrastructure remain available for future work. The visual exploration experience is now the product centerpiece.
+The API, its cached analyses, and the earlier video-generation flow (opt-in with `?legacy=1`) remain available for future work. The visual exploration experience is now the product centerpiece.
 
 ## Two hackathons, one grammar
 
@@ -279,10 +279,26 @@ The Flutter launch configuration pins port 9998. An existing session started bef
 
 The app uses Flutter and Serverpod. Representations live in [`finalist_brief_flutter/assets/representations/`](finalist_brief_flutter/assets/representations/), one file per hackathon, and the Serverpod triage data in `assets/triage/`. Semantic types are in `lib/representation/`, hackathon loading in `lib/hackathon/`, triage signals, lane rules and queries in `lib/triage/`, shared rendering in `lib/visualization/`. The workspace shell and header, Overview, triage table, exploration screen, side-by-side comparison and inspector cards are in `lib/views/`.
 
-Tests cover representation integrity, the evidence rules, question anchoring, wide and compact layouts, animation continuity, mode switching, cross-highlighting, the inspector and question flows, and competition-context restoration. For the Serverpod triage they also cover: the absence of outcome, popularity and score fields; separation of Jev and repository signals; lane reasons; each review question's rows, columns and order; sorting and search; the sponsor finding; layered row detail; the Competition hand-off; deep-review integrity; data isolation between hackathons; state preserved across switches; and triage-to-deep-review navigation without overflow. Run `dart analyze` from the root, `flutter test` in `finalist_brief_flutter`, and `dart test` in `finalist_brief_server`. Server tests use embedded PostgreSQL without Docker.
+Tests cover representation integrity, the evidence rules, question anchoring, wide and compact layouts, animation continuity, mode switching, cross-highlighting, the inspector and question flows, and competition-context restoration. For the Serverpod triage they also cover: the absence of outcome, popularity and score fields; separation of Jev and repository signals; lane reasons; each review question's rows, columns and order; sorting and search; the sponsor finding; layered row detail; the Competition hand-off; deep-review integrity; data isolation between hackathons; state preserved across switches; and triage-to-deep-review navigation without overflow. Run `dart analyze` from the root, `flutter test` in `finalist_brief_flutter`, and `dart test` in `finalist_brief_api`. The API tests use an in-memory store, so they need no Google Cloud access.
 
 See [PLAN.md](PLAN.md) for the current build contract and archived video plan, and [AGENTS.md](AGENTS.md) for the development workflow. [INSTRUCTIONS.md](INSTRUCTIONS.md) preserves the original project brief.
 
 ## Deployment
 
-The production app runs on Serverpod Cloud at **https://michi-test1.serverpod.space** (project `michi-test1`, configured in `finalist_brief_server/scloud.yaml`). The Flutter web app is built into the server's `web/app` by a pre-deploy script (`serverpod run flutter_build`) and served by the same server. From `finalist_brief_server`, run `scloud deploy`. The visual experience is fully bundled and makes no live analysis requests, so a deploy needs no data pipeline or API keys.
+The production app is moving to Google Cloud (project `finalists-sound-fan`, region `us-central1`). Status as of 2026-11-11:
+
+- **Live:** the web app on Firebase Hosting, at `https://finalists-sound-fan.web.app` and `https://finalists.sound.fan` (the custom domain's TLS certificate was still propagating).
+- **Ready:** the Firestore database with deny-all rules, the API image in Artifact Registry (`finalist-brief/api`), and the service-account roles below.
+- **Not yet deployed:** the Cloud Run service `finalist-brief-api`. Until `deploy/gcp/deploy.sh api` runs, the API routes do not exist, so the retained `?legacy=1` screens cannot load data. The visual experience is bundled and does not need the API. Firestore is not yet seeded, and the Firestore code has only been tested against an in-memory store, not the real database.
+- **Still running separately:** the earlier Serverpod Cloud deployment, until it is retired.
+
+The pieces:
+
+- **Web app:** Firebase Hosting at **https://finalists.sound.fan** (site `finalists-sound-fan`, configured in `firebase.json`). It is the Flutter web build, compiled with `API_URL` pointing at the API. The briefing video for the retained `?legacy=1` flow is served from `/briefs/`.
+- **API:** `finalist_brief_api`, a plain Dart (shelf) service on Cloud Run (`finalist-brief-api`), built by Cloud Build from `finalist_brief_api/Dockerfile` into a native executable. Routes: `GET /api/submissions`, `GET /api/analyses`, `POST /api/briefs`, `GET /api/briefs/<id>` and `GET /api/briefs/latest-complete`. Models and the HTTP client the app uses are in `finalist_brief_shared`.
+- **Database:** Firestore in Native mode (`(default)`, `us-central1`): `submissions`, `analyses`, `briefs` and `meta/seed`. The API seeds the fixed dataset from `finalist_brief_api/assets/` on startup whenever its content hash changes. Briefs store only their creation time; replay progress is derived from the clock on every read. `firestore.rules` denies all direct client access, and the API reaches Firestore through its runtime service account, the project's default compute account, which has `roles/datastore.user`. The same account has three narrow roles for Cloud Build: `storage.objectViewer` on the `finalists-sound-fan_cloudbuild` bucket, `artifactregistry.writer` on the `finalist-brief` repository, and `logging.logWriter` on the project.
+- **Configuration:** plain Cloud Run environment variables, not Secret Manager: `GOOGLE_CLOUD_PROJECT`, `PUBLIC_WEB_ORIGIN`, `GEMINI_API_KEY` and `TYPESAFE_API_KEY`. `deploy/gcp/deploy.sh` reads the keys from the gitignored `.env` (template: `.env.example`). The API does not read the two keys today; the visual experience is fully bundled and makes no live analysis requests.
+
+Sign in with `gcloud auth login` and `firebase login`, then from the repository root run `deploy/gcp/deploy.sh api`, `deploy/gcp/deploy.sh rules`, `deploy/gcp/deploy.sh web`, or `deploy/gcp/deploy.sh` for all three. The script passes `--project` explicitly, so your default gcloud project is not changed. Flutter 3.44.4 must be on `PATH` (or at `~/flutter`) for the web step. To run the API locally, `dart run bin/server.dart` in `finalist_brief_api` serves on port 8080, and `flutter run --dart-define=API_URL=http://localhost:8080/` points the app at it. The API uses Firestore whenever `GOOGLE_CLOUD_PROJECT` is set (with Application Default Credentials) and an in-memory store otherwise, so clear the variable first if your shell sets it to another project: `env -u GOOGLE_CLOUD_PROJECT dart run bin/server.dart`.
+
+`finalist_brief_server` and `finalist_brief_client` are the earlier Serverpod backend and its generated client. The app no longer uses them, and they are not part of the Google Cloud deployment.

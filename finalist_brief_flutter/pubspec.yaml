@@ -1,5 +1,5 @@
 name: finalist_brief_flutter
-description: A new Flutter project with Serverpod.
+description: Finalist Brief, an explorable visual field of hackathon submissions.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -30,9 +30,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^8.1.0
-  finalist_brief_client:
-    path: ../finalist_brief_client
-  serverpod_flutter: 4.0.2
+  finalist_brief_shared:
+    path: ../finalist_brief_shared
   video_player: ^2.14.0
   url_launcher: ^6.3.2
 
@@ -68,7 +67,6 @@ flutter:
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
   assets:
-    - assets/config.json
     - assets/covers/
     - assets/evidence/
     - assets/evidence/serverpod/

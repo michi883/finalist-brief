@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:finalist_brief_client/finalist_brief_client.dart';
+import 'package:finalist_brief_shared/finalist_brief_shared.dart';
 import 'package:flutter/material.dart';
 
 import '../client.dart';
@@ -41,8 +41,8 @@ class _SubmissionsScreenState extends State<SubmissionsScreen> {
 
   Future<void> _load() async {
     try {
-      final submissions = await client.submission.list();
-      final latest = await client.brief.latestComplete();
+      final submissions = await api.listSubmissions();
+      final latest = await api.latestCompleteBrief();
       setState(() {
         _submissions = submissions;
         _latest = latest;
@@ -55,7 +55,7 @@ class _SubmissionsScreenState extends State<SubmissionsScreen> {
 
   Future<void> _generate() async {
     try {
-      final brief = await client.brief.generate(BriefMode.replay);
+      final brief = await api.generateBrief(BriefMode.replay);
       setState(() {
         _running = brief;
         _error = null;
@@ -74,7 +74,7 @@ class _SubmissionsScreenState extends State<SubmissionsScreen> {
     if (id == null || _polling) return;
     _polling = true;
     try {
-      final brief = await client.brief.get(id);
+      final brief = await api.getBrief(id);
       if (!mounted || brief == null) return;
       setState(() => _running = brief);
       if (brief.status == BriefStatus.complete ||

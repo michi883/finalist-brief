@@ -1,4 +1,4 @@
-import 'package:finalist_brief_client/finalist_brief_client.dart';
+import 'package:finalist_brief_shared/finalist_brief_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -33,7 +33,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
   }
 
   Future<void> _loadAnalyses() async {
-    final analyses = await client.analysis.list();
+    final analyses = await api.listAnalyses();
     if (!mounted) return;
     setState(() {
       _analyses = {for (final a in analyses) a.submissionId: a};

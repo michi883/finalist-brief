@@ -9,7 +9,7 @@ import 'views/hackathon_workspace.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // The visual demo is fully local. The retained video flow is opt-in only.
-  if (Uri.base.queryParameters['legacy'] == '1') await initializeClient();
+  if (Uri.base.queryParameters['legacy'] == '1') initializeClient();
   runApp(const FinalistBriefApp());
 }
 

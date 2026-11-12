@@ -35,3 +35,6 @@ service-account*.json
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Firebase CLI cache
+.firebase/

@@ -1,0 +1,14 @@
+# Builds the API image. Run from the repository root (the Dockerfile expects
+# the root as its build context):
+#   gcloud builds submit --config deploy/gcp/cloudbuild.yaml --substitutions _IMAGE=<image> .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ['build', '-f', 'finalist_brief_api/Dockerfile', '-t', '${_IMAGE}', '.']
+
+images: ['${_IMAGE}']
+
+substitutions:
+  _IMAGE: us-central1-docker.pkg.dev/finalists-sound-fan/finalist-brief/api:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY

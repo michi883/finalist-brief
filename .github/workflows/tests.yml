@@ -7,6 +7,31 @@ on:
     branches: [main]
 
 jobs:
+  api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --set-exit-if-changed finalist_brief_shared finalist_brief_api
+
+      - name: Analyze
+        run: |
+          dart analyze --fatal-infos finalist_brief_shared
+          dart analyze --fatal-infos finalist_brief_api
+
+      - name: Run API tests
+        working-directory: finalist_brief_api
+        run: dart test
+
   test:
     runs-on: ubuntu-latest
     env:

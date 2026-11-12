@@ -1,0 +1,28 @@
+# Files excluded from the Cloud Build upload (deploy/gcp/deploy.sh api).
+# Only finalist_brief_api, finalist_brief_shared and pubspec.lock are needed to
+# build the image (see finalist_brief_api/Dockerfile).
+
+.git
+.gitignore
+.claude
+.dart_skills
+.vscode
+.scloud
+.mcp.json
+.firebase
+**/.dart_tool
+**/.cache
+**/.DS_Store
+**/build
+
+# Secrets and local-only config never leave this machine.
+.env
+.env.*
+!.env.example
+
+# Not part of the API image.
+tool
+finalist_brief_flutter
+finalist_brief_client
+finalist_brief_server
+finalist_brief_api/test
