@@ -101,7 +101,103 @@ class BrandMark extends StatelessWidget {
           ),
         ),
       ],
+      const SizedBox(width: 2),
+      IconButton(
+        key: const ValueKey('about-button'),
+        tooltip: 'About Finalist Brief',
+        onPressed: () => showAboutBrief(context),
+        icon: const Icon(Icons.info_outline, size: 15),
+        color: muted,
+        hoverColor: rule.withValues(alpha: .5),
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+        style: IconButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      ),
     ],
+  );
+}
+
+/// What Finalist Brief is, and who decides. Closes via X, Esc or a click
+/// outside.
+Future<void> showAboutBrief(BuildContext context) => showDialog<void>(
+  context: context,
+  barrierColor: ink.withValues(alpha: .35),
+  builder: (_) => const AboutBriefDialog(),
+);
+
+class AboutBriefDialog extends StatelessWidget {
+  const AboutBriefDialog({super.key});
+
+  static const _body = TextStyle(fontSize: 13.5, height: 1.5, color: ink);
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    key: const ValueKey('about-dialog'),
+    backgroundColor: paper,
+    surfaceTintColor: Colors.transparent,
+    insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+      side: const BorderSide(color: rule),
+    ),
+    titlePadding: const EdgeInsets.fromLTRB(24, 18, 12, 0),
+    contentPadding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
+    title: Row(
+      children: [
+        const Expanded(
+          child: Text(
+            'About Finalist Brief',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: ink,
+            ),
+          ),
+        ),
+        IconButton(
+          key: const ValueKey('about-close'),
+          tooltip: 'Close',
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.close, size: 18),
+          color: muted,
+          visualDensity: VisualDensity.compact,
+        ),
+      ],
+    ),
+    content: const SizedBox(
+      width: 420,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Finalist Brief helps hackathon judges and organizers explore '
+              'submissions, compare projects, and prepare better questions.',
+              style: _body,
+            ),
+            SizedBox(height: 10),
+            Text(
+              'It uses AI to examine project ideas, implementations, and '
+              'supporting evidence, highlighting strengths and gaps.',
+              style: _body,
+            ),
+            SizedBox(height: 10),
+            Text(
+              'AI assists the review process. Judges make the final decisions.',
+              style: TextStyle(
+                fontSize: 13.5,
+                height: 1.5,
+                color: ink,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }
 
